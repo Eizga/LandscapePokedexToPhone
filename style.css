@@ -695,7 +695,7 @@ select:focus {
             minmax(190px, 1fr)
         );
 
-    gap: 14px;
+    gap: 8px;
 }
 
 
@@ -894,6 +894,53 @@ select:focus {
 
 .back-button:hover {
     color: var(--text);
+}
+
+.pokemon-view-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.pokemon-view-toolbar .back-button {
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+.pokemon-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+    min-width: 0;
+}
+
+.pokemon-navigation[hidden] {
+    display: none;
+}
+
+.pokemon-navigation button {
+    padding: 6px 9px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    background: var(--panel-2);
+    white-space: nowrap;
+}
+
+.pokemon-navigation button:disabled {
+    opacity: .4;
+    cursor: default;
+}
+
+.pokemon-navigation span {
+    min-width: 56px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
 }
 
 
@@ -1980,7 +2027,7 @@ select:focus {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 14px;
+    gap: 8px;
     overflow-x: auto;
     padding: 5px 4px 12px;
 }
@@ -2002,7 +2049,7 @@ select:focus {
 }
 
 .evolution-transition {
-    width: 92px;
+    width: 72px;
     flex-direction: column;
     justify-content: center;
     gap: 1px;
@@ -2026,8 +2073,8 @@ select:focus {
     display: grid;
     justify-items: center;
     gap: 6px;
-    width: 128px;
-    padding: 7px;
+    width: 112px;
+    padding: 5px;
     color: var(--text);
     background: var(--panel-2);
     border: 1px solid var(--border);
@@ -2041,13 +2088,13 @@ select:focus {
 }
 
 .evolution-pokemon img {
-    width: 68px;
-    height: 68px;
+    width: 56px;
+    height: 56px;
     object-fit: contain;
 }
 
 .evolution-transition {
-    max-width: 92px;
+    max-width: 72px;
 }
 
 .evolution-transition small {
@@ -2149,7 +2196,7 @@ select:focus {
 .location-toolbar {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 5px;
     margin-bottom: 9px;
     color: var(--muted);
     font-size: 12px;
@@ -2159,15 +2206,9 @@ select:focus {
     min-width: min(260px, 70vw);
 }
 
-.location-results-layout {
+.pokemon-location-list {
     display: grid;
-    grid-template-columns: minmax(190px, .7fr) minmax(0, 1.3fr);
-    gap: 10px;
-    align-items: stretch;
-}
-
-.location-results-list {
-    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
     align-content: start;
     gap: 6px;
     max-height: 390px;
@@ -2176,20 +2217,14 @@ select:focus {
 
 .pokemon-location-card {
     display: grid;
+    align-content: start;
     gap: 4px;
-    width: 100%;
+    min-width: 0;
     padding: 9px 10px;
     border: 1px solid var(--border);
     border-radius: 9px;
     color: var(--text);
     background: var(--panel-2);
-    text-align: left;
-    cursor: pointer;
-}
-
-.pokemon-location-card.active {
-    border-color: var(--accent);
-    box-shadow: inset 3px 0 var(--accent);
 }
 
 .pokemon-location-card strong {
@@ -2202,104 +2237,33 @@ select:focus {
     line-height: 1.4;
 }
 
-.location-map-panel {
-    min-width: 0;
-    min-height: 220px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    border-radius: 11px;
-    background: var(--panel-2);
-}
-
-.location-map-heading {
-    display: flex;
-    min-height: 42px;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 7px 10px;
-    border-bottom: 1px solid var(--border);
-}
-
-.location-map-heading > div {
-    display: grid;
-    gap: 2px;
-    min-width: 0;
-}
-
-.location-map-heading small {
-    color: var(--muted);
-    font-size: 9px;
-}
-
-.location-map-heading strong {
-    overflow: hidden;
-    font-size: 11px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.location-map-image-wrap {
-    display: flex;
-    min-height: 180px;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    background: #171c24;
-}
-
-.location-map-image {
-    display: block;
-    width: 100%;
-    max-height: 340px;
-    object-fit: contain;
-}
-
-.location-map-placeholder {
-    display: grid;
-    min-height: 120px;
-    place-items: center;
-    padding: 12px;
-    color: var(--muted);
-    text-align: center;
-    font-size: 11px;
-}
-
-.location-acquisition-note {
-    padding: 14px;
-    border: 1px solid var(--border);
-    border-radius: 11px;
-    background: var(--panel-2);
-    line-height: 1.5;
-}
-
-.location-acquisition-note p {
-    margin: 6px 0 0;
-    color: var(--muted);
-    font-size: 12px;
-}
-
 @media (max-width: 700px) {
-    .location-results-layout {
-        grid-template-columns: minmax(0, 1fr);
-    }
-
-    .location-results-list {
+    .pokemon-location-list {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        max-height: 160px;
-    }
-
-    .location-map-image-wrap {
-        min-height: 140px;
-    }
-
-    .location-map-image {
-        max-height: 230px;
+        max-height: 250px;
     }
 }
 
 @media (orientation: landscape) and (max-height: 600px) and (max-width: 1100px) {
+    .pokemon-view-toolbar {
+        gap: 5px;
+        margin-bottom: 5px;
+    }
+
+    .pokemon-navigation {
+        gap: 3px;
+    }
+
+    .pokemon-navigation button {
+        padding: 4px 6px;
+        font-size: 10px;
+    }
+
+    .pokemon-navigation span {
+        min-width: 42px;
+        font-size: 9px;
+    }
+
     .game-card-catch-button {
         top: 4px;
         right: 4px;
@@ -2324,58 +2288,10 @@ select:focus {
         padding: 6px;
     }
 
-    .location-toolbar {
-        margin-bottom: 5px;
-        font-size: 10px;
-    }
-
-    .location-toolbar select {
-        min-width: 0;
-        padding: 5px 7px;
-        font-size: 10px;
-    }
-
-    .location-results-layout {
-        grid-template-columns: minmax(145px, .7fr) minmax(0, 1.3fr);
-        gap: 6px;
-    }
-
-    .location-results-list {
+    .pokemon-location-list {
+        grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
         max-height: 230px;
         gap: 4px;
-    }
-
-    .pokemon-location-card {
-        padding: 6px;
-    }
-
-    .pokemon-location-card strong {
-        font-size: 9px;
-    }
-
-    .pokemon-location-card span {
-        font-size: 8px;
-    }
-
-    .location-map-panel {
-        min-height: 170px;
-    }
-
-    .location-map-heading {
-        min-height: 32px;
-        padding: 4px 7px;
-    }
-
-    .location-map-heading strong {
-        font-size: 9px;
-    }
-
-    .location-map-image-wrap {
-        min-height: 150px;
-    }
-
-    .location-map-image {
-        max-height: 190px;
     }
 }
 

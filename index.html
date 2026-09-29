@@ -151,9 +151,16 @@
         <!-- POKEMON DETAIL -->
         <section id="pokemonView" class="view">
 
-            <button id="backButton" class="back-button">
-                ← Takaisin
-            </button>
+            <div class="pokemon-view-toolbar">
+                <button id="backButton" class="back-button">
+                    ← Takaisin
+                </button>
+                <div id="pokemonNavigation" class="pokemon-navigation" hidden>
+                    <button id="previousPokemonButton" type="button" aria-label="Previous Pokémon">‹ Previous</button>
+                    <span id="pokemonNavigationPosition"></span>
+                    <button id="nextPokemonButton" type="button" aria-label="Next Pokémon">Next ›</button>
+                </div>
+            </div>
 
             <div id="pokemonDetail"></div>
 
