@@ -283,6 +283,23 @@ const GAMES = [
     { id: "pokemon-go", name: "Pokémon GO", generation: "Mobile", dexes: ["national"], nationalLimit: 1025 }
 ];
 
+const GAME_API_VERSIONS = {
+    red: ["red"], blue: ["blue"], green: ["red", "blue"], yellow: ["yellow"],
+    gold: ["gold"], silver: ["silver"], crystal: ["crystal"],
+    ruby: ["ruby"], sapphire: ["sapphire"], emerald: ["emerald"],
+    firered: ["firered"], leafgreen: ["leafgreen"],
+    diamond: ["diamond"], pearl: ["pearl"], platinum: ["platinum"],
+    heartgold: ["heartgold"], soulsilver: ["soulsilver"],
+    black: ["black"], white: ["white"], black2: ["black-2"], white2: ["white-2"],
+    x: ["x"], y: ["y"], omegaruby: ["omega-ruby"], alphasapphire: ["alpha-sapphire"],
+    sun: ["sun"], moon: ["moon"], ultrasun: ["ultra-sun"], ultramoon: ["ultra-moon"],
+    letsgopikachu: ["lets-go-pikachu"], letsgoeevee: ["lets-go-eevee"],
+    sword: ["sword"], shield: ["shield"], legendsarceus: ["legends-arceus"],
+    brilliantdiamond: ["brilliant-diamond"], shiningpearl: ["shining-pearl"],
+    scarlet: ["scarlet"], violet: ["violet"], legendsza: ["legends-z-a"],
+    "pokemon-go": []
+};
+
 // Covers are shipped with the app so the Games view does not depend on an
 // external image service being available at runtime.
 const GAME_COVER_FILE_NAMES = {
@@ -345,6 +362,8 @@ const state = {
     pokemonCache: new Map(),
 
     dexCache: new Map(),
+
+    encounterCache: new Map(),
 
     dexEntriesById: new Map(),
 
@@ -1258,6 +1277,34 @@ function createGamePokemonCard(
             entry.id
         );
 
+    const game = state.currentGame;
+    if (!game) return card;
+
+    card.classList.add("game-pokemon-card");
+    const speciesId = entry.pokemonId ?? pokemon.id;
+    const caughtButton = document.createElement("button");
+    caughtButton.type = "button";
+    caughtButton.className = "game-card-catch-button";
+
+    const updateCaughtButton = () => {
+        const caught = isCaught(game.id, speciesId);
+        caughtButton.classList.toggle("caught", caught);
+        caughtButton.setAttribute("aria-pressed", String(caught));
+        caughtButton.innerHTML = `<span aria-hidden="true">${caught ? "✓" : "+"}</span><span>${caught ? "Caught" : "Mark caught"}</span>`;
+        caughtButton.setAttribute("aria-label", `${caught ? "Unmark" : "Mark"} ${capitalize(pokemon.name)} as caught in ${game.name}`);
+    };
+
+    updateCaughtButton();
+    caughtButton.addEventListener("click", async event => {
+        event.stopPropagation();
+        const nextCaught = !isCaught(game.id, speciesId);
+        setCaught(game.id, speciesId, nextCaught);
+        updateCaughtButton();
+        updateGameProgress();
+        if (state.gameFilter !== "all") await renderGameDex();
+    });
+    card.appendChild(caughtButton);
+
 
     return card;
 
@@ -1451,6 +1498,7 @@ async function openPokemon(
                             Moves
                         </button>
                         <button class="detail-tab" data-detail-tab="forms">Forms</button>
+                        <button class="detail-tab" data-detail-tab="locations">Locations</button>
 
                     </div>
 
@@ -1527,6 +1575,18 @@ async function openPokemon(
                         <div id="pokemonFormsList" class="pokemon-forms-grid">Ladataan muotoja...</div>
                     </div>
 
+                    <div class="detail-tab-content" data-detail-content="locations">
+                        <div class="location-toolbar">
+                            <label for="pokemonLocationGameSelect">Game</label>
+                            <select id="pokemonLocationGameSelect" disabled>
+                                <option>Loading available games...</option>
+                            </select>
+                        </div>
+                        <div id="pokemonLocationsList" class="pokemon-locations">
+                            <div class="empty-state">Loading game locations...</div>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -1561,6 +1621,7 @@ async function openPokemon(
         renderEvolutionChain(species),
         renderPokemonGames(pokemon.id, species.id),
         renderPokemonForms(species),
+        renderPokemonLocations(pokemon.id, species.id),
         renderPokemonMoves(pokemon)
     ]);
 
@@ -1732,59 +1793,76 @@ function setupPokedexVoiceSettings() {
 
 function evolutionMethodText(details) {
     if (!details?.length) return "";
-    return details.map(method => {
+    const mossyRockAreas = new Set([
+        "moss-rock", "eterna-forest", "pinwheel-forest", "kalos-route-20",
+        "petalburg-woods", "lush-jungle", "-tall-grass-moss-rock"
+    ]);
+    const icyRockAreas = new Set(["ice-rock", "frost-cavern", "sinnoh-route-217"]);
+    const readable = value => capitalize(value.replaceAll("-", " "));
+    const methods = [...new Set(details.map(method => {
         const conditions = [];
         const trigger = method.trigger?.name;
-        const readable = value => capitalize(value.replaceAll("-", " "));
-        const articleFor = value => /^[aeiou]/i.test(value) ? "an" : "a";
+        const location = method.location?.name;
+        const itemName = method.item?.name ? readable(method.item.name) : "item";
         let action = "Meet the evolution requirement";
-        if (trigger === "level-up") action = method.min_level ? `Level up to level ${method.min_level}` : "Level up";
-        else if (trigger === "trade") action = "Trade this Pokémon";
-        else if (trigger === "use-item") {
-            const itemName = method.item?.name ? readable(method.item.name) : "item";
-            action = `Use ${articleFor(itemName)} ${itemName}`;
-        }
-        else if (trigger === "shed") action = "Create an extra space in your party and have a Poké Ball in your bag";
+
+        if (trigger === "level-up") {
+            action = method.min_level ? `Level ${method.min_level}` : "Level up";
+            if (location && (mossyRockAreas.has(location) || location.includes("moss-rock"))) action = "Level up near a Mossy Rock";
+            else if (location && (icyRockAreas.has(location) || location.includes("ice-rock"))) action = "Level up near an Icy Rock";
+            else if (location) conditions.push(`at ${readable(location)}`);
+        } else if (trigger === "trade") {
+            action = method.trade_species?.name
+                ? `Trade for ${readable(method.trade_species.name)}`
+                : "Trade";
+        } else if (trigger === "use-item") action = `Using ${itemName}`;
+        else if (trigger === "shed") action = "Level up with an empty party slot and a Poké Ball in your bag";
         else if (trigger === "spin") action = "Spin around with this Pokémon in your party";
-        else if (trigger === "three-critical-hits") action = "Land three critical hits in one battle";
+        else if (trigger === "three-critical-hits") action = "Land 3 critical hits in one battle";
         else if (trigger === "tower-of-darkness") action = "Complete the Tower of Darkness trial";
         else if (trigger === "tower-of-waters") action = "Complete the Tower of Waters trial";
         else if (trigger === "take-damage") action = method.min_damage
-            ? `Take at least ${method.min_damage} damage, then walk to the required location`
-            : "Take damage, then walk to the required location";
+            ? `Take ${method.min_damage} damage, then visit the required location`
+            : "Take damage, then visit the required location";
         else if (trigger) action = readable(trigger);
-        if (method.item?.name && trigger !== "use-item") {
-            const itemName = readable(method.item.name);
-            conditions.push(`use ${articleFor(itemName)} ${itemName}`);
-        }
-        if (method.held_item?.name) {
-            const itemName = readable(method.held_item.name);
-            conditions.push(`hold ${articleFor(itemName)} ${itemName}`);
-        }
-        if (method.time_of_day) conditions.push(`during the ${method.time_of_day}`);
-        if (method.min_happiness) conditions.push(`with friendship of at least ${method.min_happiness}`);
-        if (method.min_affection) conditions.push(`with affection of at least ${method.min_affection}`);
-        if (method.min_beauty) conditions.push(`with Beauty of at least ${method.min_beauty}`);
+
+        if (method.item?.name && trigger !== "use-item") conditions.push(`use ${itemName}`);
+        if (method.held_item?.name) conditions.push(`holding ${readable(method.held_item.name)}`);
+        if (method.time_of_day) conditions.push(`at ${method.time_of_day}`);
+        if (method.min_happiness) conditions.push("with high friendship");
+        if (method.min_affection) conditions.push("with high affection");
+        if (method.min_beauty) conditions.push(`with Beauty ${method.min_beauty}+`);
         if (method.min_steps) conditions.push(`after walking ${method.min_steps} steps`);
-        if (method.min_damage && trigger !== "take-damage") conditions.push(`after taking at least ${method.min_damage} damage`);
         if (method.gender === 1) conditions.push("if female");
         if (method.gender === 2) conditions.push("if male");
         if (method.known_move?.name) conditions.push(`while knowing ${readable(method.known_move.name)}`);
-        if (method.known_move_type?.name) conditions.push(`while knowing a ${readable(method.known_move_type.name)}-type move`);
-        if (method.location?.name) conditions.push(`at ${readable(method.location.name)}`);
+        if (method.known_move_type?.name) conditions.push(`while knowing a ${readable(method.known_move_type.name)} move`);
+        if (location && trigger !== "level-up") conditions.push(`at ${readable(location)}`);
         if (method.party_species?.name) conditions.push(`with ${readable(method.party_species.name)} in your party`);
         if (method.party_type?.name) conditions.push(`with a ${readable(method.party_type.name)}-type Pokémon in your party`);
-        if (method.trade_species?.name) {
-            const speciesName = readable(method.trade_species.name);
-            conditions.push(`for ${articleFor(speciesName)} ${speciesName}`);
-        }
         if (method.needs_overworld_rain) conditions.push("while it is raining");
         if (method.turn_upside_down) conditions.push("while holding the device upside down");
         if (method.relative_physical_stats !== null && method.relative_physical_stats !== undefined) {
             conditions.push(method.relative_physical_stats === 1 ? "when Attack is higher than Defense" : method.relative_physical_stats === -1 ? "when Defense is higher than Attack" : "when Attack and Defense are equal");
         }
-        return conditions.length ? `${action} ${conditions.join(" and ")}` : action;
-    }).join(" or ");
+        return conditions.length ? `${action} ${conditions.join(", ")}` : action;
+    }))];
+
+    return methods.sort((a, b) => Number(a.startsWith("Level up near")) - Number(b.startsWith("Level up near"))).join(" or ");
+}
+
+
+async function getPokemonEncounters(id) {
+    const key = String(id);
+    if (!state.encounterCache.has(key)) {
+        state.encounterCache.set(key, apiFetch(`${API}/pokemon/${key}/encounters`));
+    }
+    try {
+        return await state.encounterCache.get(key);
+    } catch (error) {
+        state.encounterCache.delete(key);
+        throw error;
+    }
 }
 
 
@@ -1948,14 +2026,7 @@ async function renderPokemonMoves(pokemon, append = false) {
 }
 
 
-async function renderPokemonGames(
-    pokemonId,
-    speciesId = pokemonId
-) {
-    const container = document.getElementById("pokemonGamesList");
-    if (!container) return;
-    container.innerHTML = `<div class="empty-state">Etsitään pelejä...</div>`;
-
+async function getAvailableGamesForPokemon(speciesId) {
     const availability = await Promise.all(GAMES.map(async game => {
         let available = speciesId <= game.nationalLimit;
         if (game.id === "pokemon-go") return { game, available: true };
@@ -1971,14 +2042,164 @@ async function renderPokemonGames(
         return { game, available };
     }));
 
-    const availableGames = availability.filter(item => item.available);
+    return availability.filter(item => item.available).map(item => item.game);
+}
+
+
+function formatEncounterLocation(locationName) {
+    const name = locationName
+        .replace(/-area(?:-[a-z0-9-]+)?$/i, "")
+        .replace(/-south-towards-/g, " south toward ")
+        .replace(/-north-towards-/g, " north toward ")
+        .replace(/-towards-/g, " toward ")
+        .replace(/-/g, " ");
+    return name.split(" ").map(word => /^\d+$/.test(word) ? word : capitalize(word)).join(" ");
+}
+
+
+function getEncounterMethodLabel(methodName) {
+    const labels = {
+        walk: "Walking", surf: "Surfing", "old-rod": "Old Rod", "good-rod": "Good Rod",
+        "super-rod": "Super Rod", "rock-smash": "Rock Smash", headbutt: "Headbutt",
+        gift: "Gift", "gift-egg": "Gift egg", "only-one": "One-time encounter",
+        pokeflute: "Poké Flute", honey: "Honey", "sos-encounter": "SOS encounter"
+    };
+    return labels[methodName] || capitalize(methodName.replaceAll("-", " "));
+}
+
+
+function formatEncounterDetails(versionDetails) {
+    const summaries = new Set();
+    versionDetails.forEach(version => (version.encounter_details || []).forEach(detail => {
+        const parts = [getEncounterMethodLabel(detail.method?.name || "encounter")];
+        const minLevel = detail.min_level;
+        const maxLevel = detail.max_level;
+        if (minLevel && maxLevel) parts.push(minLevel === maxLevel ? `Lv. ${minLevel}` : `Lv. ${minLevel}–${maxLevel}`);
+        const conditions = (detail.condition_values || []).map(condition => capitalize(condition.name.replace(/^time-/, "").replaceAll("-", " ")));
+        if (conditions.length) parts.push(conditions.join(", "));
+        summaries.add(parts.join(" · "));
+    }));
+    return [...summaries];
+}
+
+
+function getLocationMapUrl(locationName) {
+    const regions = ["kanto", "johto", "hoenn", "sinnoh", "unova", "kalos", "alola", "galar", "hisui", "paldea"];
+    const region = regions.find(name => locationName.startsWith(`${name}-`));
+    if (!region) return "https://www.serebii.net/pokearth/index.shtml";
+
+    const regionlessName = locationName.slice(region.length + 1).replace(/-area(?:-[a-z0-9-]+)?$/i, "");
+    const route = regionlessName.match(/route-(\d+)/i);
+    const pageName = route
+        ? `route${route[1]}`
+        : regionlessName.replace(/-towards-.*/i, "").replace(/-/g, "");
+    return `https://www.serebii.net/pokearth/${region}/${pageName}.shtml`;
+}
+
+
+function renderLocationMap(location) {
+    const map = document.getElementById("pokemonLocationMap");
+    if (!map) return;
+    const locationName = formatEncounterLocation(location.name);
+    const mapUrl = getLocationMapUrl(location.name);
+    map.innerHTML = `
+        <div class="location-map-heading">
+            <div><small>Selected location</small><strong>📍 ${locationName}</strong></div>
+            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer">Open map ↗</a>
+        </div>
+        <iframe src="${mapUrl}" title="Pokémon location map: ${locationName}" loading="lazy" referrerpolicy="no-referrer"></iframe>
+    `;
+}
+
+
+async function renderPokemonLocations(pokemonId, speciesId = pokemonId) {
+    const gameSelect = document.getElementById("pokemonLocationGameSelect");
+    const container = document.getElementById("pokemonLocationsList");
+    if (!gameSelect || !container) return;
+
+    try {
+        const [availableGames, encounters] = await Promise.all([
+            getAvailableGamesForPokemon(speciesId),
+            getPokemonEncounters(pokemonId)
+        ]);
+        if (state.currentPokemon?.id !== pokemonId) return;
+        if (!availableGames.length) {
+            gameSelect.disabled = true;
+            container.innerHTML = `<div class="empty-state">This Pokémon is not listed as available in any supported game.</div>`;
+            return;
+        }
+
+        gameSelect.innerHTML = availableGames.map(game => `<option value="${game.id}">${game.name}</option>`).join("");
+        gameSelect.disabled = false;
+
+        const renderSelectedGame = () => {
+            const game = availableGames.find(item => item.id === gameSelect.value);
+            const versions = new Set(GAME_API_VERSIONS[game?.id] || []);
+            const locations = encounters.map(encounter => ({
+                ...encounter,
+                versionDetails: (encounter.version_details || []).filter(item => versions.has(item.version.name))
+            })).filter(encounter => encounter.versionDetails.length);
+
+            if (!locations.length) {
+                const note = game?.id === "pokemon-go"
+                    ? "PokéAPI does not provide Pokémon GO map encounters. Check wild spawns, eggs, raids, research, and event availability in the game."
+                    : `No wild location entries are listed for ${game?.name} in the data source. Depending on the game, this Pokémon may be obtained through a gift, trade, breeding, or transfer.`;
+                container.innerHTML = `<div class="empty-state location-acquisition-note">${note}</div>`;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="location-results-layout">
+                    <div class="location-results-list" id="pokemonLocationResults"></div>
+                    <section class="location-map-panel" id="pokemonLocationMap"></section>
+                </div>
+            `;
+            const results = document.getElementById("pokemonLocationResults");
+            locations.forEach((location, index) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = `pokemon-location-card${index === 0 ? " active" : ""}`;
+                const methods = formatEncounterDetails(location.versionDetails);
+                button.innerHTML = `
+                    <strong>${formatEncounterLocation(location.location_area.name)}</strong>
+                    <span>${methods.join("<br>") || "Encounter method not specified"}</span>
+                `;
+                button.addEventListener("click", () => {
+                    results.querySelectorAll(".pokemon-location-card").forEach(item => item.classList.toggle("active", item === button));
+                    renderLocationMap(location.location_area);
+                });
+                results.appendChild(button);
+            });
+            renderLocationMap(locations[0].location_area);
+        };
+
+        gameSelect.onchange = renderSelectedGame;
+        renderSelectedGame();
+    } catch (error) {
+        console.warn("Pokemon location load failed", error);
+        gameSelect.disabled = true;
+        container.innerHTML = `<div class="empty-state">Location data could not be loaded.</div>`;
+    }
+}
+
+
+async function renderPokemonGames(
+    pokemonId,
+    speciesId = pokemonId
+) {
+    const container = document.getElementById("pokemonGamesList");
+    if (!container) return;
+    container.innerHTML = `<div class="empty-state">Etsitään pelejä...</div>`;
+
+    const availableGames = await getAvailableGamesForPokemon(speciesId);
+
     container.innerHTML = "";
     if (!availableGames.length) {
         container.innerHTML = `<div class="empty-state">Pokémonille ei löytynyt saatavilla olevia pelejä.</div>`;
         return;
     }
 
-    availableGames.forEach(({ game }) => {
+    availableGames.forEach(game => {
         const caught = isCaught(game.id, speciesId);
         const button = document.createElement("button");
         button.type = "button";
@@ -2453,6 +2674,7 @@ async function renderProfile() {
             <div class="profile-count">${nationalCaught} / ${nationalTotal} Pokémonia (${nationalPercent}%)</div>
         </article>
     `];
+    const gameCardsByGeneration = new Map();
 
     for (const game of GAMES) {
         const lists = await Promise.all(game.dexes.map(id => getDexEntriesById(id).catch(() => [])));
@@ -2470,7 +2692,7 @@ async function renderProfile() {
         const nationalCaughtForGame = countCaught(gameNational);
         const regionalPercent = regionalIds.length ? Math.round(regionalCaught / regionalIds.length * 100) : 0;
         const gameNationalPercent = gameNational.length ? Math.round(nationalCaughtForGame / gameNational.length * 100) : 0;
-        cards.push(`
+        const gameCard = `
             <article class="profile-card profile-game-card" data-profile-game="${game.id}" role="button" tabindex="0" aria-label="Open ${game.name}">
                 <h3>${game.name}</h3>
                 <p>${game.generation}</p>
@@ -2483,9 +2705,28 @@ async function renderProfile() {
                     <div class="profile-progress"><div class="profile-progress-bar" style="width:${gameNationalPercent}%"></div></div>
                 </div>
             </article>
-        `);
+        `;
+        if (!gameCardsByGeneration.has(game.generation)) gameCardsByGeneration.set(game.generation, []);
+        gameCardsByGeneration.get(game.generation).push(gameCard);
     }
-    container.innerHTML = cards.join("");
+    const generationSections = [...gameCardsByGeneration.entries()].map(([generation, generationCards]) => `
+        <section class="profile-generation-group">
+            <button class="profile-generation-toggle" type="button" aria-expanded="false">
+                <span>${generation === "Mobile" ? "Mobile / Special" : generation}</span>
+                <span>${generationCards.length} games <span class="profile-generation-arrow" aria-hidden="true">›</span></span>
+            </button>
+            <div class="profile-generation-cards">${generationCards.join("")}</div>
+        </section>
+    `);
+    container.innerHTML = [...cards, ...generationSections].join("");
+    container.querySelectorAll(".profile-generation-toggle").forEach(button => {
+        button.addEventListener("click", () => {
+            const group = button.closest(".profile-generation-group");
+            const opening = !group.classList.contains("open");
+            group.classList.toggle("open", opening);
+            button.setAttribute("aria-expanded", String(opening));
+        });
+    });
     container.querySelectorAll("[data-profile-game]").forEach(card => {
         const openGameFromProfile = () => openGame(card.dataset.profileGame);
         card.addEventListener("click", openGameFromProfile);

@@ -2002,8 +2002,12 @@ select:focus {
 }
 
 .evolution-transition {
-    width: 116px;
+    width: 92px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1px;
     color: var(--muted);
+    text-align: center;
 }
 
 .evolution-transition > span {
@@ -2012,8 +2016,10 @@ select:focus {
 }
 
 .evolution-transition small {
-    font-size: 10px;
-    line-height: 1.3;
+    max-width: 100%;
+    font-size: 9px;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
 }
 
 .evolution-pokemon {
@@ -2038,6 +2044,311 @@ select:focus {
     width: 68px;
     height: 68px;
     object-fit: contain;
+}
+
+.evolution-transition {
+    max-width: 92px;
+}
+
+.evolution-transition small {
+    color: var(--text);
+}
+
+.game-card-catch-button {
+    position: absolute;
+    z-index: 2;
+    top: 7px;
+    right: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 27px;
+    padding: 4px 8px;
+    border: 1px solid rgba(255, 255, 255, .22);
+    border-radius: 999px;
+    color: #fff;
+    background: rgba(52, 61, 73, .94);
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+}
+
+.game-card-catch-button:hover {
+    border-color: #fff;
+    transform: translateY(-1px);
+}
+
+.game-card-catch-button.caught {
+    color: #062c14;
+    border-color: #79e49b;
+    background: #62d984;
+}
+
+.game-card-catch-button > span:first-child {
+    font-size: 13px;
+}
+
+.profile-generation-group {
+    grid-column: 1 / -1;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: var(--panel);
+}
+
+.profile-generation-toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 14px;
+    border: 0;
+    color: var(--text);
+    background: var(--panel-2);
+    text-align: left;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.profile-generation-toggle > span:last-child {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.profile-generation-arrow {
+    display: inline-block;
+    margin-left: 5px;
+    transition: transform .18s ease;
+}
+
+.profile-generation-group.open .profile-generation-arrow {
+    transform: rotate(90deg);
+}
+
+.profile-generation-cards {
+    display: none;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 9px;
+    padding: 10px;
+}
+
+.profile-generation-group.open .profile-generation-cards {
+    display: grid;
+}
+
+.profile-generation-cards .profile-card {
+    min-width: 0;
+}
+
+.location-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 9px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.location-toolbar select {
+    min-width: min(260px, 70vw);
+}
+
+.location-results-layout {
+    display: grid;
+    grid-template-columns: minmax(190px, .7fr) minmax(0, 1.3fr);
+    gap: 10px;
+    align-items: stretch;
+}
+
+.location-results-list {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    max-height: 390px;
+    overflow: auto;
+}
+
+.pokemon-location-card {
+    display: grid;
+    gap: 4px;
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    color: var(--text);
+    background: var(--panel-2);
+    text-align: left;
+    cursor: pointer;
+}
+
+.pokemon-location-card.active {
+    border-color: var(--accent);
+    box-shadow: inset 3px 0 var(--accent);
+}
+
+.pokemon-location-card strong {
+    font-size: 12px;
+}
+
+.pokemon-location-card span {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.location-map-panel {
+    min-width: 0;
+    min-height: 220px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: var(--panel-2);
+}
+
+.location-map-heading {
+    display: flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.location-map-heading > div {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+
+.location-map-heading small {
+    color: var(--muted);
+    font-size: 9px;
+}
+
+.location-map-heading strong {
+    overflow: hidden;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.location-map-heading a {
+    flex-shrink: 0;
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.location-map-panel iframe {
+    display: block;
+    width: 100%;
+    height: 320px;
+    border: 0;
+    background: #fff;
+}
+
+.location-acquisition-note {
+    padding: 14px;
+    line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+    .location-results-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .location-results-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-height: 160px;
+    }
+
+    .location-map-panel iframe {
+        height: 230px;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 600px) and (max-width: 1100px) {
+    .game-card-catch-button {
+        top: 4px;
+        right: 4px;
+        width: 24px;
+        min-height: 24px;
+        padding: 3px;
+        font-size: 8px;
+    }
+
+    .game-card-catch-button > span:nth-child(2) {
+        display: none;
+    }
+
+    .profile-generation-toggle {
+        padding: 7px 9px;
+        font-size: 11px;
+    }
+
+    .profile-generation-cards {
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+        gap: 6px;
+        padding: 6px;
+    }
+
+    .location-toolbar {
+        margin-bottom: 5px;
+        font-size: 10px;
+    }
+
+    .location-toolbar select {
+        min-width: 0;
+        padding: 5px 7px;
+        font-size: 10px;
+    }
+
+    .location-results-layout {
+        grid-template-columns: minmax(145px, .7fr) minmax(0, 1.3fr);
+        gap: 6px;
+    }
+
+    .location-results-list {
+        max-height: 230px;
+        gap: 4px;
+    }
+
+    .pokemon-location-card {
+        padding: 6px;
+    }
+
+    .pokemon-location-card strong {
+        font-size: 9px;
+    }
+
+    .pokemon-location-card span {
+        font-size: 8px;
+    }
+
+    .location-map-panel {
+        min-height: 170px;
+    }
+
+    .location-map-heading {
+        min-height: 32px;
+        padding: 4px 7px;
+    }
+
+    .location-map-heading strong,
+    .location-map-heading a {
+        font-size: 9px;
+    }
+
+    .location-map-panel iframe {
+        height: 190px;
+    }
 }
 
 .evolution-pokemon span {
