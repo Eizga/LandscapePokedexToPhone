@@ -1,4 +1,5 @@
 const API = "https://pokeapi.co/api/v2";
+const BULBAPEDIA_API = "https://bulbapedia.bulbagarden.net/w/api.php";
 
 const STORAGE_KEY = "pokedexGameCaughtV3";
 const VOICE_SETTINGS_KEY = "pokedexVoiceSettingsV1";
@@ -283,6 +284,16 @@ const GAMES = [
     { id: "pokemon-go", name: "Pokémon GO", generation: "Mobile", dexes: ["national"], nationalLimit: 1025 }
 ];
 
+function formatGenerationName(generation) {
+    const romanToArabic = {
+        I: 1, II: 2, III: 3, IV: 4, V: 5,
+        VI: 6, VII: 7, VIII: 8, IX: 9
+    };
+    const match = /^Generation (I|II|III|IV|V|VI|VII|VIII|IX)$/.exec(generation);
+    if (match) return `Generation ${romanToArabic[match[1]]}`;
+    return generation === "Mobile" ? "Mobile / Special" : generation;
+}
+
 const GAME_API_VERSIONS = {
     red: ["red"], blue: ["blue"], green: ["red", "blue"], yellow: ["yellow"],
     gold: ["gold"], silver: ["silver"], crystal: ["crystal"],
@@ -364,6 +375,12 @@ const state = {
     dexCache: new Map(),
 
     encounterCache: new Map(),
+
+    bulbapediaImageCache: new Map(),
+
+    bulbapediaGameInfoCache: new Map(),
+
+    locationMapRequest: 0,
 
     dexEntriesById: new Map(),
 
@@ -1046,7 +1063,7 @@ async function openGame(gameId) {
 
     document.getElementById("gameDescription")
         .textContent =
-        `Pelikohtainen Pokémon-lista · ${game.generation}`;
+        `Pelikohtainen Pokémon-lista · ${formatGenerationName(game.generation)}`;
 
     renderGameCover(game);
 
@@ -1621,7 +1638,7 @@ async function openPokemon(
         renderEvolutionChain(species),
         renderPokemonGames(pokemon.id, species.id),
         renderPokemonForms(species),
-        renderPokemonLocations(pokemon.id, species.id),
+        renderPokemonLocations(pokemon.id, species.id, species),
         renderPokemonMoves(pokemon)
     ]);
 
@@ -1685,6 +1702,8 @@ function renderSpeciesDescription(species) {
         ? entry.flavor_text.replace(/[\n\f\r]+/g, " ").replace(/\s+/g, " ").trim()
         : "Tästä Pokémonista ei ole lajikuvausta saatavilla.";
     description.dataset.speechLang = entry?.language.name || "en";
+    description.dataset.speechName = species.names?.find(item => item.language.name === entry?.language.name)?.name
+        || capitalize(state.currentPokemon?.name || species.name);
     const speechAvailable = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
     readButton.disabled = !entry || !speechAvailable;
     readButton.title = speechAvailable ? "" : "Text-to-speech is not supported by this browser.";
@@ -1717,7 +1736,22 @@ function toggleSpeciesSpeech() {
 
     stopSpeciesSpeech();
 
-    const utterance = new SpeechSynthesisUtterance(description.textContent);
+    const types = state.currentPokemon?.types?.map(item => item.type.name) || [];
+    const typeNames = description.dataset.speechLang === "fi"
+        ? {
+            bug: "ötökkä", dark: "pimeys", dragon: "lohikäärme", electric: "sähkö",
+            fairy: "keiju", fighting: "taistelu", fire: "tuli", flying: "lento",
+            ghost: "aave", grass: "ruoho", ground: "maa", ice: "jää",
+            normal: "normaali", poison: "myrkky", psychic: "meedio",
+            rock: "kivi", steel: "teräs", water: "vesi"
+        }
+        : {};
+    const spokenTypes = types.map(type => typeNames[type] || capitalize(type));
+    const typeIntroduction = spokenTypes.length
+        ? `${description.dataset.speechLang === "fi" ? (spokenTypes.length > 1 ? "Tyypit: " : "Tyyppi: ") : (spokenTypes.length > 1 ? "Types: " : "Type: ")}${spokenTypes.join(description.dataset.speechLang === "fi" ? " ja " : " and ")}. `
+        : "";
+    const spokenText = `${description.dataset.speechName}. ${typeIntroduction}${description.textContent}`;
+    const utterance = new SpeechSynthesisUtterance(spokenText);
     const voiceSettings = getPokedexVoiceSettings();
     utterance.lang = description.dataset.speechLang === "fi" ? "fi-FI" : "en-US";
     utterance.pitch = voiceSettings.pitch;
@@ -1791,13 +1825,16 @@ function setupPokedexVoiceSettings() {
 }
 
 
-function evolutionMethodText(details) {
+function evolutionMethodText(details, targetSpeciesName = "") {
     if (!details?.length) return "";
     const mossyRockAreas = new Set([
         "moss-rock", "eterna-forest", "pinwheel-forest", "kalos-route-20",
         "petalburg-woods", "lush-jungle", "-tall-grass-moss-rock"
     ]);
-    const icyRockAreas = new Set(["ice-rock", "frost-cavern", "sinnoh-route-217"]);
+    const icyRockAreas = new Set([
+        "ice-rock", "frost-cavern", "sinnoh-route-217", "twist-mountain",
+        "shoal-cave", "mount-lanakila"
+    ]);
     const readable = value => capitalize(value.replaceAll("-", " "));
     const methods = [...new Set(details.map(method => {
         const conditions = [];
@@ -1808,8 +1845,11 @@ function evolutionMethodText(details) {
 
         if (trigger === "level-up") {
             action = method.min_level ? `Level ${method.min_level}` : "Level up";
-            if (location && (mossyRockAreas.has(location) || location.includes("moss-rock"))) action = "Level up near a Mossy Rock";
-            else if (location && (icyRockAreas.has(location) || location.includes("ice-rock"))) action = "Level up near an Icy Rock";
+            if (method.near_special_rock && (targetSpeciesName === "glaceon" || (location && icyRockAreas.has(location)))) {
+                action = "Level up near an Icy Rock";
+            } else if (method.near_special_rock || (location && (mossyRockAreas.has(location) || location.includes("moss-rock")))) {
+                action = "Level up near a Mossy Rock";
+            } else if (location && icyRockAreas.has(location)) action = "Level up near an Icy Rock";
             else if (location) conditions.push(`at ${readable(location)}`);
         } else if (trigger === "trade") {
             action = method.trade_species?.name
@@ -1877,7 +1917,7 @@ function renderEvolutionNode(node, isRoot = true) {
             </button>
             ${children.length ? `<div class="evolution-branches">${children.map(child => `
                 <div class="evolution-branch">
-                    <div class="evolution-transition"><span aria-hidden="true">→</span><small>${evolutionMethodText(child.evolution_details)}</small></div>
+                    <div class="evolution-transition"><span aria-hidden="true">→</span><small>${evolutionMethodText(child.evolution_details, child.species.name)}</small></div>
                     ${renderEvolutionNode(child, false)}
                 </div>
             `).join("")}</div>` : ""}
@@ -2083,17 +2123,163 @@ function formatEncounterDetails(versionDetails) {
 }
 
 
-function getLocationMapUrl(locationName) {
+function getBulbapediaLocationTitle(locationName) {
     const regions = ["kanto", "johto", "hoenn", "sinnoh", "unova", "kalos", "alola", "galar", "hisui", "paldea"];
     const region = regions.find(name => locationName.startsWith(`${name}-`));
-    if (!region) return "https://www.serebii.net/pokearth/index.shtml";
+    let place = region ? locationName.slice(region.length + 1) : locationName;
+    place = place
+        .replace(/-area(?:-[a-z0-9-]+)?$/i, "")
+        .replace(/-(?:north|south)-towards-.+$/i, "")
+        .replace(/-towards-.+$/i, "");
 
-    const regionlessName = locationName.slice(region.length + 1).replace(/-area(?:-[a-z0-9-]+)?$/i, "");
-    const route = regionlessName.match(/route-(\d+)/i);
-    const pageName = route
-        ? `route${route[1]}`
-        : regionlessName.replace(/-towards-.*/i, "").replace(/-/g, "");
-    return `https://www.serebii.net/pokearth/${region}/${pageName}.shtml`;
+    const route = place.match(/(?:^|-)route-(\d+)(?:-|$)/i);
+    if (route && region) return `${capitalize(region)} Route ${route[1]}`;
+
+    const specialTitles = {
+        "area-zero": "Area Zero",
+        "crown-tundra": "The Crown Tundra",
+        "isle-of-armor": "The Isle of Armor",
+        "mt-moon": "Mt. Moon",
+        "mt-coronet": "Mt. Coronet",
+        "mt-lanakila": "Mount Lanakila"
+    };
+    if (specialTitles[place]) return specialTitles[place];
+    return place.split("-").map(word => /^\d+$/.test(word) ? word : capitalize(word)).join(" ");
+}
+
+
+async function fetchBulbapediaApi(parameters) {
+    const url = new URL(BULBAPEDIA_API);
+    Object.entries({ ...parameters, format: "json", origin: "*" }).forEach(([key, value]) => {
+        url.searchParams.set(key, value);
+    });
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Bulbapedia API error ${response.status}`);
+    return response.json();
+}
+
+
+async function getBulbapediaMapImage(locationName) {
+    const title = getBulbapediaLocationTitle(locationName);
+    const key = title.toLowerCase();
+    if (!state.bulbapediaImageCache.has(key)) {
+        const request = fetchBulbapediaApi({
+            action: "query",
+            prop: "pageimages",
+            piprop: "thumbnail",
+            pithumbsize: "1200",
+            redirects: "1",
+            titles: title
+        }).then(data => {
+            const pages = Object.values(data.query?.pages || {});
+            return pages.find(page => page.thumbnail?.source)?.thumbnail.source || null;
+        }).catch(error => {
+            state.bulbapediaImageCache.delete(key);
+            throw error;
+        });
+        state.bulbapediaImageCache.set(key, request);
+    }
+    return state.bulbapediaImageCache.get(key);
+}
+
+
+function bulbapediaSpeciesPageTitle(species) {
+    const englishName = species.names?.find(item => item.language.name === "en")?.name
+        || species.name.split("-").map(capitalize).join(" ");
+    return `${englishName} (Pokémon)`;
+}
+
+
+function normalizedWikiText(value) {
+    return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, " ");
+}
+
+
+function isBulbapediaGameMentioned(rowText, game) {
+    const text = ` ${normalizedWikiText(rowText)} `;
+    const title = game.name.replace(/^Pokémon\s+/i, "");
+    const aliases = {
+        black2: ["black 2"], white2: ["white 2"],
+        brilliantdiamond: ["brilliant diamond"], shiningpearl: ["shining pearl"],
+        letsgopikachu: ["lets go pikachu"], letsgoeevee: ["lets go eevee"],
+        legendsarceus: ["legends arceus"], legendsza: ["legends z a"],
+        omegaruby: ["omega ruby"], alphasapphire: ["alpha sapphire"],
+        ultrasun: ["ultra sun"], ultramoon: ["ultra moon"]
+    };
+    const options = aliases[game.id] || [title];
+    if (game.id === "diamond" && /brilliant diamond/.test(text)) return false;
+    if (game.id === "pearl" && /shining pearl/.test(text)) return false;
+    if (game.id === "black" && /black 2/.test(text)) return false;
+    if (game.id === "white" && /white 2/.test(text)) return false;
+    return options.some(option => text.includes(` ${normalizedWikiText(option)} `));
+}
+
+
+function extractBulbapediaGameLocation(html, game) {
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    const headings = [...parsed.querySelectorAll("h2, h3, h4")];
+    const heading = headings.find(item => normalizedWikiText(item.textContent).replace(/ edit$/, "") === "game locations");
+    if (!heading) return "";
+
+    const headingLevel = Number(heading.tagName.slice(1));
+    let cursor = heading.closest(".mw-heading") || heading;
+    const tables = [];
+    while ((cursor = cursor.nextElementSibling)) {
+        const nextHeading = cursor.matches(".mw-heading")
+            ? cursor.querySelector("h2, h3, h4, h5, h6")
+            : cursor.matches("h2, h3, h4, h5, h6") ? cursor : null;
+        if (nextHeading && Number(nextHeading.tagName.slice(1)) <= headingLevel) break;
+        if (cursor.matches("table")) tables.push(cursor);
+        tables.push(...cursor.querySelectorAll("table"));
+    }
+
+    const locationDetails = new Set();
+    for (const table of tables) {
+        const headerCells = [...(table.querySelector("tr")?.children || [])];
+        const gameColumn = headerCells.findIndex(cell => /^(game|games|version|versions)$/i.test(cell.textContent.trim()));
+        let currentGameText = "";
+        for (const row of table.querySelectorAll("tr")) {
+            const cells = [...row.children].filter(cell => /^(TD|TH)$/.test(cell.tagName));
+            if (!cells.length) continue;
+            const rowText = row.textContent.replace(/\s+/g, " ").trim();
+            const gameCellText = gameColumn >= 0 ? cells[gameColumn]?.textContent.trim() : "";
+            if (gameCellText) currentGameText = gameCellText;
+            const gameContext = gameCellText || currentGameText;
+            if (!isBulbapediaGameMentioned(gameContext, game) && !isBulbapediaGameMentioned(rowText, game)) continue;
+            const detail = cells
+                .filter((cell, index) => index !== gameColumn && !isBulbapediaGameMentioned(cell.textContent, game))
+                .map(cell => cell.textContent.replace(/\s+/g, " ").trim())
+                .filter(Boolean)
+                .join(" · ");
+            if (detail) locationDetails.add(detail);
+            else if (rowText) locationDetails.add(rowText);
+        }
+    }
+    return [...locationDetails].join(" · ");
+}
+
+
+async function getBulbapediaGameLocationInfo(species, game) {
+    const key = String(species.id);
+    if (!state.bulbapediaGameInfoCache.has(key)) {
+        if (state.bulbapediaGameInfoCache.size >= 24) {
+            state.bulbapediaGameInfoCache.delete(state.bulbapediaGameInfoCache.keys().next().value);
+        }
+        const request = fetchBulbapediaApi({
+            action: "parse",
+            page: bulbapediaSpeciesPageTitle(species),
+            prop: "text"
+        }).then(data => {
+            const rawText = data.parse?.text;
+            return typeof rawText === "string" ? rawText : rawText?.["*"] || "";
+        }).catch(error => {
+            state.bulbapediaGameInfoCache.delete(key);
+            throw error;
+        });
+        state.bulbapediaGameInfoCache.set(key, request);
+    }
+    const html = await state.bulbapediaGameInfoCache.get(key);
+    return extractBulbapediaGameLocation(html, game);
 }
 
 
@@ -2101,28 +2287,54 @@ function renderLocationMap(location) {
     const map = document.getElementById("pokemonLocationMap");
     if (!map) return;
     const locationName = formatEncounterLocation(location.name);
-    const mapUrl = getLocationMapUrl(location.name);
+    const requestId = ++state.locationMapRequest;
     map.innerHTML = `
         <div class="location-map-heading">
             <div><small>Selected location</small><strong>📍 ${locationName}</strong></div>
-            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer">Open map ↗</a>
         </div>
-        <iframe src="${mapUrl}" title="Pokémon location map: ${locationName}" loading="lazy" referrerpolicy="no-referrer"></iframe>
+        <div class="location-map-image-wrap" aria-live="polite">
+            <div class="location-map-placeholder">Loading map image...</div>
+        </div>
     `;
+    getBulbapediaMapImage(location.name).then(imageUrl => {
+        if (requestId !== state.locationMapRequest || !map.isConnected) return;
+        const imageWrap = map.querySelector(".location-map-image-wrap");
+        if (!imageUrl) {
+            imageWrap.innerHTML = `<div class="location-map-placeholder">No map image is available for this area.</div>`;
+            return;
+        }
+        const image = document.createElement("img");
+        image.className = "location-map-image";
+        image.src = imageUrl;
+        image.alt = `Map showing ${locationName}`;
+        image.loading = "lazy";
+        image.addEventListener("error", () => {
+            if (requestId === state.locationMapRequest && imageWrap.isConnected) {
+                imageWrap.innerHTML = `<div class="location-map-placeholder">The map image could not be loaded.</div>`;
+            }
+        }, { once: true });
+        imageWrap.replaceChildren(image);
+    }).catch(error => {
+        console.warn("Bulbapedia map image lookup failed", error);
+        if (requestId === state.locationMapRequest && map.isConnected) {
+            map.querySelector(".location-map-image-wrap").innerHTML = `<div class="location-map-placeholder">Map image is unavailable right now.</div>`;
+        }
+    });
 }
 
 
-async function renderPokemonLocations(pokemonId, speciesId = pokemonId) {
+async function renderPokemonLocations(pokemonId, speciesId = pokemonId, species = null) {
     const gameSelect = document.getElementById("pokemonLocationGameSelect");
     const container = document.getElementById("pokemonLocationsList");
     if (!gameSelect || !container) return;
 
     try {
-        const [availableGames, encounters] = await Promise.all([
+        const [games, encounters] = await Promise.all([
             getAvailableGamesForPokemon(speciesId),
             getPokemonEncounters(pokemonId)
         ]);
         if (state.currentPokemon?.id !== pokemonId) return;
+        const availableGames = games.filter(game => game.id !== "pokemon-go");
         if (!availableGames.length) {
             gameSelect.disabled = true;
             container.innerHTML = `<div class="empty-state">This Pokémon is not listed as available in any supported game.</div>`;
@@ -2141,10 +2353,23 @@ async function renderPokemonLocations(pokemonId, speciesId = pokemonId) {
             })).filter(encounter => encounter.versionDetails.length);
 
             if (!locations.length) {
-                const note = game?.id === "pokemon-go"
-                    ? "PokéAPI does not provide Pokémon GO map encounters. Check wild spawns, eggs, raids, research, and event availability in the game."
-                    : `No wild location entries are listed for ${game?.name} in the data source. Depending on the game, this Pokémon may be obtained through a gift, trade, breeding, or transfer.`;
-                container.innerHTML = `<div class="empty-state location-acquisition-note">${note}</div>`;
+                container.innerHTML = `
+                    <div class="location-acquisition-note">
+                        <strong>Checking game availability details…</strong>
+                        <p id="pokemonAcquisitionDetails">Looking for a specific in-game location, gift, or trade method.</p>
+                    </div>
+                `;
+                getBulbapediaGameLocationInfo(species, game).then(details => {
+                    if (state.currentPokemon?.id !== pokemonId || gameSelect.value !== game.id) return;
+                    const detailText = details || `No wild encounter is listed by PokéAPI, and no matching Game Locations entry was found for ${game.name}.`;
+                    const detailsElement = document.getElementById("pokemonAcquisitionDetails");
+                    if (detailsElement) detailsElement.textContent = detailText;
+                }).catch(error => {
+                    console.warn("Bulbapedia game location lookup failed", error);
+                    if (state.currentPokemon?.id !== pokemonId || gameSelect.value !== game.id) return;
+                    const detailsElement = document.getElementById("pokemonAcquisitionDetails");
+                    if (detailsElement) detailsElement.textContent = "No wild encounter is listed by PokéAPI. Detailed gift, trade, or event data could not be loaded.";
+                });
                 return;
             }
 
@@ -2695,7 +2920,7 @@ async function renderProfile() {
         const gameCard = `
             <article class="profile-card profile-game-card" data-profile-game="${game.id}" role="button" tabindex="0" aria-label="Open ${game.name}">
                 <h3>${game.name}</h3>
-                <p>${game.generation}</p>
+                <p>${formatGenerationName(game.generation)}</p>
                 <div class="profile-dex-progress">
                     <div class="profile-dex-heading"><strong>Regional</strong><span>${regionalCaught} / ${regionalIds.length} (${regionalPercent}%)</span></div>
                     <div class="profile-progress"><div class="profile-progress-bar" style="width:${regionalPercent}%"></div></div>
@@ -2712,7 +2937,7 @@ async function renderProfile() {
     const generationSections = [...gameCardsByGeneration.entries()].map(([generation, generationCards]) => `
         <section class="profile-generation-group">
             <button class="profile-generation-toggle" type="button" aria-expanded="false">
-                <span>${generation === "Mobile" ? "Mobile / Special" : generation}</span>
+                <span>${formatGenerationName(generation)}</span>
                 <span>${generationCards.length} games <span class="profile-generation-arrow" aria-hidden="true">›</span></span>
             </button>
             <div class="profile-generation-cards">${generationCards.join("")}</div>
@@ -2777,7 +3002,7 @@ function renderSidebarLists() {
     gamesSubmenu.innerHTML = [...groups.entries()].map(([generation, games]) => `
         <section class="generation-group">
             <button class="generation-toggle" type="button" aria-expanded="false">
-                <span>${generation === "Mobile" ? "Mobile / Special" : generation}</span>
+                <span>${formatGenerationName(generation)}</span>
                 <span class="generation-arrow" aria-hidden="true">›</span>
             </button>
             <div class="generation-games">

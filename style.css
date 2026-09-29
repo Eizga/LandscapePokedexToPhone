@@ -2239,24 +2239,45 @@ select:focus {
     white-space: nowrap;
 }
 
-.location-map-heading a {
-    flex-shrink: 0;
-    color: var(--accent);
-    font-size: 10px;
-    font-weight: 700;
+.location-map-image-wrap {
+    display: flex;
+    min-height: 180px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: #171c24;
 }
 
-.location-map-panel iframe {
+.location-map-image {
     display: block;
     width: 100%;
-    height: 320px;
-    border: 0;
-    background: #fff;
+    max-height: 340px;
+    object-fit: contain;
+}
+
+.location-map-placeholder {
+    display: grid;
+    min-height: 120px;
+    place-items: center;
+    padding: 12px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 11px;
 }
 
 .location-acquisition-note {
     padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: var(--panel-2);
     line-height: 1.5;
+}
+
+.location-acquisition-note p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 12px;
 }
 
 @media (max-width: 700px) {
@@ -2269,8 +2290,12 @@ select:focus {
         max-height: 160px;
     }
 
-    .location-map-panel iframe {
-        height: 230px;
+    .location-map-image-wrap {
+        min-height: 140px;
+    }
+
+    .location-map-image {
+        max-height: 230px;
     }
 }
 
@@ -2341,13 +2366,16 @@ select:focus {
         padding: 4px 7px;
     }
 
-    .location-map-heading strong,
-    .location-map-heading a {
+    .location-map-heading strong {
         font-size: 9px;
     }
 
-    .location-map-panel iframe {
-        height: 190px;
+    .location-map-image-wrap {
+        min-height: 150px;
+    }
+
+    .location-map-image {
+        max-height: 190px;
     }
 }
 
