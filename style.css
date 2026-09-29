@@ -446,7 +446,8 @@ button {
 
 
 .submenu-button,
-.game-button {
+.game-button,
+.generation-toggle {
     width: 100%;
 
     border: none;
@@ -465,7 +466,8 @@ button {
 
 
 .submenu-button:hover,
-.game-button:hover {
+.game-button:hover,
+.generation-toggle:hover {
     background: var(--panel-2);
     color: var(--text);
 }
@@ -502,9 +504,34 @@ button {
     padding: 14px 12px 5px;
 }
 
+.generation-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font: inherit;
+}
+
+.generation-arrow {
+    transition: transform .16s ease;
+}
+
+.generation-group.open .generation-arrow {
+    transform: rotate(90deg);
+}
+
+.generation-games {
+    display: none;
+    padding-left: 6px;
+}
+
+.generation-group.open .generation-games {
+    display: block;
+}
+
 
 .game-button {
-    padding-left: 20px;
+    padding-left: 12px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -1366,10 +1393,67 @@ select:focus {
 }
 
 
-.type-selector-box label {
+.type-selector-label {
     color: var(--muted);
 
     font-size: 12px;
+}
+
+.type-choice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
+    gap: 5px;
+}
+
+.type-choice-button {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 5px 2px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--panel-2);
+    color: var(--text);
+    font-size: 9px;
+    line-height: 1.1;
+    cursor: pointer;
+}
+
+.type-choice-button:hover {
+    border-color: var(--type-color, #aab0ba);
+}
+
+.type-choice-button.active {
+    border-color: var(--type-color, #e53935);
+    box-shadow: 0 0 0 1px var(--type-color, #e53935);
+    background: rgba(229, 57, 53, .12);
+}
+
+.type-choice-icon {
+    display: grid;
+    width: 22px;
+    height: 22px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--type-color, #6b7280);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .45);
+}
+
+.type-choice-none .type-choice-icon {
+    background: #626a76;
+}
+
+.type-choice-button:focus-visible,
+.generation-toggle:focus-visible,
+.profile-game-card:focus-visible {
+    outline: 2px solid #64c9f0;
+    outline-offset: 2px;
 }
 
 
@@ -1461,6 +1545,19 @@ select:focus {
     border-radius: 15px;
 
     padding: 16px;
+}
+
+.profile-game-card {
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    transition: transform .15s ease, border-color .15s ease, background-color .15s ease;
+}
+
+.profile-game-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(229, 57, 53, .6);
+    background-color: var(--panel-2);
 }
 
 
@@ -1848,6 +1945,30 @@ select:focus {
 .pokemon-matchup-row > strong {
     color: var(--muted);
     font-size: 13px;
+}
+
+.pokemon-attack-type {
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, .08);
+}
+
+.pokemon-attack-heading {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 7px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.pokemon-attack-type .pokemon-matchups {
+    gap: 5px;
+}
+
+.pokemon-attack-type .pokemon-matchup-row {
+    padding: 6px 8px;
 }
 
 .matchup-section h3 {
@@ -2278,7 +2399,8 @@ select:focus {
     }
 
     .submenu-button,
-    .game-button {
+    .game-button,
+    .generation-toggle {
         padding: 5px 8px;
         font-size: 11px;
     }
@@ -2482,6 +2604,19 @@ select:focus {
     .pokemon-matchup-row > strong,
     .pokemon-matchup-row > span {
         font-size: 9px;
+    }
+
+    .pokemon-attack-type {
+        padding: 5px;
+    }
+
+    .pokemon-attack-heading {
+        margin-bottom: 4px;
+        font-size: 9px;
+    }
+
+    .pokemon-attack-type .pokemon-matchup-row {
+        padding: 4px;
     }
 
     .game-list {
@@ -2688,13 +2823,24 @@ select:focus {
         margin-bottom: 9px;
     }
 
-    .type-selector-box label {
+    .type-selector-label {
         font-size: 9px;
     }
 
-    .type-selector-box select {
-        padding: 6px;
-        font-size: 10px;
+    .type-choice-grid {
+        gap: 3px;
+    }
+
+    .type-choice-button {
+        gap: 2px;
+        padding: 3px 1px;
+        font-size: 8px;
+    }
+
+    .type-choice-icon {
+        width: 18px;
+        height: 18px;
+        font-size: 9px;
     }
 
     .type-matchup {

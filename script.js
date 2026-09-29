@@ -318,6 +318,8 @@ const state = {
 
     currentGame: null,
 
+    typeSelection: { type1: "", type2: "" },
+
     currentGameDex: "regional",
 
     gamePage: 0,
@@ -982,6 +984,13 @@ async function openGame(gameId) {
         "gamesMenuButton",
         `.game-button[data-game="${gameId}"]`
     );
+
+    const selectedGameButton = document.querySelector(`.game-button[data-game="${gameId}"]`);
+    const generationGroup = selectedGameButton?.closest(".generation-group");
+    const gamesSection = document.getElementById("gamesSubmenu")?.closest(".nav-section");
+    gamesSection?.classList.add("open");
+    generationGroup?.classList.add("open");
+    generationGroup?.querySelector(".generation-toggle")?.setAttribute("aria-expanded", "true");
 
     state.currentGame = game;
 
@@ -1835,16 +1844,19 @@ function renderPokemonMatchups(pokemon) {
     });
     document.getElementById("pokemonDefenses").innerHTML = matchupRows(defenses);
 
-    const attacks = { "×4": [], "×2": [] };
-    TYPES.forEach(defendingType => {
-        const usefulAttacks = defenseTypes
-            .filter(attackingType => getEffectiveness(attackingType, defendingType) > 1);
-        if (!usefulAttacks.length) return;
-        const multiplier = Math.max(...usefulAttacks.map(type => getEffectiveness(type, defendingType)));
-        const label = getMultiplierLabel(multiplier);
-        if (attacks[label]) attacks[label].push(defendingType);
-    });
-    document.getElementById("pokemonAttacks").innerHTML = matchupRows(attacks);
+    document.getElementById("pokemonAttacks").innerHTML = defenseTypes.map(attackingType => {
+        const attacks = { "×4": [], "×2": [], "×1": [], "×½": [], "×¼": [], "×0": [] };
+        TYPES.forEach(defendingType => {
+            const label = getMultiplierLabel(getEffectiveness(attackingType, defendingType));
+            attacks[label]?.push(defendingType);
+        });
+        return `
+            <div class="pokemon-attack-type">
+                <div class="pokemon-attack-heading">${getTypeBadge(attackingType)} <span>moves</span></div>
+                ${matchupRows(attacks)}
+            </div>
+        `;
+    }).join("");
 }
 
 
@@ -2087,46 +2099,41 @@ async function searchPokemon(
 ========================================================= */
 
 function setupTypeSelectors() {
-
-    const select1 =
-        document.getElementById(
-            "type1Select"
-        );
-
-    const select2 =
-        document.getElementById(
-            "type2Select"
-        );
+    renderTypeSelector("type1");
+    renderTypeSelector("type2");
+    renderTypeMatchup();
+}
 
 
-    select1.innerHTML =
-        `<option value="">Ei valintaa</option>` +
-        TYPES.map(type =>
-            `<option value="${type}">
-                ${capitalize(type)}
-            </option>`
-        ).join("");
+function renderTypeSelector(slot) {
+    const container = document.getElementById(`${slot}Choices`);
+    if (!container) return;
 
+    const selectedType = state.typeSelection[slot];
+    const buttons = [
+        `<button class="type-choice-button type-choice-none${selectedType ? "" : " active"}" type="button" data-type="" aria-pressed="${!selectedType}"><span class="type-choice-icon">×</span><span>None</span></button>`,
+        ...TYPES.map(type => `
+            <button class="type-choice-button${selectedType === type ? " active" : ""}" type="button" data-type="${type}" style="--type-color:${TYPE_COLORS[type]}" aria-pressed="${selectedType === type}" aria-label="${capitalize(type)}">
+                <span class="type-choice-icon">${capitalize(type).charAt(0)}</span>
+                <span>${capitalize(type)}</span>
+            </button>
+        `)
+    ];
+    container.innerHTML = buttons.join("");
 
-    select2.innerHTML =
-        `<option value="">Ei valintaa</option>` +
-        TYPES.map(type =>
-            `<option value="${type}">
-                ${capitalize(type)}
-            </option>`
-        ).join("");
-
-
-    select1.addEventListener(
-        "change",
-        renderTypeMatchup
-    );
-
-    select2.addEventListener(
-        "change",
-        renderTypeMatchup
-    );
-
+    container.querySelectorAll(".type-choice-button").forEach(button => {
+        button.addEventListener("click", () => {
+            const chosenType = button.dataset.type;
+            const otherSlot = slot === "type1" ? "type2" : "type1";
+            state.typeSelection[slot] = chosenType === selectedType ? "" : chosenType;
+            if (chosenType && state.typeSelection[otherSlot] === chosenType) {
+                state.typeSelection[otherSlot] = "";
+            }
+            renderTypeSelector("type1");
+            renderTypeSelector("type2");
+            renderTypeMatchup();
+        });
+    });
 }
 
 
@@ -2183,16 +2190,7 @@ function getMultiplierLabel(
 
 
 function renderTypeMatchup() {
-
-    const type1 =
-        document.getElementById(
-            "type1Select"
-        ).value;
-
-    const type2 =
-        document.getElementById(
-            "type2Select"
-        ).value;
+    const { type1, type2 } = state.typeSelection;
 
 
     const container =
@@ -2473,7 +2471,7 @@ async function renderProfile() {
         const regionalPercent = regionalIds.length ? Math.round(regionalCaught / regionalIds.length * 100) : 0;
         const gameNationalPercent = gameNational.length ? Math.round(nationalCaughtForGame / gameNational.length * 100) : 0;
         cards.push(`
-            <article class="profile-card">
+            <article class="profile-card profile-game-card" data-profile-game="${game.id}" role="button" tabindex="0" aria-label="Open ${game.name}">
                 <h3>${game.name}</h3>
                 <p>${game.generation}</p>
                 <div class="profile-dex-progress">
@@ -2488,6 +2486,15 @@ async function renderProfile() {
         `);
     }
     container.innerHTML = cards.join("");
+    container.querySelectorAll("[data-profile-game]").forEach(card => {
+        const openGameFromProfile = () => openGame(card.dataset.profileGame);
+        card.addEventListener("click", openGameFromProfile);
+        card.addEventListener("keydown", event => {
+            if (event.key !== "Enter" && event.key !== " ") return;
+            event.preventDefault();
+            openGameFromProfile();
+        });
+    });
 }
 
 
@@ -2527,14 +2534,30 @@ function renderSidebarLists() {
         groups.get(game.generation).push(game);
     });
     gamesSubmenu.innerHTML = [...groups.entries()].map(([generation, games]) => `
-        <div class="generation-title">${generation === "Mobile" ? "Muut" : generation}</div>
-        ${games.map(game => `<button class="game-button" data-game="${game.id}">${game.name.replace(/^Pokémon\s+/, "")}</button>`).join("")}
+        <section class="generation-group">
+            <button class="generation-toggle" type="button" aria-expanded="false">
+                <span>${generation === "Mobile" ? "Mobile / Special" : generation}</span>
+                <span class="generation-arrow" aria-hidden="true">›</span>
+            </button>
+            <div class="generation-games">
+                ${games.map(game => `<button class="game-button" data-game="${game.id}">${game.name.replace(/^Pokémon\s+/, "")}</button>`).join("")}
+            </div>
+        </section>
     `).join("");
 }
 
 function setupSidebar() {
 
     renderSidebarLists();
+
+    document.querySelectorAll(".generation-toggle").forEach(button => {
+        button.addEventListener("click", () => {
+            const group = button.closest(".generation-group");
+            const opening = !group.classList.contains("open");
+            group.classList.toggle("open", opening);
+            button.setAttribute("aria-expanded", String(opening));
+        });
+    });
 
     const sidebar =
         document.getElementById(
