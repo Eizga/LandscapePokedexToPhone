@@ -324,6 +324,23 @@
 
                 <h2>Settings</h2>
 
+                <div class="setting-row voice-setting-row">
+                    <div>
+                        <strong>Pokédex voice</strong>
+                        <p>Adjust pitch and reading speed for spoken Pokémon descriptions.</p>
+                    </div>
+                    <div class="voice-settings-controls">
+                        <label class="voice-control" for="voicePitch">
+                            <span>Pitch <output id="voicePitchValue">1.0</output></span>
+                            <input id="voicePitch" type="range" min="0.5" max="2" step="0.1" value="1" aria-label="Voice pitch">
+                        </label>
+                        <label class="voice-control" for="voiceRate">
+                            <span>Reading speed <output id="voiceRateValue">1.0×</output></span>
+                            <input id="voiceRate" type="range" min="0.5" max="2" step="0.1" value="1" aria-label="Voice reading speed">
+                        </label>
+                    </div>
+                </div>
+
                 <div class="setting-row">
                     <div>
                         <strong>Tyhjennä yhden pelin tiedot</strong>

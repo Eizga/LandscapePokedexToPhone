@@ -1,6 +1,7 @@
 const API = "https://pokeapi.co/api/v2";
 
 const STORAGE_KEY = "pokedexGameCaughtV3";
+const VOICE_SETTINGS_KEY = "pokedexVoiceSettingsV1";
 
 const POKEMON_PAGE_SIZE = 60;
 
@@ -690,6 +691,8 @@ function getCardTypeStyle(pokemon) {
 
 function showView(viewId) {
 
+    if (viewId !== "pokemonView") stopSpeciesSpeech();
+
     document.querySelectorAll(".view")
         .forEach(view => {
 
@@ -1339,6 +1342,8 @@ async function openPokemon(
     gameId = null
 ) {
 
+    stopSpeciesSpeech();
+
     const pokemon =
         await getPokemon(
             pokemonId
@@ -1443,7 +1448,10 @@ async function openPokemon(
                     <div class="detail-tab-content active" data-detail-content="overview">
                         <div class="pokemon-summary-grid">
                             <section class="pokemon-summary-card">
-                                <h3>Species</h3>
+                                <div class="species-heading">
+                                    <h3>Species</h3>
+                                    <button id="readSpeciesButton" class="species-speak-button" type="button" aria-label="Read species description aloud" aria-pressed="false" disabled>🔊 Listen</button>
+                                </div>
                                 <p id="speciesDescription">Loading species description...</p>
                             </section>
                             <section class="pokemon-summary-card">
@@ -1521,6 +1529,7 @@ async function openPokemon(
 
     setupDetailTabs();
     state.moveSort = "name";
+    document.getElementById("readSpeciesButton").addEventListener("click", toggleSpeciesSpeech);
     document.getElementById("moveSort").addEventListener("change", async event => {
         const selectedSort = event.target.value;
         state.moveSort = selectedSort;
@@ -1601,9 +1610,110 @@ function renderSpeciesDescription(species) {
     const description = document.getElementById("speciesDescription");
     const entry = species.flavor_text_entries.find(item => item.language.name === "fi")
         || species.flavor_text_entries.find(item => item.language.name === "en");
+    const readButton = document.getElementById("readSpeciesButton");
     description.textContent = entry
         ? entry.flavor_text.replace(/[\n\f\r]+/g, " ").replace(/\s+/g, " ").trim()
         : "Tästä Pokémonista ei ole lajikuvausta saatavilla.";
+    description.dataset.speechLang = entry?.language.name || "en";
+    const speechAvailable = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+    readButton.disabled = !entry || !speechAvailable;
+    readButton.title = speechAvailable ? "" : "Text-to-speech is not supported by this browser.";
+}
+
+
+let activeSpeciesSpeech = null;
+
+function stopSpeciesSpeech() {
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+
+    if (activeSpeciesSpeech?.button.isConnected) {
+        activeSpeciesSpeech.button.textContent = "🔊 Listen";
+        activeSpeciesSpeech.button.setAttribute("aria-pressed", "false");
+    }
+
+    activeSpeciesSpeech = null;
+}
+
+
+function toggleSpeciesSpeech() {
+    const button = document.getElementById("readSpeciesButton");
+    const description = document.getElementById("speciesDescription");
+    if (!button || !description || button.disabled) return;
+
+    if (activeSpeciesSpeech?.button === button) {
+        stopSpeciesSpeech();
+        return;
+    }
+
+    stopSpeciesSpeech();
+
+    const utterance = new SpeechSynthesisUtterance(description.textContent);
+    const voiceSettings = getPokedexVoiceSettings();
+    utterance.lang = description.dataset.speechLang === "fi" ? "fi-FI" : "en-US";
+    utterance.pitch = voiceSettings.pitch;
+    utterance.rate = voiceSettings.rate;
+
+    activeSpeciesSpeech = { button, utterance };
+    button.textContent = "■ Stop";
+    button.setAttribute("aria-pressed", "true");
+
+    const resetButton = () => {
+        if (activeSpeciesSpeech?.utterance !== utterance) return;
+        activeSpeciesSpeech = null;
+        if (!button.isConnected) return;
+        button.textContent = "🔊 Listen";
+        button.setAttribute("aria-pressed", "false");
+    };
+
+    utterance.onend = resetButton;
+    utterance.onerror = resetButton;
+    window.speechSynthesis.speak(utterance);
+}
+
+
+function getPokedexVoiceSettings() {
+    const defaults = { pitch: 1, rate: 1 };
+    try {
+        const saved = JSON.parse(localStorage.getItem(VOICE_SETTINGS_KEY)) || {};
+        const clamp = value => Math.min(2, Math.max(0.5, Number(value) || 1));
+        return {
+            pitch: clamp(saved.pitch ?? defaults.pitch),
+            rate: clamp(saved.rate ?? defaults.rate)
+        };
+    } catch {
+        return defaults;
+    }
+}
+
+
+function setupPokedexVoiceSettings() {
+    const pitchInput = document.getElementById("voicePitch");
+    const rateInput = document.getElementById("voiceRate");
+    const pitchOutput = document.getElementById("voicePitchValue");
+    const rateOutput = document.getElementById("voiceRateValue");
+    if (!pitchInput || !rateInput) return;
+
+    const settings = getPokedexVoiceSettings();
+    pitchInput.value = settings.pitch;
+    rateInput.value = settings.rate;
+
+    const updateSettings = () => {
+        const nextSettings = {
+            pitch: Number(pitchInput.value),
+            rate: Number(rateInput.value)
+        };
+        pitchOutput.textContent = nextSettings.pitch.toFixed(1);
+        rateOutput.textContent = `${nextSettings.rate.toFixed(1)}×`;
+        try {
+            localStorage.setItem(VOICE_SETTINGS_KEY, JSON.stringify(nextSettings));
+        } catch (error) {
+            console.warn("Could not save voice settings", error);
+        }
+    };
+
+    pitchInput.addEventListener("input", updateSettings);
+    rateInput.addEventListener("input", updateSettings);
+    updateSettings();
 }
 
 
@@ -2720,6 +2830,7 @@ function loadMoreMoves() {
 function setupEvents() {
 
     setupInfiniteScroll();
+    setupPokedexVoiceSettings();
 
     const clearGameSelect = document.getElementById("clearGameSelect");
     clearGameSelect.innerHTML = GAMES.map(game => `<option value="${game.id}">${game.name}</option>`).join("");
