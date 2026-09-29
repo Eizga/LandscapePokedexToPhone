@@ -1675,10 +1675,14 @@ function getPokedexVoiceSettings() {
     const defaults = { pitch: 1, rate: 1 };
     try {
         const saved = JSON.parse(localStorage.getItem(VOICE_SETTINGS_KEY)) || {};
-        const clamp = value => Math.min(2, Math.max(0.5, Number(value) || 1));
+        const clamp = (value, minimum) => {
+            const numericValue = Number(value);
+            const validValue = Number.isFinite(numericValue) ? numericValue : 1;
+            return Math.min(2, Math.max(minimum, validValue));
+        };
         return {
-            pitch: clamp(saved.pitch ?? defaults.pitch),
-            rate: clamp(saved.rate ?? defaults.rate)
+            pitch: clamp(saved.pitch ?? defaults.pitch, 0),
+            rate: clamp(saved.rate ?? defaults.rate, 0.5)
         };
     } catch {
         return defaults;
@@ -1702,7 +1706,7 @@ function setupPokedexVoiceSettings() {
             pitch: Number(pitchInput.value),
             rate: Number(rateInput.value)
         };
-        pitchOutput.textContent = nextSettings.pitch.toFixed(1);
+        pitchOutput.textContent = nextSettings.pitch.toFixed(2);
         rateOutput.textContent = `${nextSettings.rate.toFixed(1)}×`;
         try {
             localStorage.setItem(VOICE_SETTINGS_KEY, JSON.stringify(nextSettings));
