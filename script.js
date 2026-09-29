@@ -1,0 +1,3039 @@
+const API = "https://pokeapi.co/api/v2";
+
+const STORAGE_KEY = "pokedexGameCaughtV3";
+
+const POKEMON_PAGE_SIZE = 60;
+
+
+/* =========================================================
+   TYPE COLORS
+========================================================= */
+
+const TYPE_COLORS = {
+    normal: "#A8A77A",
+    fire: "#EE8130",
+    water: "#6390F0",
+    electric: "#F7D02C",
+    grass: "#7AC74C",
+    ice: "#96D9D6",
+    fighting: "#C22E28",
+    poison: "#A33EA1",
+    ground: "#E2BF65",
+    flying: "#A98FF3",
+    psychic: "#F95587",
+    bug: "#A6B91A",
+    rock: "#B6A136",
+    ghost: "#735797",
+    dragon: "#6F35FC",
+    dark: "#705746",
+    steel: "#B7B7CE",
+    fairy: "#D685AD"
+};
+
+
+const TYPES = Object.keys(TYPE_COLORS);
+
+
+/* =========================================================
+   TYPE EFFECTIVENESS
+========================================================= */
+
+const TYPE_EFFECTIVENESS = {
+
+    normal: {
+        rock: .5,
+        ghost: 0,
+        steel: .5
+    },
+
+    fire: {
+        fire: .5,
+        water: .5,
+        grass: 2,
+        ice: 2,
+        bug: 2,
+        rock: .5,
+        dragon: .5,
+        steel: 2
+    },
+
+    water: {
+        fire: 2,
+        water: .5,
+        grass: .5,
+        ground: 2,
+        rock: 2,
+        dragon: .5
+    },
+
+    electric: {
+        water: 2,
+        electric: .5,
+        grass: .5,
+        ground: 0,
+        flying: 2,
+        dragon: .5
+    },
+
+    grass: {
+        fire: .5,
+        water: 2,
+        grass: .5,
+        poison: .5,
+        ground: 2,
+        flying: .5,
+        bug: .5,
+        rock: 2,
+        dragon: .5,
+        steel: .5
+    },
+
+    ice: {
+        fire: .5,
+        water: .5,
+        grass: 2,
+        ice: .5,
+        ground: 2,
+        flying: 2,
+        dragon: 2,
+        steel: .5
+    },
+
+    fighting: {
+        normal: 2,
+        ice: 2,
+        rock: 2,
+        dark: 2,
+        steel: 2,
+        poison: .5,
+        flying: .5,
+        psychic: .5,
+        bug: .5,
+        fairy: .5,
+        ghost: 0
+    },
+
+    poison: {
+        grass: 2,
+        poison: .5,
+        ground: .5,
+        rock: .5,
+        ghost: .5,
+        steel: 0,
+        fairy: 2
+    },
+
+    ground: {
+        fire: 2,
+        electric: 2,
+        grass: .5,
+        poison: 2,
+        flying: 0,
+        bug: .5,
+        rock: 2,
+        steel: 2
+    },
+
+    flying: {
+        electric: .5,
+        grass: 2,
+        fighting: 2,
+        bug: 2,
+        rock: .5,
+        steel: .5
+    },
+
+    psychic: {
+        fighting: 2,
+        poison: 2,
+        psychic: .5,
+        steel: .5,
+        dark: 0
+    },
+
+    bug: {
+        fire: .5,
+        grass: 2,
+        fighting: .5,
+        poison: .5,
+        flying: .5,
+        psychic: 2,
+        ghost: .5,
+        dark: 2,
+        steel: .5,
+        fairy: .5
+    },
+
+    rock: {
+        fire: 2,
+        ice: 2,
+        fighting: .5,
+        ground: .5,
+        flying: 2,
+        bug: 2,
+        steel: .5
+    },
+
+    ghost: {
+        normal: 0,
+        psychic: 2,
+        ghost: 2,
+        dark: .5
+    },
+
+    dragon: {
+        dragon: 2,
+        steel: .5,
+        fairy: 0
+    },
+
+    dark: {
+        fighting: .5,
+        psychic: 2,
+        ghost: 2,
+        dark: .5,
+        fairy: .5
+    },
+
+    steel: {
+        fire: .5,
+        water: .5,
+        electric: .5,
+        ice: 2,
+        rock: 2,
+        fairy: 2,
+        steel: .5
+    },
+
+    fairy: {
+        fire: .5,
+        fighting: 2,
+        poison: .5,
+        dragon: 2,
+        dark: 2,
+        steel: .5
+    }
+};
+
+
+/* =========================================================
+   POKEDEX CONFIG
+========================================================= */
+
+const POKEDEXES = [
+    { id: "national", name: "National Pokédex", subtitle: "Koko kansallinen lista", api: "national" },
+    { id: "kanto", name: "Kanto", subtitle: "Generation 1", api: "kanto" },
+    { id: "johto", name: "Johto", subtitle: "Generation 2", api: "original-johto" },
+    { id: "hoenn", name: "Hoenn", subtitle: "Generation 3", api: "hoenn" },
+    { id: "sinnoh", name: "Sinnoh", subtitle: "Generation 4", api: "original-sinnoh" },
+    { id: "unova", name: "Unova", subtitle: "Generation 5", api: "updated-unova" },
+    { id: "kalos", name: "Kalos", subtitle: "Generation 6", api: ["kalos-central", "kalos-coastal", "kalos-mountain"] },
+    { id: "alola", name: "Alola", subtitle: "Generation 7", api: "updated-alola" },
+    { id: "galar", name: "Galar", subtitle: "Generation 8", api: "galar" },
+    { id: "hisui", name: "Hisui", subtitle: "Legends: Arceus", api: "hisui" },
+    { id: "paldea", name: "Paldea", subtitle: "Generation 9", api: "paldea" }
+];
+
+
+/* =========================================================
+   GAMES
+========================================================= */
+
+const GAMES = [
+    { id: "red", name: "Pokémon Red", generation: "Generation I", dexes: ["kanto"], nationalLimit: 151 },
+    { id: "blue", name: "Pokémon Blue", generation: "Generation I", dexes: ["kanto"], nationalLimit: 151 },
+    { id: "green", name: "Pokémon Green", generation: "Generation I", dexes: ["kanto"], nationalLimit: 151 },
+    { id: "yellow", name: "Pokémon Yellow", generation: "Generation I", dexes: ["kanto"], nationalLimit: 151 },
+    { id: "gold", name: "Pokémon Gold", generation: "Generation II", dexes: ["johto"], nationalLimit: 251 },
+    { id: "silver", name: "Pokémon Silver", generation: "Generation II", dexes: ["johto"], nationalLimit: 251 },
+    { id: "crystal", name: "Pokémon Crystal", generation: "Generation II", dexes: ["johto"], nationalLimit: 251 },
+    { id: "ruby", name: "Pokémon Ruby", generation: "Generation III", dexes: ["hoenn"], nationalLimit: 386 },
+    { id: "sapphire", name: "Pokémon Sapphire", generation: "Generation III", dexes: ["hoenn"], nationalLimit: 386 },
+    { id: "emerald", name: "Pokémon Emerald", generation: "Generation III", dexes: ["hoenn"], nationalLimit: 386 },
+    { id: "firered", name: "Pokémon FireRed", generation: "Generation III", dexes: ["kanto"], nationalLimit: 386 },
+    { id: "leafgreen", name: "Pokémon LeafGreen", generation: "Generation III", dexes: ["kanto"], nationalLimit: 386 },
+    { id: "diamond", name: "Pokémon Diamond", generation: "Generation IV", dexes: ["sinnoh"], nationalLimit: 493, excludesRegional: [490] },
+    { id: "pearl", name: "Pokémon Pearl", generation: "Generation IV", dexes: ["sinnoh"], nationalLimit: 493, excludesRegional: [490] },
+    { id: "platinum", name: "Pokémon Platinum", generation: "Generation IV", dexes: ["sinnoh-platinum"], nationalLimit: 493 },
+    { id: "heartgold", name: "Pokémon HeartGold", generation: "Generation IV", dexes: ["johto"], nationalLimit: 493 },
+    { id: "soulsilver", name: "Pokémon SoulSilver", generation: "Generation IV", dexes: ["johto"], nationalLimit: 493 },
+    { id: "black", name: "Pokémon Black", generation: "Generation V", dexes: ["unova-original"], nationalLimit: 649 },
+    { id: "white", name: "Pokémon White", generation: "Generation V", dexes: ["unova-original"], nationalLimit: 649 },
+    { id: "black2", name: "Pokémon Black 2", generation: "Generation V", dexes: ["unova"], nationalLimit: 649 },
+    { id: "white2", name: "Pokémon White 2", generation: "Generation V", dexes: ["unova"], nationalLimit: 649 },
+    { id: "x", name: "Pokémon X", generation: "Generation VI", dexes: ["kalos"], nationalLimit: 721 },
+    { id: "y", name: "Pokémon Y", generation: "Generation VI", dexes: ["kalos"], nationalLimit: 721 },
+    { id: "omegaruby", name: "Pokémon Omega Ruby", generation: "Generation VI", dexes: ["hoenn"], nationalLimit: 721 },
+    { id: "alphasapphire", name: "Pokémon Alpha Sapphire", generation: "Generation VI", dexes: ["hoenn"], nationalLimit: 721 },
+    { id: "sun", name: "Pokémon Sun", generation: "Generation VII", dexes: ["alola-original"], nationalLimit: 809 },
+    { id: "moon", name: "Pokémon Moon", generation: "Generation VII", dexes: ["alola-original"], nationalLimit: 809 },
+    { id: "ultrasun", name: "Pokémon Ultra Sun", generation: "Generation VII", dexes: ["alola"], nationalLimit: 809 },
+    { id: "ultramoon", name: "Pokémon Ultra Moon", generation: "Generation VII", dexes: ["alola"], nationalLimit: 809 },
+    { id: "letsgopikachu", name: "Pokémon Let's Go Pikachu", generation: "Generation VII", dexes: ["kanto"], nationalLimit: 151, nationalExtras: [808, 809] },
+    { id: "letsgoeevee", name: "Pokémon Let's Go Eevee", generation: "Generation VII", dexes: ["kanto"], nationalLimit: 151, nationalExtras: [808, 809] },
+    { id: "sword", name: "Pokémon Sword", generation: "Generation VIII", dexes: ["galar", "isle-of-armor", "crown-tundra"], nationalLimit: 898, regionalOnlyNational: true },
+    { id: "shield", name: "Pokémon Shield", generation: "Generation VIII", dexes: ["galar", "isle-of-armor", "crown-tundra"], nationalLimit: 898, regionalOnlyNational: true },
+    { id: "legendsarceus", name: "Pokémon Legends: Arceus", generation: "Generation VIII", dexes: ["hisui"], nationalLimit: 905, regionalOnlyNational: true },
+    { id: "brilliantdiamond", name: "Pokémon Brilliant Diamond", generation: "Generation VIII", dexes: ["sinnoh"], nationalLimit: 493, excludesRegional: [490] },
+    { id: "shiningpearl", name: "Pokémon Shining Pearl", generation: "Generation VIII", dexes: ["sinnoh"], nationalLimit: 493, excludesRegional: [490] },
+    { id: "scarlet", name: "Pokémon Scarlet", generation: "Generation IX", dexes: ["paldea", "kitakami", "blueberry"], nationalLimit: 1025, regionalOnlyNational: true },
+    { id: "violet", name: "Pokémon Violet", generation: "Generation IX", dexes: ["paldea", "kitakami", "blueberry"], nationalLimit: 1025, regionalOnlyNational: true },
+    { id: "legendsza", name: "Pokémon Legends: Z-A", generation: "Generation IX", dexes: ["lumiose-city", "hyperspace"], nationalLimit: 1025, regionalOnlyNational: true },
+    { id: "pokemon-go", name: "Pokémon GO", generation: "Mobile", dexes: ["national"], nationalLimit: 1025 }
+];
+
+// Covers are shipped with the app so the Games view does not depend on an
+// external image service being available at runtime.
+const GAME_COVER_FILE_NAMES = {
+    "pokemon-go": "pokemongo",
+    legendsarceus: "pokemonlegendsarceus",
+    legendsza: "pokemonlegendsz-a",
+    letsgopikachu: "pokemonletsgopikachu",
+    letsgoeevee: "pokemonletsgoeevee",
+    scarlet: "pokemonscarlet",
+    shield: "pokemonshield",
+    sword: "pokemonsword",
+    violet: "pokemonviolet"
+};
+
+const GAME_COVER_ART = Object.fromEntries(
+    GAMES.map(({ id }) => [
+        id,
+        `assets/game-covers/${GAME_COVER_FILE_NAMES[id] || id}.png`
+    ])
+);
+
+/* =========================================================
+   STATE
+========================================================= */
+
+const state = {
+
+    currentView: "dex",
+
+    currentDex: "national",
+
+    currentPokemon: null,
+
+    currentGame: null,
+
+    currentGameDex: "regional",
+
+    gamePage: 0,
+
+    gameFilter: "all",
+
+    dexSort: "number",
+
+    gameSort: "number",
+
+    dexEntries: [],
+
+    nationalEntries: [],
+
+    dexPage: 0,
+
+    searchRequest: 0,
+
+    gameRegionalEntries: [],
+
+    gameNationalEntries: [],
+
+    pokemonCache: new Map(),
+
+    dexCache: new Map(),
+
+    dexEntriesById: new Map(),
+
+    speciesCache: new Map(),
+
+    moveCache: new Map(),
+
+    movePage: 0,
+
+    moveSort: "name",
+
+    searchIndex: null
+
+};
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+function getCaughtData() {
+
+    try {
+        const data = JSON.parse(
+            localStorage.getItem(STORAGE_KEY)
+        ) || {};
+        if (!data.brilliantdiamond && data.brilliantdiamond2) data.brilliantdiamond = data.brilliantdiamond2;
+        if (!data.shiningpearl && data.shiningpearl2) data.shiningpearl = data.shiningpearl2;
+        return data;
+
+    } catch {
+
+        return {};
+
+    }
+
+}
+
+
+function saveCaughtData(data) {
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data)
+    );
+
+}
+
+
+function isCaught(gameId, pokemonId) {
+
+    const data = getCaughtData();
+
+    return !!(
+        data[gameId] &&
+        data[gameId][pokemonId]
+    );
+
+}
+
+
+function setCaught(gameId, pokemonId, value) {
+
+    const data = getCaughtData();
+
+    if (!data[gameId]) {
+        data[gameId] = {};
+    }
+
+    if (value) {
+
+        data[gameId][pokemonId] = true;
+
+    } else {
+
+        delete data[gameId][pokemonId];
+
+    }
+
+    saveCaughtData(data);
+
+}
+
+
+/* =========================================================
+   API
+========================================================= */
+
+async function apiFetch(url) {
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(
+            `API error ${response.status}`
+        );
+    }
+
+    return response.json();
+
+}
+
+
+async function getPokemon(id) {
+
+    const key = String(id);
+
+    if (state.pokemonCache.has(key)) {
+        return state.pokemonCache.get(key);
+    }
+
+    const pokemon = await apiFetch(
+        `${API}/pokemon/${key}`
+    );
+
+    state.pokemonCache.set(
+        key,
+        pokemon
+    );
+
+    return pokemon;
+
+}
+
+
+async function getPokemonSpecies(id) {
+    const key = String(id);
+    if (state.speciesCache.has(key)) return state.speciesCache.get(key);
+    const species = await apiFetch(`${API}/pokemon-species/${key}`);
+    state.speciesCache.set(key, species);
+    return species;
+}
+
+
+async function getMove(name) {
+    if (state.moveCache.has(name)) return state.moveCache.get(name);
+    const move = await apiFetch(`${API}/move/${name}`);
+    state.moveCache.set(name, move);
+    return move;
+}
+
+
+async function openPokemonSpecies(speciesId, gameId = null) {
+    const species = await getPokemonSpecies(speciesId);
+    const defaultPokemon = species.varieties.find(item => item.is_default) || species.varieties[0];
+    const pokemonId = getPokemonIdFromPokemonUrl(defaultPokemon.pokemon.url);
+    await openPokemon(pokemonId, gameId);
+}
+
+
+async function getPokedex(apiName) {
+
+    if (state.dexCache.has(apiName)) {
+        return state.dexCache.get(apiName);
+    }
+
+    const data = await apiFetch(
+        `${API}/pokedex/${apiName}`
+    );
+
+    state.dexCache.set(
+        apiName,
+        data
+    );
+
+    return data;
+
+}
+
+
+const DEX_API_BY_ID = {
+    kanto: "kanto",
+    johto: "original-johto",
+    hoenn: "hoenn",
+    sinnoh: "original-sinnoh",
+    "sinnoh-platinum": "extended-sinnoh",
+    "unova-original": "original-unova",
+    unova: "updated-unova",
+    kalos: ["kalos-central", "kalos-coastal", "kalos-mountain"],
+    alola: "updated-alola",
+    "alola-original": "original-alola",
+    galar: "galar",
+    "isle-of-armor": "isle-of-armor",
+    "crown-tundra": "crown-tundra",
+    hisui: "hisui",
+    paldea: "paldea",
+    kitakami: "kitakami",
+    blueberry: "blueberry",
+    "lumiose-city": "lumiose-city",
+    hyperspace: "hyperspace",
+    national: "national"
+};
+
+
+function getDexApi(dexId) {
+    return DEX_API_BY_ID[dexId] || dexId;
+}
+
+
+async function getDexData(apiNames) {
+    const names = Array.isArray(apiNames) ? apiNames : [apiNames];
+    const datasets = await Promise.all(names.map(getPokedex));
+    return {
+        pokemon_entries: datasets.flatMap(data => data.pokemon_entries)
+    };
+}
+
+
+async function getNationalEntries() {
+    if (state.nationalEntries.length) return state.nationalEntries;
+    const data = await getPokedex("national");
+    state.nationalEntries = data.pokemon_entries.map(entry => ({
+        id: entry.entry_number,
+        pokemonId: getPokemonIdFromUrl(entry.pokemon_species.url),
+        name: entry.pokemon_species.name
+    }));
+    return state.nationalEntries;
+}
+
+
+async function getDexEntriesById(dexId) {
+    if (state.dexEntriesById.has(dexId)) return state.dexEntriesById.get(dexId);
+    const dexData = await getDexData(getDexApi(dexId));
+    const entries = dexData.pokemon_entries.map(entry => ({
+        id: entry.entry_number,
+        pokemonId: getPokemonIdFromUrl(entry.pokemon_species.url),
+        name: entry.pokemon_species.name
+    }));
+    state.dexEntriesById.set(dexId, entries);
+    return entries;
+}
+
+
+function getPokemonIdFromUrl(url) {
+
+    const match = url.match(
+        /\/pokemon-species\/(\d+)\//
+    );
+
+    if (match) {
+        return Number(match[1]);
+    }
+
+    return null;
+
+}
+
+
+function getPokemonIdFromPokemonUrl(url) {
+
+    const match = url.match(
+        /\/pokemon\/(\d+)\//
+    );
+
+    if (match) {
+        return Number(match[1]);
+    }
+
+    return null;
+
+}
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function capitalize(value) {
+
+    return value
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, letter =>
+            letter.toUpperCase()
+        );
+
+}
+
+
+function hexToRgba(hex, alpha = .25) {
+
+    const clean = hex.replace("#", "");
+
+    const r = parseInt(
+        clean.substring(0, 2),
+        16
+    );
+
+    const g = parseInt(
+        clean.substring(2, 4),
+        16
+    );
+
+    const b = parseInt(
+        clean.substring(4, 6),
+        16
+    );
+
+    return `rgba(${r},${g},${b},${alpha})`;
+
+}
+
+
+function getTypeBadge(type) {
+
+    const color =
+        TYPE_COLORS[type] || "#777";
+
+    return `
+        <span
+            class="type-badge"
+            style="--type-color:${color}"
+        >
+            ${type}
+        </span>
+    `;
+
+}
+
+
+function getCardTypeStyle(pokemon) {
+
+    const first =
+        pokemon.types[0]?.type.name || "normal";
+
+    const second =
+        pokemon.types[1]?.type.name || first;
+
+    const firstColor =
+        TYPE_COLORS[first];
+
+    const secondColor =
+        TYPE_COLORS[second];
+
+    return `
+        --type-color:${firstColor};
+        --type-color-2:${secondColor};
+        --type-shadow:${hexToRgba(firstColor, .22)};
+    `;
+
+}
+
+
+/* =========================================================
+   VIEW MANAGEMENT
+========================================================= */
+
+function showView(viewId) {
+
+    document.querySelectorAll(".view")
+        .forEach(view => {
+
+            view.classList.remove(
+                "active-view"
+            );
+
+        });
+
+    const view =
+        document.getElementById(viewId);
+
+    if (view) {
+        view.classList.add(
+            "active-view"
+        );
+    }
+
+    state.currentView = viewId;
+
+}
+
+
+function setSidebarSelection(mainButtonId, childButtonSelector = null) {
+    document.querySelectorAll(
+        ".sidebar-nav .nav-main-button.active, .sidebar-nav .submenu-button.active, .sidebar-nav .game-button.active"
+    ).forEach(button => button.classList.remove("active"));
+
+    document.getElementById(mainButtonId)?.classList.add("active");
+    if (childButtonSelector) {
+        document.querySelector(childButtonSelector)?.classList.add("active");
+    }
+}
+
+
+/* =========================================================
+   POKEDEX
+========================================================= */
+
+async function openDex(dexId) {
+
+    state.currentDex = dexId;
+
+    state.dexSort =
+        document.getElementById("dexSort").value;
+
+    const dex =
+        POKEDEXES.find(
+            item => item.id === dexId
+        );
+
+    if (!dex) return;
+
+    setSidebarSelection(
+        "pokedexMenuButton",
+        `.submenu-button[data-dex="${dexId}"]`
+    );
+
+    showView("dexView");
+
+    document.getElementById("pageTitle")
+        .textContent = dexId === "national" ? dex.name : `Pokédex ${dex.name}`;
+
+    document.getElementById("breadcrumb")
+        .textContent = "";
+
+    document.getElementById("pokemonGrid")
+        .innerHTML = "";
+    document.getElementById("loadMoreButton").hidden = true;
+
+    state.dexPage = 0;
+
+    document.getElementById("loading")
+        .classList.add("active");
+
+    try {
+
+        if (dexId === "national") {
+
+            await loadNationalDex();
+
+        } else {
+
+            const data =
+                await getDexData(dex.api);
+
+            state.dexEntries =
+                data.pokemon_entries.map((entry, order) => {
+
+                    return {
+                        id: entry.entry_number,
+                        order,
+                        pokemonId:
+                            getPokemonIdFromUrl(
+                                entry.pokemon_species.url
+                            ),
+                        name:
+                            entry.pokemon_species.name
+                    };
+
+                });
+
+            const seenPokemon = new Set();
+            state.dexEntries = state.dexEntries.filter(entry => {
+                if (dexId === "sinnoh" && entry.pokemonId === 490) return false;
+                if (seenPokemon.has(entry.pokemonId)) return false;
+                seenPokemon.add(entry.pokemonId);
+                return true;
+            });
+
+            await renderDexEntries(
+                state.dexEntries
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("pokemonGrid")
+            .innerHTML = `
+                <div class="error-state">
+                    Pokédexin lataaminen epäonnistui.
+                    <br><br>
+                    ${error.message}
+                </div>
+            `;
+
+    }
+
+    document.getElementById("loading")
+        .classList.remove("active");
+
+}
+
+
+/* =========================================================
+   NATIONAL DEX
+========================================================= */
+
+async function loadNationalDex() {
+    state.dexEntries = await getNationalEntries();
+    await renderDexEntries(
+        state.dexEntries
+    );
+
+}
+
+
+/* =========================================================
+   RENDER DEX
+========================================================= */
+
+async function renderDexEntries(entries, append = false) {
+
+    const sorted =
+        [...entries].sort(
+            (a, b) => {
+
+                if (
+                    state.dexSort === "name"
+                ) {
+                    return a.name.localeCompare(
+                        b.name
+                    );
+                }
+
+                return (a.order ?? a.id) - (b.order ?? b.id);
+
+            }
+        );
+
+    const grid =
+        document.getElementById(
+            "pokemonGrid"
+        );
+
+    if (!append) {
+        grid.innerHTML = "";
+        document.getElementById("loadMoreButton").hidden = true;
+    }
+
+    const start = state.dexPage * POKEMON_PAGE_SIZE;
+    const page = sorted.slice(start, start + POKEMON_PAGE_SIZE);
+    const cards = await Promise.all(page.map(async entry => {
+        try {
+            const pokemon = await getPokemon(entry.pokemonId);
+            return createPokemonCard(pokemon, entry.id);
+        } catch (error) {
+            console.warn("Pokemon load failed", entry, error);
+            return null;
+        }
+    }));
+    cards.filter(Boolean).forEach(card => grid.appendChild(card));
+
+    const loadMoreButton = document.getElementById("loadMoreButton");
+    loadMoreButton.hidden = start + page.length >= sorted.length;
+
+}
+
+
+function createPokemonCard(
+    pokemon,
+    displayNumber = pokemon.id
+) {
+
+    const card =
+        document.createElement("article");
+
+    card.className =
+        "pokemon-card";
+
+    card.style.cssText =
+        getCardTypeStyle(pokemon);
+
+    const types =
+        pokemon.types
+            .map(type =>
+                getTypeBadge(
+                    type.type.name
+                )
+            )
+            .join("");
+
+    card.innerHTML = `
+
+        <div class="pokemon-card-top">
+
+            <span class="pokemon-number">
+                #${String(displayNumber).padStart(3, "0")}
+            </span>
+
+        </div>
+
+        <img
+            class="pokemon-image"
+            src="${
+                pokemon.sprites.other?.["official-artwork"]?.front_default
+                || pokemon.sprites.front_default
+            }"
+            alt="${pokemon.name}"
+            loading="lazy"
+        >
+
+        <div class="pokemon-card-bottom">
+
+            <h3 class="pokemon-card-name">
+                ${capitalize(pokemon.name)}
+            </h3>
+
+            <div class="type-row">
+                ${types}
+            </div>
+
+        </div>
+
+    `;
+
+    card.addEventListener(
+        "click",
+        () => openPokemon(
+            pokemon.id,
+            state.currentGame?.id || null
+        )
+    );
+
+    return card;
+
+}
+
+
+/* =========================================================
+   GAME
+========================================================= */
+
+async function openGame(gameId) {
+
+    const game =
+        GAMES.find(
+            item => item.id === gameId
+        );
+
+    if (!game) return;
+
+    setSidebarSelection(
+        "gamesMenuButton",
+        `.game-button[data-game="${gameId}"]`
+    );
+
+    state.currentGame = game;
+
+    state.currentGameDex =
+        "regional";
+
+    state.gamePage = 0;
+    document.getElementById("loadMoreGameButton").hidden = true;
+
+    state.gameFilter =
+        "all";
+
+    document.querySelectorAll(
+        ".game-button"
+    ).forEach(button => {
+
+        button.classList.toggle(
+            "active",
+            button.dataset.game === gameId
+        );
+
+    });
+
+    showView("gameView");
+
+    document.getElementById("pageTitle")
+        .textContent = game.name;
+
+    document.getElementById("breadcrumb")
+        .textContent = "Games";
+
+    document.getElementById("gameTitle")
+        .textContent = game.name;
+
+    document.getElementById("gameDescription")
+        .textContent =
+        `Pelikohtainen Pokémon-lista · ${game.generation}`;
+
+    renderGameCover(game);
+
+    document.querySelectorAll(
+        ".game-tab"
+    ).forEach(button => {
+
+        button.classList.toggle(
+            "active",
+            button.dataset.gameDex === "regional"
+        );
+
+    });
+
+    document.querySelectorAll(
+        ".game-filter"
+    ).forEach(button => {
+
+        button.classList.toggle(
+            "active",
+            button.dataset.filter === "all"
+        );
+
+    });
+
+    await loadGameDex();
+
+}
+
+
+function renderGameCover(game) {
+    const image = document.getElementById("gameCoverArt");
+    const fallback = document.getElementById("gameCoverFallback");
+    if (!image || !fallback) return;
+
+    image.hidden = true;
+    image.removeAttribute("src");
+    image.alt = `${game.name} cover art`;
+    fallback.hidden = false;
+    fallback.textContent = game.name.replace(/^Pokémon\s+/, "");
+
+    const source = GAME_COVER_ART[game.id];
+    if (!source) return;
+
+    image.dataset.gameId = game.id;
+    image.onload = () => {
+        if (image.dataset.gameId !== game.id || state.currentGame?.id !== game.id) return;
+        image.hidden = false;
+        fallback.hidden = true;
+    };
+    image.onerror = () => {
+        if (image.dataset.gameId !== game.id || state.currentGame?.id !== game.id) return;
+        image.hidden = true;
+        fallback.hidden = false;
+    };
+    image.src = source;
+}
+
+
+async function loadGameDex() {
+
+    const game =
+        state.currentGame;
+
+    if (!game) return;
+
+    const regionalIds = new Set();
+    const regionalEntries = [];
+
+    for (const dexId of game.dexes) {
+        try {
+            const entries = await getDexEntriesById(dexId);
+            entries.forEach(entry => {
+                if (game.excludesRegional?.includes(entry.pokemonId)) return;
+                if (regionalIds.has(entry.pokemonId)) return;
+                regionalIds.add(entry.pokemonId);
+                regionalEntries.push({ ...entry, order: regionalEntries.length });
+            });
+        } catch (error) {
+            console.warn(`Could not load ${getDexApi(dexId)}`, error);
+        }
+    }
+
+    state.gameRegionalEntries =
+        regionalEntries;
+
+
+    try {
+        const national = await getNationalEntries();
+        state.gameNationalEntries = national.filter(entry => {
+            const withinLimit = entry.id <= game.nationalLimit || game.nationalExtras?.includes(entry.pokemonId);
+            const availableInGame = game.regionalOnlyNational
+                ? regionalIds.has(entry.pokemonId)
+                : withinLimit;
+            return availableInGame;
+        });
+    } catch (error) {
+        console.error("National dex error", error);
+        state.gameNationalEntries = [];
+    }
+
+    state.gamePage = 0;
+    await renderGameDex();
+
+}
+
+
+/* =========================================================
+   RENDER GAME DEX
+========================================================= */
+
+async function renderGameDex(append = false) {
+
+    const entries =
+        state.currentGameDex === "regional"
+            ? state.gameRegionalEntries
+            : state.gameNationalEntries;
+
+    const caughtData = getCaughtData()[state.currentGame.id] || {};
+    const filtered =
+        entries.filter(entry => {
+
+            if (
+                state.gameFilter === "caught"
+            ) {
+
+                return (
+                    !!caughtData[entry.pokemonId]
+                );
+
+            }
+
+            if (
+                state.gameFilter === "missing"
+            ) {
+
+                return (
+                    !caughtData[entry.pokemonId]
+                );
+
+            }
+
+            return true;
+
+        });
+
+
+    const sorted =
+        [...filtered].sort(
+            (a, b) => {
+
+                if (
+                    state.gameSort === "name"
+                ) {
+
+                    return a.name.localeCompare(
+                        b.name
+                    );
+
+                }
+
+                return (a.order ?? a.id) - (b.order ?? b.id);
+
+            }
+        );
+
+
+    const grid =
+        document.getElementById(
+            "gamePokemonGrid"
+        );
+
+    const loadMoreButton = document.getElementById("loadMoreGameButton");
+    if (!append) {
+        grid.innerHTML = "";
+        loadMoreButton.hidden = true;
+    }
+
+
+    if (!sorted.length) {
+
+        grid.innerHTML = `
+            <div class="empty-state">
+                Tässä näkymässä ei ole tällä hetkellä Pokémonia.
+            </div>
+        `;
+
+        loadMoreButton.hidden = true;
+
+        updateGameProgress();
+
+        return;
+
+    }
+
+
+    const start = state.gamePage * POKEMON_PAGE_SIZE;
+    const page = sorted.slice(start, start + POKEMON_PAGE_SIZE);
+    const cards = await Promise.all(page.map(async entry => {
+        try {
+            const pokemon = await getPokemon(entry.pokemonId);
+            return createGamePokemonCard(pokemon, entry);
+        } catch (error) {
+            console.warn(error);
+            return null;
+        }
+    }));
+    cards.filter(Boolean).forEach(card => grid.appendChild(card));
+    loadMoreButton.hidden = start + page.length >= sorted.length;
+
+    updateGameProgress();
+
+}
+
+
+/* =========================================================
+   GAME CARD
+========================================================= */
+
+function createGamePokemonCard(
+    pokemon,
+    entry
+) {
+
+    const card =
+        createPokemonCard(
+            pokemon,
+            entry.id
+        );
+
+
+    return card;
+
+}
+
+
+/* =========================================================
+   GAME PROGRESS
+========================================================= */
+
+function updateGameProgress() {
+
+    const game =
+        state.currentGame;
+
+    if (!game) return;
+
+
+    const currentEntries = state.currentGameDex === "regional"
+        ? state.gameRegionalEntries
+        : state.gameNationalEntries;
+    const availableIds = new Set(currentEntries.map(entry => entry.pokemonId));
+    const caughtData = getCaughtData()[game.id] || {};
+
+
+    const total =
+        availableIds.size;
+
+
+    let caught = 0;
+
+
+    availableIds.forEach(
+        pokemonId => {
+
+            if (caughtData[pokemonId]) {
+
+                caught++;
+
+            }
+
+        }
+    );
+
+
+    const percent =
+        total === 0
+            ? 0
+            : Math.round(
+                caught / total * 100
+            );
+
+
+    document.getElementById(
+        "gameCaughtCount"
+    ).textContent = caught;
+
+
+    document.getElementById(
+        "gameTotalCount"
+    ).textContent = total;
+
+
+    document.getElementById(
+        "gameProgressPercent"
+    ).textContent = `${percent}%`;
+
+
+    document.getElementById(
+        "gameProgressRing"
+    ).style.setProperty(
+        "--progress",
+        percent
+    );
+
+    const regionalCaught = state.gameRegionalEntries.filter(entry => caughtData[entry.pokemonId]).length;
+    const nationalCaught = state.gameNationalEntries.filter(entry => caughtData[entry.pokemonId]).length;
+    document.getElementById("gameRegionalCount").textContent = `${regionalCaught}/${state.gameRegionalEntries.length}`;
+    document.getElementById("gameNationalCount").textContent = `${nationalCaught}/${state.gameNationalEntries.length}`;
+    document.getElementById("gameProgressLabel").textContent = state.currentGameDex === "regional" ? "Regional" : "National";
+
+}
+
+
+/* =========================================================
+   POKEMON DETAIL
+========================================================= */
+
+async function openPokemon(
+    pokemonId,
+    gameId = null
+) {
+
+    const pokemon =
+        await getPokemon(
+            pokemonId
+        );
+    const speciesId = getPokemonIdFromUrl(pokemon.species.url) || pokemon.id;
+    const species = await getPokemonSpecies(speciesId);
+
+    state.currentPokemon =
+        pokemon;
+
+    state.currentGame = gameId
+        ? GAMES.find(game => game.id === gameId) || null
+        : null;
+
+
+    showView("pokemonView");
+
+    document.getElementById(
+        "pageTitle"
+    ).textContent =
+        capitalize(pokemon.name);
+
+
+    document.getElementById(
+        "breadcrumb"
+    ).textContent =
+        "Pokémon";
+
+
+    const detail =
+        document.getElementById(
+            "pokemonDetail"
+        );
+
+
+    const types =
+        pokemon.types
+            .map(type =>
+                getTypeBadge(
+                    type.type.name
+                )
+            )
+            .join("");
+
+
+    detail.innerHTML = `
+
+        <div class="detail-container">
+
+            <div class="detail-hero">
+
+                <div class="detail-image-area">
+
+                    <img
+                        class="detail-image"
+                        src="${
+                            pokemon.sprites.other?.["official-artwork"]?.front_default
+                            || pokemon.sprites.front_default
+                        }"
+                        alt="${pokemon.name}"
+                    >
+
+                </div>
+
+
+                <div class="detail-info">
+
+                    <div class="detail-number">
+                        #${String(species.id).padStart(4, "0")}
+                    </div>
+
+                    <h2>
+                        ${capitalize(pokemon.name)}
+                    </h2>
+
+                    <div class="type-row">
+                        ${types}
+                    </div>
+
+                    <div class="detail-tabs">
+                        <button class="detail-tab active" data-detail-tab="overview">Overview</button>
+                        <button class="detail-tab" data-detail-tab="type-chart">Type Chart</button>
+                        <button class="detail-tab" data-detail-tab="evolution">Evolutions</button>
+
+                        <button
+                            class="detail-tab"
+                            data-detail-tab="games"
+                        >
+                            Games
+                        </button>
+
+                        <button
+                            class="detail-tab"
+                            data-detail-tab="moves"
+                        >
+                            Moves
+                        </button>
+                        <button class="detail-tab" data-detail-tab="forms">Forms</button>
+
+                    </div>
+
+                    <div class="detail-tab-content active" data-detail-content="overview">
+                        <div class="pokemon-summary-grid">
+                            <section class="pokemon-summary-card">
+                                <h3>Species</h3>
+                                <p id="speciesDescription">Loading species description...</p>
+                            </section>
+                            <section class="pokemon-summary-card">
+                                <div class="overview-facts">
+                                    <span><small>Height</small><strong>${pokemon.height / 10} m</strong></span>
+                                    <span><small>Weight</small><strong>${pokemon.weight / 10} kg</strong></span>
+                                    <span><small>Base XP</small><strong>${pokemon.base_experience ?? "-"}</strong></span>
+                                    <span><small>Abilities</small><strong>${pokemon.abilities.map(a => capitalize(a.ability.name)).join(", ")}</strong></span>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+
+                    <div class="detail-tab-content" data-detail-content="type-chart">
+                        <div class="pokemon-chart-grid">
+                            <section class="matchup-section">
+                                <h3>Defence</h3>
+                                <div id="pokemonDefenses" class="pokemon-matchups"></div>
+                            </section>
+                            <section class="matchup-section">
+                                <h3>Attacks</h3>
+                                <div id="pokemonAttacks" class="pokemon-matchups"></div>
+                            </section>
+                        </div>
+                    </div>
+
+                    <div class="detail-tab-content" data-detail-content="evolution">
+                        <div id="evolutionChain" class="evolution-tree">Ladataan kehityspolkua...</div>
+                    </div>
+
+
+                    <div
+                        class="detail-tab-content"
+                        data-detail-content="games"
+                    >
+
+                        <div
+                            id="pokemonGamesList"
+                            class="game-list"
+                        >
+                            Ladataan pelejä...
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="detail-tab-content"
+                        data-detail-content="moves"
+                    >
+                        <div class="moves-toolbar">
+                            <label for="moveSort">Sort by</label>
+                            <select id="moveSort">
+                                <option value="name">Name</option>
+                                <option value="bp">BP</option>
+                                <option value="acc">Acc</option>
+                            </select>
+                        </div>
+                        <div id="pokemonMovesList" class="pokemon-moves-grid"></div>
+                        <button id="loadMoreMovesButton" class="load-more-button" hidden>Lataa lisää liikkeitä</button>
+                    </div>
+
+                    <div class="detail-tab-content" data-detail-content="forms">
+                        <div id="pokemonFormsList" class="pokemon-forms-grid">Ladataan muotoja...</div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    setupDetailTabs();
+    state.moveSort = "name";
+    document.getElementById("moveSort").addEventListener("change", async event => {
+        const selectedSort = event.target.value;
+        state.moveSort = selectedSort;
+        const movesContainer = document.getElementById("pokemonMovesList");
+        if (selectedSort !== "name") {
+            movesContainer.innerHTML = `<div class="empty-state">Loading move stats for sorting...</div>`;
+            await loadAllMoveDetails(pokemon);
+        }
+        if (state.currentPokemon?.id !== pokemon.id || state.moveSort !== selectedSort) return;
+        await renderPokemonMoves(pokemon);
+    });
+    document.getElementById("loadMoreMovesButton").addEventListener("click", () => {
+        loadMoreMoves();
+    });
+    observeInfiniteScrollButton(document.getElementById("loadMoreMovesButton"));
+
+    renderPokemonMatchups(pokemon);
+    await Promise.all([
+        renderSpeciesDescription(species),
+        renderEvolutionChain(species),
+        renderPokemonGames(pokemon.id, species.id),
+        renderPokemonForms(species),
+        renderPokemonMoves(pokemon)
+    ]);
+
+}
+
+
+function setupDetailTabs() {
+
+    document.querySelectorAll(
+        ".detail-tab"
+    ).forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const tab =
+                    button.dataset.detailTab;
+
+                document.querySelectorAll(
+                    ".detail-tab"
+                ).forEach(item => {
+
+                    item.classList.toggle(
+                        "active",
+                        item === button
+                    );
+
+                });
+
+                document.querySelectorAll(
+                    ".detail-tab-content"
+                ).forEach(content => {
+
+                    content.classList.toggle(
+                        "active",
+                        content.dataset.detailContent ===
+                        tab
+                    );
+
+                });
+
+            }
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   POKEMON GAMES
+========================================================= */
+
+function renderSpeciesDescription(species) {
+    const description = document.getElementById("speciesDescription");
+    const entry = species.flavor_text_entries.find(item => item.language.name === "fi")
+        || species.flavor_text_entries.find(item => item.language.name === "en");
+    description.textContent = entry
+        ? entry.flavor_text.replace(/[\n\f\r]+/g, " ").replace(/\s+/g, " ").trim()
+        : "Tästä Pokémonista ei ole lajikuvausta saatavilla.";
+}
+
+
+function evolutionMethodText(details) {
+    if (!details?.length) return "";
+    return details.map(method => {
+        const conditions = [];
+        const trigger = method.trigger?.name;
+        const readable = value => capitalize(value.replaceAll("-", " "));
+        const articleFor = value => /^[aeiou]/i.test(value) ? "an" : "a";
+        let action = "Meet the evolution requirement";
+        if (trigger === "level-up") action = method.min_level ? `Level up to level ${method.min_level}` : "Level up";
+        else if (trigger === "trade") action = "Trade this Pokémon";
+        else if (trigger === "use-item") {
+            const itemName = method.item?.name ? readable(method.item.name) : "item";
+            action = `Use ${articleFor(itemName)} ${itemName}`;
+        }
+        else if (trigger === "shed") action = "Create an extra space in your party and have a Poké Ball in your bag";
+        else if (trigger === "spin") action = "Spin around with this Pokémon in your party";
+        else if (trigger === "three-critical-hits") action = "Land three critical hits in one battle";
+        else if (trigger === "tower-of-darkness") action = "Complete the Tower of Darkness trial";
+        else if (trigger === "tower-of-waters") action = "Complete the Tower of Waters trial";
+        else if (trigger === "take-damage") action = method.min_damage
+            ? `Take at least ${method.min_damage} damage, then walk to the required location`
+            : "Take damage, then walk to the required location";
+        else if (trigger) action = readable(trigger);
+        if (method.item?.name && trigger !== "use-item") {
+            const itemName = readable(method.item.name);
+            conditions.push(`use ${articleFor(itemName)} ${itemName}`);
+        }
+        if (method.held_item?.name) {
+            const itemName = readable(method.held_item.name);
+            conditions.push(`hold ${articleFor(itemName)} ${itemName}`);
+        }
+        if (method.time_of_day) conditions.push(`during the ${method.time_of_day}`);
+        if (method.min_happiness) conditions.push(`with friendship of at least ${method.min_happiness}`);
+        if (method.min_affection) conditions.push(`with affection of at least ${method.min_affection}`);
+        if (method.min_beauty) conditions.push(`with Beauty of at least ${method.min_beauty}`);
+        if (method.min_steps) conditions.push(`after walking ${method.min_steps} steps`);
+        if (method.min_damage && trigger !== "take-damage") conditions.push(`after taking at least ${method.min_damage} damage`);
+        if (method.gender === 1) conditions.push("if female");
+        if (method.gender === 2) conditions.push("if male");
+        if (method.known_move?.name) conditions.push(`while knowing ${readable(method.known_move.name)}`);
+        if (method.known_move_type?.name) conditions.push(`while knowing a ${readable(method.known_move_type.name)}-type move`);
+        if (method.location?.name) conditions.push(`at ${readable(method.location.name)}`);
+        if (method.party_species?.name) conditions.push(`with ${readable(method.party_species.name)} in your party`);
+        if (method.party_type?.name) conditions.push(`with a ${readable(method.party_type.name)}-type Pokémon in your party`);
+        if (method.trade_species?.name) {
+            const speciesName = readable(method.trade_species.name);
+            conditions.push(`for ${articleFor(speciesName)} ${speciesName}`);
+        }
+        if (method.needs_overworld_rain) conditions.push("while it is raining");
+        if (method.turn_upside_down) conditions.push("while holding the device upside down");
+        if (method.relative_physical_stats !== null && method.relative_physical_stats !== undefined) {
+            conditions.push(method.relative_physical_stats === 1 ? "when Attack is higher than Defense" : method.relative_physical_stats === -1 ? "when Defense is higher than Attack" : "when Attack and Defense are equal");
+        }
+        return conditions.length ? `${action} ${conditions.join(" and ")}` : action;
+    }).join(" or ");
+}
+
+
+function renderEvolutionNode(node, isRoot = true) {
+    const speciesId = getPokemonIdFromUrl(node.species.url);
+    const children = node.evolves_to || [];
+    return `
+        <div class="evolution-path-node${isRoot ? " root" : ""}">
+            <button class="evolution-pokemon" data-species-id="${speciesId}">
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${speciesId}.png" alt="" loading="lazy">
+                <span>#${String(speciesId).padStart(4, "0")} ${capitalize(node.species.name)}</span>
+            </button>
+            ${children.length ? `<div class="evolution-branches">${children.map(child => `
+                <div class="evolution-branch">
+                    <div class="evolution-transition"><span aria-hidden="true">→</span><small>${evolutionMethodText(child.evolution_details)}</small></div>
+                    ${renderEvolutionNode(child, false)}
+                </div>
+            `).join("")}</div>` : ""}
+        </div>
+    `;
+}
+
+
+async function renderEvolutionChain(species) {
+    const container = document.getElementById("evolutionChain");
+    try {
+        const data = await apiFetch(species.evolution_chain.url);
+        container.innerHTML = renderEvolutionNode(data.chain);
+        container.querySelectorAll("[data-species-id]").forEach(button => {
+            button.addEventListener("click", () => openPokemonSpecies(Number(button.dataset.speciesId), state.currentGame?.id || null));
+        });
+    } catch (error) {
+        console.warn("Evolution chain load failed", error);
+        container.textContent = "Kehityspolkua ei voitu ladata.";
+    }
+}
+
+
+function matchupRows(groups) {
+    const labels = ["×4", "×2", "×1", "×½", "×¼", "×0"];
+    return labels.filter(label => groups[label]?.length).map(label => `
+        <div class="pokemon-matchup-row">
+            <strong>${label}</strong>
+            <div class="type-row">${groups[label].map(getTypeBadge).join("")}</div>
+        </div>
+    `).join("") || `<span class="matchup-empty">Ei erityisiä tyyppivaikutuksia.</span>`;
+}
+
+
+function renderPokemonMatchups(pokemon) {
+    const defenseTypes = pokemon.types.map(item => item.type.name);
+    const defenses = { "×4": [], "×2": [], "×1": [], "×½": [], "×¼": [], "×0": [] };
+    TYPES.forEach(attackingType => {
+        const multiplier = getCombinedDefenseMultiplier(attackingType, defenseTypes);
+        const label = getMultiplierLabel(multiplier);
+        if (defenses[label]) defenses[label].push(attackingType);
+    });
+    document.getElementById("pokemonDefenses").innerHTML = matchupRows(defenses);
+
+    const attacks = { "×4": [], "×2": [] };
+    TYPES.forEach(defendingType => {
+        const usefulAttacks = defenseTypes
+            .filter(attackingType => getEffectiveness(attackingType, defendingType) > 1);
+        if (!usefulAttacks.length) return;
+        const multiplier = Math.max(...usefulAttacks.map(type => getEffectiveness(type, defendingType)));
+        const label = getMultiplierLabel(multiplier);
+        if (attacks[label]) attacks[label].push(defendingType);
+    });
+    document.getElementById("pokemonAttacks").innerHTML = matchupRows(attacks);
+}
+
+
+async function renderPokemonForms(species) {
+    const container = document.getElementById("pokemonFormsList");
+    try {
+        const forms = await Promise.all(species.varieties.map(async variety => {
+            const pokemon = await getPokemon(getPokemonIdFromPokemonUrl(variety.pokemon.url));
+            return { variety, pokemon };
+        }));
+        container.innerHTML = "";
+        forms.forEach(({ variety, pokemon }) => {
+            const button = document.createElement("button");
+            button.className = "pokemon-form-card";
+            const image = pokemon.sprites.other?.["official-artwork"]?.front_default || pokemon.sprites.front_default;
+            button.innerHTML = `<img src="${image || ""}" alt="" loading="lazy"><span>${capitalize(pokemon.name)}</span>${variety.is_default ? "<small>Default form</small>" : ""}`;
+            button.addEventListener("click", () => openPokemon(pokemon.id, state.currentGame?.id || null));
+            container.appendChild(button);
+        });
+    } catch (error) {
+        console.warn("Pokemon forms load failed", error);
+        container.textContent = "Muotoja ei voitu ladata.";
+    }
+}
+
+
+async function loadAllMoveDetails(pokemon) {
+    const missing = pokemon.moves.filter(entry => !state.moveCache.has(entry.move.name));
+    for (let start = 0; start < missing.length; start += 12) {
+        await Promise.all(missing.slice(start, start + 12).map(async entry => {
+            try {
+                await getMove(entry.move.name);
+            } catch (error) {
+                console.warn("Move details load failed", entry.move.name, error);
+            }
+        }));
+    }
+}
+
+
+async function renderPokemonMoves(pokemon, append = false) {
+    const container = document.getElementById("pokemonMovesList");
+    const loadMore = document.getElementById("loadMoreMovesButton");
+    if (!container || !loadMore) return;
+    if (!append) loadMore.hidden = true;
+    const moveEntries = [...pokemon.moves];
+    if (state.moveSort === "name") {
+        moveEntries.sort((a, b) => a.move.name.localeCompare(b.move.name));
+    } else {
+        const statKey = state.moveSort === "bp" ? "power" : "accuracy";
+        moveEntries.sort((a, b) => {
+            const aValue = state.moveCache.get(a.move.name)?.[statKey];
+            const bValue = state.moveCache.get(b.move.name)?.[statKey];
+            if (aValue == null && bValue == null) return a.move.name.localeCompare(b.move.name);
+            if (aValue == null) return 1;
+            if (bValue == null) return -1;
+            return bValue - aValue || a.move.name.localeCompare(b.move.name);
+        });
+    }
+    if (!append) {
+        state.movePage = 0;
+        container.innerHTML = "";
+    } else {
+        state.movePage += 1;
+    }
+    const pageSize = 16;
+    const start = state.movePage * pageSize;
+    const moves = moveEntries.slice(start, start + pageSize);
+    const cards = await Promise.all(moves.map(async entry => {
+        try {
+            const move = await getMove(entry.move.name);
+            const card = document.createElement("article");
+            card.className = "pokemon-move-card";
+            const learnInfo = entry.version_group_details.at(-1);
+            const level = learnInfo?.level_learned_at;
+            card.innerHTML = `
+                <strong>${capitalize(move.name)}</strong>
+                <div><span>BP</span><b>${move.power ?? "—"}</b><span>Acc</span><b>${move.accuracy == null ? "—" : `${move.accuracy}%`}</b><span>PP</span><b>${move.pp ?? "—"}</b></div>
+                ${level ? `<small>Level ${level}</small>` : ""}
+            `;
+            return card;
+        } catch (error) {
+            console.warn("Move details load failed", entry.move.name, error);
+            return null;
+        }
+    }));
+    cards.filter(Boolean).forEach(card => container.appendChild(card));
+    loadMore.hidden = start + moves.length >= moveEntries.length;
+}
+
+
+async function renderPokemonGames(
+    pokemonId,
+    speciesId = pokemonId
+) {
+    const container = document.getElementById("pokemonGamesList");
+    if (!container) return;
+    container.innerHTML = `<div class="empty-state">Etsitään pelejä...</div>`;
+
+    const availability = await Promise.all(GAMES.map(async game => {
+        let available = speciesId <= game.nationalLimit;
+        if (game.id === "pokemon-go") return { game, available: true };
+        if (game.regionalOnlyNational || game.id === "letsgopikachu" || game.id === "letsgoeevee") {
+            try {
+                const entries = (await Promise.all(game.dexes.map(getDexEntriesById))).flat();
+                available = entries.some(entry => entry.pokemonId === speciesId)
+                    || Boolean(game.nationalExtras?.includes(speciesId));
+            } catch {
+                available = false;
+            }
+        }
+        return { game, available };
+    }));
+
+    const availableGames = availability.filter(item => item.available);
+    container.innerHTML = "";
+    if (!availableGames.length) {
+        container.innerHTML = `<div class="empty-state">Pokémonille ei löytynyt saatavilla olevia pelejä.</div>`;
+        return;
+    }
+
+    availableGames.forEach(({ game }) => {
+        const caught = isCaught(game.id, speciesId);
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `game-catch-button${caught ? " caught" : ""}`;
+        button.setAttribute("aria-pressed", String(caught));
+        button.innerHTML = `<span>${game.name}</span><strong>${caught ? "Caught ✓" : "Merkitse napatuksi"}</strong>`;
+        button.addEventListener("click", () => {
+            const nextCaught = !isCaught(game.id, speciesId);
+            setCaught(game.id, speciesId, nextCaught);
+            button.classList.toggle("caught", nextCaught);
+            button.setAttribute("aria-pressed", String(nextCaught));
+            button.querySelector("strong").textContent = nextCaught ? "Caught ✓" : "Merkitse napatuksi";
+            if (state.currentGame?.id === game.id) updateGameProgress();
+            if (state.currentView === "profileView") renderProfile();
+        });
+        container.appendChild(button);
+    });
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+async function prepareSearchIndex() {
+
+    if (state.searchIndex) {
+        return state.searchIndex;
+    }
+    const entries = await getNationalEntries();
+    state.searchIndex = entries.map(entry => ({ id: entry.id, name: entry.name }));
+    return state.searchIndex;
+
+}
+
+
+async function searchPokemon(
+    query
+) {
+    const requestId = ++state.searchRequest;
+    const rawQuery = query.trim().replace(/^#/, "");
+    const container = document.getElementById("searchSuggestions");
+    if (!rawQuery) {
+        container.innerHTML = "";
+        return;
+    }
+    const index =
+        await prepareSearchIndex();
+    if (requestId !== state.searchRequest) return;
+    const numericQuery = /^\d+$/.test(rawQuery);
+    const normalizedQuery = rawQuery.toLowerCase().replace(/\s+/g, "-");
+    const results = index.filter(item => numericQuery
+        ? item.id === Number(rawQuery)
+        : item.name.includes(normalizedQuery)).slice(0, 8);
+    container.innerHTML = "";
+    if (!results.length) {
+        container.innerHTML = `<div class="search-no-results">Pokémonia ei löytynyt.</div>`;
+        return;
+    }
+
+    results.forEach(
+        result => {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+            button.className =
+                "search-suggestion";
+
+
+            button.innerHTML = `
+
+                <img
+                    src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${result.id}.png"
+                    alt=""
+                >
+
+                <span>
+                    #${String(result.id).padStart(4, "0")}
+                    ${capitalize(result.name)}
+                </span>
+
+            `;
+
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    container.innerHTML = "";
+
+                    document.getElementById(
+                        "searchInput"
+                    ).value = "";
+
+                    openPokemonSpecies(
+                        result.id
+                    );
+
+                }
+            );
+
+
+            container.appendChild(
+                button
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   TYPES
+========================================================= */
+
+function setupTypeSelectors() {
+
+    const select1 =
+        document.getElementById(
+            "type1Select"
+        );
+
+    const select2 =
+        document.getElementById(
+            "type2Select"
+        );
+
+
+    select1.innerHTML =
+        `<option value="">Ei valintaa</option>` +
+        TYPES.map(type =>
+            `<option value="${type}">
+                ${capitalize(type)}
+            </option>`
+        ).join("");
+
+
+    select2.innerHTML =
+        `<option value="">Ei valintaa</option>` +
+        TYPES.map(type =>
+            `<option value="${type}">
+                ${capitalize(type)}
+            </option>`
+        ).join("");
+
+
+    select1.addEventListener(
+        "change",
+        renderTypeMatchup
+    );
+
+    select2.addEventListener(
+        "change",
+        renderTypeMatchup
+    );
+
+}
+
+
+function getEffectiveness(
+    attackingType,
+    defendingType
+) {
+
+    return (
+        TYPE_EFFECTIVENESS[
+            attackingType
+        ]?.[defendingType]
+        ?? 1
+    );
+
+}
+
+
+function getCombinedDefenseMultiplier(
+    attackingType,
+    defenseTypes
+) {
+
+    return defenseTypes.reduce(
+        (multiplier, defenseType) =>
+            multiplier *
+            getEffectiveness(
+                attackingType,
+                defenseType
+            ),
+        1
+    );
+
+}
+
+
+function getMultiplierLabel(
+    multiplier
+) {
+
+    if (multiplier === 0) return "×0";
+
+    if (multiplier === .25) return "×¼";
+
+    if (multiplier === .5) return "×½";
+
+    if (multiplier === 2) return "×2";
+
+    if (multiplier === 4) return "×4";
+
+    return "×1";
+
+}
+
+
+function renderTypeMatchup() {
+
+    const type1 =
+        document.getElementById(
+            "type1Select"
+        ).value;
+
+    const type2 =
+        document.getElementById(
+            "type2Select"
+        ).value;
+
+
+    const container =
+        document.getElementById(
+            "typeMatchup"
+        );
+
+
+    if (!type1 && !type2) {
+
+        container.innerHTML = `
+            <div class="empty-state">
+                Valitse vähintään yksi tyyppi.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    const defenseTypes =
+        [type1, type2]
+            .filter(Boolean);
+
+
+    /*
+        DEFENSIVE
+    */
+
+    const defensiveGroups = {
+        "×4": [],
+        "×2": [],
+        "×1": [],
+        "×½": [],
+        "×¼": [],
+        "×0": []
+    };
+
+
+    TYPES.forEach(
+        attackType => {
+
+            const multiplier =
+                getCombinedDefenseMultiplier(
+                    attackType,
+                    defenseTypes
+                );
+
+
+            const label =
+                getMultiplierLabel(
+                    multiplier
+                );
+
+
+            defensiveGroups[label]
+                ?.push(
+                    attackType
+                );
+
+        }
+    );
+
+
+    /*
+        OFFENSIVE
+    */
+
+    const offensiveGroups = {
+        "×4": [],
+        "×2": [],
+        "×1": [],
+        "×½": [],
+        "×¼": [],
+        "×0": []
+    };
+
+
+    defenseTypes.forEach(
+        attackType => {
+
+            TYPES.forEach(
+                defenseType => {
+
+                    const multiplier =
+                        getEffectiveness(
+                            attackType,
+                            defenseType
+                        );
+
+
+                    const label =
+                        getMultiplierLabel(
+                            multiplier
+                        );
+
+
+                    offensiveGroups[label]
+                        ?.push({
+                            attack:
+                                attackType,
+                            defense:
+                                defenseType
+                        });
+
+                }
+            );
+
+        }
+    );
+
+
+    container.innerHTML = `
+
+        <div class="matchup-section">
+
+            <h3>
+                Defensive matchup
+            </h3>
+
+            ${
+                Object.entries(
+                    defensiveGroups
+                )
+                .filter(
+                    ([, types]) =>
+                        types.length
+                )
+                .map(
+                    ([multiplier, types]) => `
+
+                        <div class="matchup-group">
+
+                            <div class="matchup-label">
+                                ${multiplier}
+                            </div>
+
+                            <div class="matchup-types">
+
+                                ${
+                                    types
+                                        .map(
+                                            type =>
+                                                getTypeBadge(
+                                                    type
+                                                )
+                                        )
+                                        .join("")
+                                }
+
+                            </div>
+
+                        </div>
+
+                    `
+                )
+                .join("")
+            }
+
+        </div>
+
+
+        <div class="matchup-section">
+
+            <h3>
+                Offensive matchup
+            </h3>
+
+            ${
+                Object.entries(
+                    offensiveGroups
+                )
+                .filter(
+                    ([, items]) =>
+                        items.length
+                )
+                .map(
+                    ([multiplier, items]) => {
+
+                        /*
+                            Poistetaan duplikaatit.
+                        */
+
+                        const unique =
+                            [
+                                ...new Map(
+                                    items.map(
+                                        item => [
+                                            item.defense,
+                                            item
+                                        ]
+                                    )
+                                ).values()
+                            ];
+
+
+                        return `
+
+                            <div class="matchup-group">
+
+                                <div class="matchup-label">
+                                    ${multiplier}
+                                </div>
+
+                                <div class="matchup-types">
+
+                                    ${
+                                        unique
+                                            .map(
+                                                item =>
+                                                    getTypeBadge(
+                                                        item.defense
+                                                    )
+                                            )
+                                            .join("")
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }
+                )
+                .join("")
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+async function renderProfile() {
+    const container = document.getElementById("profileStats");
+    container.innerHTML = `<div class="empty-state">Lasketaan...</div>`;
+    const national = await getNationalEntries();
+    const caughtData = getCaughtData();
+    const nationalIds = new Set(national.map(entry => entry.pokemonId));
+    const caughtAcrossGames = new Set();
+    Object.values(caughtData).forEach(gameData => Object.entries(gameData || {}).forEach(([id, caught]) => {
+        if (caught && nationalIds.has(Number(id))) caughtAcrossGames.add(Number(id));
+    }));
+    const nationalTotal = nationalIds.size;
+    const nationalCaught = caughtAcrossGames.size;
+    const nationalPercent = nationalTotal ? Math.round(nationalCaught / nationalTotal * 100) : 0;
+
+    const cards = [`
+        <article class="profile-card profile-national-card">
+            <h3>Koko National Pokédex</h3>
+            <p>Saman Pokémonin merkintä riittää riippumatta siitä, missä pelissä se on napattu.</p>
+            <div class="profile-progress"><div class="profile-progress-bar" style="width:${nationalPercent}%"></div></div>
+            <div class="profile-count">${nationalCaught} / ${nationalTotal} Pokémonia (${nationalPercent}%)</div>
+        </article>
+    `];
+
+    for (const game of GAMES) {
+        const lists = await Promise.all(game.dexes.map(id => getDexEntriesById(id).catch(() => [])));
+        const regionalById = new Map();
+        lists.flat().forEach(entry => {
+            if (!game.excludesRegional?.includes(entry.pokemonId)) regionalById.set(entry.pokemonId, entry);
+        });
+        const regionalIds = [...regionalById.keys()];
+        const gameNational = game.regionalOnlyNational
+            ? regionalIds
+            : national.filter(entry => entry.id <= game.nationalLimit || game.nationalExtras?.includes(entry.pokemonId)).map(entry => entry.pokemonId);
+        const gameCaught = caughtData[game.id] || {};
+        const countCaught = ids => ids.reduce((count, id) => count + (gameCaught[id] ? 1 : 0), 0);
+        const regionalCaught = countCaught(regionalIds);
+        const nationalCaughtForGame = countCaught(gameNational);
+        const regionalPercent = regionalIds.length ? Math.round(regionalCaught / regionalIds.length * 100) : 0;
+        const gameNationalPercent = gameNational.length ? Math.round(nationalCaughtForGame / gameNational.length * 100) : 0;
+        cards.push(`
+            <article class="profile-card">
+                <h3>${game.name}</h3>
+                <p>${game.generation}</p>
+                <div class="profile-dex-progress">
+                    <div class="profile-dex-heading"><strong>Regional</strong><span>${regionalCaught} / ${regionalIds.length} (${regionalPercent}%)</span></div>
+                    <div class="profile-progress"><div class="profile-progress-bar" style="width:${regionalPercent}%"></div></div>
+                </div>
+                <div class="profile-dex-progress">
+                    <div class="profile-dex-heading"><strong>National</strong><span>${nationalCaughtForGame} / ${gameNational.length} (${gameNationalPercent}%)</span></div>
+                    <div class="profile-progress"><div class="profile-progress-bar" style="width:${gameNationalPercent}%"></div></div>
+                </div>
+            </article>
+        `);
+    }
+    container.innerHTML = cards.join("");
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+function animateSidebarOrb(button, opening) {
+    if (!button) return;
+    button.classList.remove("flash-open", "flash-close");
+    void button.offsetWidth;
+    button.classList.add(opening ? "flash-open" : "flash-close");
+    window.setTimeout(() => button.classList.remove("flash-open", "flash-close"), opening ? 1000 : 500);
+}
+
+
+function toggleMobileSidebar(button) {
+    const sidebar = document.getElementById("sidebar");
+    const opening = !sidebar.classList.contains("mobile-open");
+    sidebar.classList.toggle("mobile-open", opening);
+    sidebar.closest(".app")?.classList.toggle("sidebar-open", opening);
+    button?.setAttribute("aria-expanded", String(opening));
+    animateSidebarOrb(button, opening);
+}
+
+
+function renderSidebarLists() {
+    const pokedexSubmenu = document.getElementById("pokedexSubmenu");
+    pokedexSubmenu.innerHTML = POKEDEXES.map(dex => `
+        <button class="submenu-button${dex.id === "national" ? " active" : ""}" data-dex="${dex.id}"><span>${dex.name}</span><small>${dex.subtitle}</small></button>
+    `).join("");
+
+    const gamesSubmenu = document.getElementById("gamesSubmenu");
+    const groups = new Map();
+    GAMES.forEach(game => {
+        if (!groups.has(game.generation)) groups.set(game.generation, []);
+        groups.get(game.generation).push(game);
+    });
+    gamesSubmenu.innerHTML = [...groups.entries()].map(([generation, games]) => `
+        <div class="generation-title">${generation === "Mobile" ? "Muut" : generation}</div>
+        ${games.map(game => `<button class="game-button" data-game="${game.id}">${game.name.replace(/^Pokémon\s+/, "")}</button>`).join("")}
+    `).join("");
+}
+
+function setupSidebar() {
+
+    renderSidebarLists();
+
+    const sidebar =
+        document.getElementById(
+            "sidebar"
+        );
+
+
+    document.getElementById(
+        "sidebarToggle"
+    ).addEventListener(
+        "click",
+        event => {
+            const compact = window.matchMedia("(max-width: 700px), (orientation: landscape) and (max-height: 600px) and (max-width: 1100px)").matches;
+            if (compact) {
+                toggleMobileSidebar(event.currentTarget);
+            } else {
+                const opening = sidebar.classList.contains("collapsed");
+                sidebar.classList.toggle("collapsed", !opening);
+                animateSidebarOrb(event.currentTarget, opening);
+            }
+        }
+    );
+
+
+    document.getElementById(
+        "pokedexMenuButton"
+    ).addEventListener(
+        "click",
+        () => {
+
+            const section =
+                document
+                    .getElementById(
+                        "pokedexSubmenu"
+                    )
+                    .closest(
+                        ".nav-section"
+                    );
+
+            section.classList.toggle(
+                "open"
+            );
+
+        }
+    );
+
+
+    document.getElementById(
+        "gamesMenuButton"
+    ).addEventListener(
+        "click",
+        () => {
+
+            const section =
+                document
+                    .getElementById(
+                        "gamesSubmenu"
+                    )
+                    .closest(
+                        ".nav-section"
+                    );
+
+            section.classList.toggle(
+                "open"
+            );
+
+        }
+    );
+
+
+    document.querySelectorAll(
+        ".submenu-button"
+    ).forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    document.querySelectorAll(
+                        ".submenu-button"
+                    ).forEach(
+                        item =>
+                            item.classList.remove(
+                                "active"
+                            )
+                    );
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                    openDex(
+                        button.dataset.dex
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    document.querySelectorAll(
+        ".game-button"
+    ).forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    openGame(
+                        button.dataset.game
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    document.getElementById(
+        "typesButton"
+    ).addEventListener(
+        "click",
+        () => {
+
+            setSidebarSelection("typesButton");
+
+            showView("typeView");
+
+            document.getElementById(
+                "pageTitle"
+            ).textContent =
+                "Types";
+
+            document.getElementById(
+                "breadcrumb"
+            ).textContent =
+                "Types";
+
+        }
+    );
+
+
+    document.getElementById(
+        "profileButton"
+    ).addEventListener(
+        "click",
+        () => {
+
+            setSidebarSelection("profileButton");
+
+            showView(
+                "profileView"
+            );
+
+            document.getElementById(
+                "pageTitle"
+            ).textContent =
+                "Profile";
+
+            document.getElementById(
+                "breadcrumb"
+            ).textContent =
+                "Profile";
+
+            renderProfile();
+
+        }
+    );
+
+
+    document.getElementById(
+        "settingsButton"
+    ).addEventListener(
+        "click",
+        () => {
+
+            setSidebarSelection("settingsButton");
+
+            showView(
+                "settingsView"
+            );
+
+            document.getElementById(
+                "pageTitle"
+            ).textContent =
+                "Settings";
+
+            document.getElementById(
+                "breadcrumb"
+            ).textContent =
+                "Settings";
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+let infiniteScrollObserver = null;
+const observedLoadMoreButtons = new Set();
+
+function observeInfiniteScrollButton(button) {
+    if (!button || !infiniteScrollObserver) return;
+
+    for (const observedButton of observedLoadMoreButtons) {
+        if (!observedButton.isConnected) {
+            infiniteScrollObserver.unobserve(observedButton);
+            observedLoadMoreButtons.delete(observedButton);
+        }
+    }
+
+    if (!observedLoadMoreButtons.has(button)) {
+        observedLoadMoreButtons.add(button);
+        infiniteScrollObserver.observe(button);
+    }
+}
+
+function setupInfiniteScroll() {
+    if (!("IntersectionObserver" in window)) return;
+
+    infiniteScrollObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            const button = entry.target;
+            if (!entry.isIntersecting || button.hidden || button.disabled) return;
+
+            if (button.id === "loadMoreButton") loadMoreDex();
+            if (button.id === "loadMoreGameButton") loadMoreGameDex();
+            if (button.id === "loadMoreMovesButton") loadMoreMoves();
+        });
+    }, {
+        root: document.querySelector(".main-content"),
+        rootMargin: "0px 0px 280px 0px",
+        threshold: 0
+    });
+
+    observeInfiniteScrollButton(document.getElementById("loadMoreButton"));
+    observeInfiniteScrollButton(document.getElementById("loadMoreGameButton"));
+}
+
+async function runLoadMore(button, loadPage) {
+    if (!button || button.hidden || button.dataset.loading === "true") return;
+
+    const label = button.textContent.trim();
+    button.dataset.loading = "true";
+    button.disabled = true;
+    button.textContent = "Ladataan lisää...";
+
+    try {
+        await loadPage();
+    } catch (error) {
+        console.error("Automatic list loading failed", error);
+    } finally {
+        button.disabled = false;
+        delete button.dataset.loading;
+        button.textContent = label;
+
+        // Re-observing checks again if the next page still fits near the viewport.
+        if (button.isConnected && !button.hidden) {
+            infiniteScrollObserver?.unobserve(button);
+            infiniteScrollObserver?.observe(button);
+        }
+    }
+}
+
+function loadMoreDex() {
+    const button = document.getElementById("loadMoreButton");
+    return runLoadMore(button, async () => {
+        state.dexPage += 1;
+        await renderDexEntries(state.dexEntries, true);
+    });
+}
+
+function loadMoreGameDex() {
+    const button = document.getElementById("loadMoreGameButton");
+    return runLoadMore(button, async () => {
+        state.gamePage += 1;
+        await renderGameDex(true);
+    });
+}
+
+function loadMoreMoves() {
+    const button = document.getElementById("loadMoreMovesButton");
+    const pokemon = state.currentPokemon;
+    if (!pokemon) return Promise.resolve();
+    return runLoadMore(button, () => renderPokemonMoves(pokemon, true));
+}
+
+function setupEvents() {
+
+    setupInfiniteScroll();
+
+    const clearGameSelect = document.getElementById("clearGameSelect");
+    clearGameSelect.innerHTML = GAMES.map(game => `<option value="${game.id}">${game.name}</option>`).join("");
+
+    document.getElementById(
+        "searchInput"
+    ).addEventListener(
+        "input",
+        event => {
+
+            searchPokemon(
+                event.target.value
+            );
+
+        }
+    );
+
+
+    document.getElementById(
+        "dexSort"
+    ).addEventListener(
+        "change",
+        event => {
+
+            state.dexSort =
+                event.target.value;
+
+            openDex(
+                state.currentDex
+            );
+
+        }
+    );
+
+    document.getElementById("loadMoreButton")
+        .addEventListener("click", loadMoreDex);
+
+
+    document.getElementById(
+        "gameSort"
+    ).addEventListener(
+        "change",
+        async event => {
+
+            state.gameSort =
+                event.target.value;
+
+            state.gamePage = 0;
+            await renderGameDex();
+
+        }
+    );
+
+    document.getElementById("loadMoreGameButton")
+        .addEventListener("click", loadMoreGameDex);
+
+
+    document.querySelectorAll(
+        ".game-tab"
+    ).forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                async () => {
+
+                    state.currentGameDex =
+                        button.dataset.gameDex;
+
+                    state.gamePage = 0;
+
+
+                    document.querySelectorAll(
+                        ".game-tab"
+                    ).forEach(
+                        item =>
+                            item.classList.toggle(
+                                "active",
+                                item === button
+                            )
+                    );
+
+
+                    await renderGameDex();
+
+                }
+            );
+
+        }
+    );
+
+
+    document.querySelectorAll(
+        ".game-filter"
+    ).forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                async () => {
+
+                    state.gameFilter =
+                        button.dataset.filter;
+
+                    state.gamePage = 0;
+
+
+                    document.querySelectorAll(
+                        ".game-filter"
+                    ).forEach(
+                        item =>
+                            item.classList.toggle(
+                                "active",
+                                item === button
+                            )
+                    );
+
+
+                    await renderGameDex();
+
+                }
+            );
+
+        }
+    );
+
+
+    document.getElementById(
+        "backButton"
+    ).addEventListener(
+        "click",
+        () => {
+
+            if (
+                state.currentGame
+            ) {
+
+                openGame(
+                    state.currentGame.id
+                );
+
+            } else {
+
+                openDex(
+                    state.currentDex
+                );
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "gameBackButton"
+    ).addEventListener(
+        "click",
+        () => {
+
+            openDex(
+                state.currentDex
+            );
+
+        }
+    );
+
+
+    document.getElementById(
+        "clearCaughtButton"
+    ).addEventListener(
+        "click",
+        () => {
+
+            const confirmed =
+                confirm(
+                    "Haluatko varmasti poistaa kaikki caught-merkinnät?"
+                );
+
+
+            if (!confirmed) return;
+
+
+            localStorage.removeItem(
+                STORAGE_KEY
+            );
+
+
+            if (
+                state.currentGame
+            ) {
+
+                updateGameProgress();
+
+                renderGameDex();
+
+            }
+
+
+            if (
+                state.currentView ===
+                "profileView"
+            ) {
+
+                renderProfile();
+
+            }
+
+        }
+    );
+
+    document.getElementById("clearGameCaughtButton")
+        .addEventListener("click", () => {
+            const gameId = clearGameSelect.value;
+            const game = GAMES.find(item => item.id === gameId);
+            if (!game || !confirm(`Poistetaanko kaikki ${game.name}-pelin caught-merkinnät?`)) return;
+            const data = getCaughtData();
+            delete data[gameId];
+            if (gameId === "brilliantdiamond") delete data.brilliantdiamond2;
+            if (gameId === "shiningpearl") delete data.shiningpearl2;
+            saveCaughtData(data);
+            if (state.currentGame?.id === gameId) {
+                updateGameProgress();
+                renderGameDex();
+            }
+            if (state.currentView === "profileView") renderProfile();
+        });
+
+
+    document.getElementById(
+        "mobileMenuButton"
+    ).addEventListener(
+        "click",
+        event => toggleMobileSidebar(event.currentTarget)
+    );
+
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const sidebar = document.getElementById("sidebar");
+            const mobileMenuButton = document.getElementById("mobileMenuButton");
+            const reflowCompact = window.matchMedia("(max-width: 700px), (orientation: landscape) and (max-height: 600px) and (max-width: 1100px)").matches;
+            if (
+                sidebar.classList.contains("mobile-open") &&
+                !reflowCompact &&
+                !sidebar.contains(event.target) &&
+                !mobileMenuButton.contains(event.target)
+            ) {
+                sidebar.classList.remove("mobile-open");
+                sidebar.closest(".app")?.classList.remove("sidebar-open");
+                mobileMenuButton.setAttribute("aria-expanded", "false");
+                animateSidebarOrb(mobileMenuButton, false);
+            }
+
+            const search =
+                document.getElementById(
+                    "searchSuggestions"
+                );
+
+            const input =
+                document.getElementById(
+                    "searchInput"
+                );
+
+
+            if (
+                !search.contains(event.target) &&
+                event.target !== input
+            ) {
+
+                search.innerHTML = "";
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+async function init() {
+
+    setupSidebar();
+
+    setupEvents();
+
+    setupTypeSelectors();
+
+    /*
+        Avaa Pokédex-valikko aluksi.
+    */
+
+    document
+        .getElementById(
+            "pokedexMenuButton"
+        )
+        .closest(
+            ".nav-section"
+        )
+        .classList.add(
+            "open"
+        );
+
+
+    await openDex(
+        "national"
+    );
+
+}
+
+
+init();
