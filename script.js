@@ -306,10 +306,27 @@ const GAME_API_VERSIONS = {
     sun: ["sun"], moon: ["moon"], ultrasun: ["ultra-sun"], ultramoon: ["ultra-moon"],
     letsgopikachu: ["lets-go-pikachu"], letsgoeevee: ["lets-go-eevee"],
     sword: ["sword"], shield: ["shield"], legendsarceus: ["legends-arceus"],
-    brilliantdiamond: ["brilliant-diamond"], shiningpearl: ["shining-pearl"],
+    brilliantdiamond: ["brilliant-diamond", "brilliant-diamond-shining-pearl"],
+    shiningpearl: ["shining-pearl", "brilliant-diamond-shining-pearl"],
     scarlet: ["scarlet"], violet: ["violet"], legendsza: ["legends-z-a"],
     "pokemon-go": []
 };
+
+function normalizeApiVersionName(name) {
+    return String(name || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+}
+
+function getGameApiVersionNames(gameId) {
+    return new Set((GAME_API_VERSIONS[gameId] || []).map(normalizeApiVersionName));
+}
+
+function getEncounterVersionName(versionDetail) {
+    return normalizeApiVersionName(versionDetail?.version?.name);
+}
 
 const POKEMONDB_GAME_LABELS = [
     ["Let's Go Pikachu", "letsgopikachu"], ["Let's Go Eevee", "letsgoeevee"],
@@ -1714,6 +1731,7 @@ async function openPokemon(
                             </section>
                             <section class="pokemon-summary-card">
                                 <div class="overview-facts">
+                                    <span><small>Category</small><strong id="pokemonGenus">Loading...</strong></span>
                                     <span><small>Height</small><strong>${pokemon.height / 10} m</strong></span>
                                     <span><small>Weight</small><strong>${pokemon.weight / 10} kg</strong></span>
                                     <span><small>Base XP</small><strong>${pokemon.base_experience ?? "-"}</strong></span>
@@ -1881,12 +1899,16 @@ function renderSpeciesDescription(species) {
     const description = document.getElementById("speciesDescription");
     const entry = species.flavor_text_entries.find(item => item.language.name === "fi")
         || species.flavor_text_entries.find(item => item.language.name === "en");
+    const genus = species.genera?.find(item => item.language.name === "en")?.genus || "";
+    const genusElement = document.getElementById("pokemonGenus");
     const readButton = document.getElementById("readSpeciesButton");
+    if (genusElement) genusElement.textContent = genus || "Not available";
     description.textContent = entry
         ? entry.flavor_text.replace(/[\n\f\r]+/g, " ").replace(/\s+/g, " ").trim()
         : "Tästä Pokémonista ei ole lajikuvausta saatavilla.";
     description.dataset.speechLang = entry?.language.name || "en";
     description.dataset.speechName = formatPokemonName(state.currentPokemon?.name || species.name);
+    description.dataset.speechGenus = genus;
     description.dataset.speechHeight = String((state.currentPokemon?.height ?? 0) / 10);
     description.dataset.speechWeight = String((state.currentPokemon?.weight ?? 0) / 10);
     const speechAvailable = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
@@ -1936,6 +1958,10 @@ function toggleSpeciesSpeech() {
         ? `${description.dataset.speechLang === "fi" ? (spokenTypes.length > 1 ? "Tyypit: " : "Tyyppi: ") : (spokenTypes.length > 1 ? "Types: " : "Type: ")}${spokenTypes.join(description.dataset.speechLang === "fi" ? " ja " : " and ")}. `
         : "";
     const isFinnish = description.dataset.speechLang === "fi";
+    const genus = description.dataset.speechGenus;
+    const genusIntroduction = genus
+        ? `${isFinnish ? "Laji" : "Category"}: ${genus}. `
+        : "";
     const numberFormat = new Intl.NumberFormat(isFinnish ? "fi-FI" : "en-US", { maximumFractionDigits: 1 });
     const height = Number(description.dataset.speechHeight);
     const weight = Number(description.dataset.speechWeight);
@@ -1948,7 +1974,7 @@ function toggleSpeciesSpeech() {
     const measurements = isFinnish
         ? `Pituus: ${heightText}. Paino: ${weightText}. `
         : `Height: ${heightText}. Weight: ${weightText}. `;
-    const spokenText = `${description.dataset.speechName}. ${typeIntroduction}${measurements}${description.textContent}`;
+    const spokenText = `${description.dataset.speechName}. ${typeIntroduction}${genusIntroduction}${measurements}${description.textContent}`;
     const utterance = new SpeechSynthesisUtterance(spokenText);
     const voiceSettings = getPokedexVoiceSettings();
     utterance.lang = description.dataset.speechLang === "fi" ? "fi-FI" : "en-US";
@@ -2476,10 +2502,10 @@ function getPokemonDbLocations(speciesId, speciesName) {
 
 
 function getGameAcquisitionSummary(encounters, game) {
-    const versions = new Set(GAME_API_VERSIONS[game.id] || []);
+    const versions = getGameApiVersionNames(game.id);
     const summaries = new Set();
     encounters.forEach(encounter => {
-        const matchingDetails = (encounter.version_details || []).filter(item => versions.has(item.version.name));
+        const matchingDetails = (encounter.version_details || []).filter(item => versions.has(getEncounterVersionName(item)));
         if (!matchingDetails.length) return;
         const methods = formatEncounterDetails(matchingDetails);
         summaries.add(`${formatEncounterLocation(encounter.location_area.name)}: ${methods.join(", ") || "Encounter listed; method not specified"}`);
@@ -2505,13 +2531,13 @@ async function renderPokemonLocations(speciesId, requestId = state.pokemonReques
         if (requestId !== state.pokemonRequest || getPokemonIdFromUrl(state.currentPokemon?.species?.url || "") !== speciesId) return;
         const availableGameIds = new Set(availableGames.map(game => game.id));
         const encounteredVersions = new Set(encounters.flatMap(encounter =>
-            (encounter.version_details || []).map(detail => detail.version?.name).filter(Boolean)
+            (encounter.version_details || []).map(getEncounterVersionName).filter(Boolean)
         ));
         const locationGames = GAMES.filter(game => {
             if (game.id === "pokemon-go") return false;
             const withinNationalDex = speciesId <= game.nationalLimit
                 || Boolean(game.nationalExtras?.includes(speciesId));
-            const hasEncounter = (GAME_API_VERSIONS[game.id] || [])
+            const hasEncounter = [...getGameApiVersionNames(game.id)]
                 .some(version => encounteredVersions.has(version));
             if (game.regionalOnlyNational) {
                 return availableGameIds.has(game.id) || hasEncounter;
@@ -2530,10 +2556,10 @@ async function renderPokemonLocations(speciesId, requestId = state.pokemonReques
         const renderSelectedGame = async () => {
             const game = locationGames.find(item => item.id === gameSelect.value);
             if (!game) return;
-            const versions = new Set(GAME_API_VERSIONS[game?.id] || []);
+            const versions = getGameApiVersionNames(game.id);
             const locations = encounters.map(encounter => ({
                 ...encounter,
-                versionDetails: (encounter.version_details || []).filter(item => versions.has(item.version.name))
+                versionDetails: (encounter.version_details || []).filter(item => versions.has(getEncounterVersionName(item)))
             })).filter(encounter => encounter.versionDetails.length);
 
             const byLocation = new Map();
