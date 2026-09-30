@@ -140,6 +140,11 @@ button {
 .mobile-menu-button {
     border: 2px solid rgba(209, 239, 255, .75);
 
+    /* Keep the glass orb centered consistently across mobile browsers. */
+    padding: 0;
+    appearance: none;
+    -webkit-appearance: none;
+
     width: 52px;
     height: 52px;
 
@@ -163,8 +168,11 @@ button {
 .pokedex-glass-orb {
     position: relative;
     display: block;
+    place-self: center;
+    margin: 0;
     width: 37px;
     height: 37px;
+    flex: 0 0 auto;
     overflow: hidden;
     border: 1px solid rgba(238, 250, 255, .95);
     border-radius: 50%;
@@ -2704,11 +2712,13 @@ select:focus {
         place-items: center;
         width: 42px;
         height: 42px;
+        padding: 0;
     }
 
     .mobile-menu-button .pokedex-glass-orb {
         width: 31px;
         height: 31px;
+        place-self: center;
     }
 
     .topbar {
