@@ -115,10 +115,17 @@
                 </h1>
             </div>
 
-            <div class="pokedex-status-lights" aria-hidden="true">
-                <span class="status-light red"></span>
-                <span class="status-light yellow"></span>
-                <span class="status-light green"></span>
+            <div class="pokedex-header-menu">
+                <button class="pokedex-status-lights" id="pwaMenuButton" type="button" aria-label="Avaa sovellusvalikko" aria-expanded="false" aria-controls="pwaUpdateMenu">
+                    <span class="status-light red" aria-hidden="true"></span>
+                    <span class="status-light yellow" aria-hidden="true"></span>
+                    <span class="status-light green" aria-hidden="true"></span>
+                </button>
+                <div class="pwa-update-menu" id="pwaUpdateMenu" hidden>
+                    <button class="pwa-update-button" id="pwaUpdateButton" type="button">Hae päivitykset</button>
+                    <p class="pwa-update-note">Pyydystettyjen Pokémonien tiedot säilyvät päivityksessä.</p>
+                    <p class="pwa-update-status" id="pwaUpdateStatus" role="status" aria-live="polite"></p>
+                </div>
             </div>
 
         </header>

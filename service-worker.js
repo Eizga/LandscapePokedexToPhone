@@ -1,4 +1,4 @@
-const SHELL_CACHE = "pokedex-web-shell-v3";
+const SHELL_CACHE = "pokedex-web-shell-v4";
 const API_CACHE = "pokedex-web-api-v1";
 const IMAGE_CACHE = "pokedex-web-images-v1";
 const MAX_CACHED_SPRITES = 120;
@@ -53,6 +53,25 @@ async function cacheFirst(request) {
     return response;
 }
 
+async function networkFirstShell(request) {
+    const cache = await caches.open(SHELL_CACHE);
+    try {
+        const response = await fetch(request, { cache: "no-cache" });
+        if (response.ok) {
+            try {
+                await cache.put(request, response.clone());
+            } catch {
+                // Keep the newest response usable if the browser has no cache space left.
+            }
+        }
+        return response;
+    } catch (error) {
+        const cached = await cache.match(request) || await caches.match(request);
+        if (cached) return cached;
+        throw error;
+    }
+}
+
 async function networkFirstApi(request) {
     const cache = await caches.open(API_CACHE);
     try {
@@ -105,8 +124,11 @@ self.addEventListener("fetch", event => {
 
     const url = new URL(request.url);
     if (url.origin === self.location.origin) {
-        if (request.mode === "navigate") {
-            event.respondWith(fetch(request).catch(() => caches.match("./index.html")));
+        if (request.mode === "navigate"
+            || request.destination === "script"
+            || request.destination === "style"
+            || url.pathname.endsWith(".webmanifest")) {
+            event.respondWith(networkFirstShell(request));
             return;
         }
 

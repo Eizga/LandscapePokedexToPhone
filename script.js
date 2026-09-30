@@ -1,6 +1,7 @@
 const API = "https://pokeapi.co/api/v2";
 
 const STORAGE_KEY = "pokedexGameCaughtV3";
+const CAUGHT_BACKUP_KEY = "pokedexGameCaughtBackupV1";
 const VOICE_SETTINGS_KEY = "pokedexVoiceSettingsV1";
 
 const POKEMON_PAGE_SIZE = 60;
@@ -433,9 +434,37 @@ const state = {
 function getCaughtData() {
 
     try {
-        const data = JSON.parse(
-            localStorage.getItem(STORAGE_KEY)
-        ) || {};
+        const parseStoredObject = key => {
+            const stored = localStorage.getItem(key);
+            if (!stored) return null;
+            try {
+                const parsed = JSON.parse(stored);
+                return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+                    ? parsed
+                    : null;
+            } catch {
+                return null;
+            }
+        };
+        let data = parseStoredObject(STORAGE_KEY);
+        const backup = parseStoredObject(CAUGHT_BACKUP_KEY);
+        if (!data) {
+            data = backup;
+            if (data) {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                } catch (error) {
+                    console.warn("Caught data backup could not be restored to the primary key", error);
+                }
+            }
+        } else if (!backup) {
+            try {
+                localStorage.setItem(CAUGHT_BACKUP_KEY, JSON.stringify(data));
+            } catch (error) {
+                console.warn("Caught data backup could not be initialized", error);
+            }
+        }
+        data ||= {};
         if (!data.brilliantdiamond && data.brilliantdiamond2) data.brilliantdiamond = data.brilliantdiamond2;
         if (!data.shiningpearl && data.shiningpearl2) data.shiningpearl = data.shiningpearl2;
         return data;
@@ -451,7 +480,13 @@ function getCaughtData() {
 
 function saveCaughtData(data) {
     try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        const serialized = JSON.stringify(data);
+        localStorage.setItem(STORAGE_KEY, serialized);
+        try {
+            localStorage.setItem(CAUGHT_BACKUP_KEY, serialized);
+        } catch (error) {
+            console.warn("Caught data backup could not be saved", error);
+        }
         return true;
     } catch (error) {
         console.warn("Caught data could not be saved", error);
@@ -2259,6 +2294,10 @@ async function getAvailableGamesForPokemon(speciesId) {
 
 
 function formatEncounterLocation(locationName) {
+    if (/^kanto-safari-zone(?:-|$)/i.test(locationName)) {
+        return "Kanto Safari Zone";
+    }
+
     const name = locationName
         .replace(/-area(?:-[a-z0-9-]+)?$/i, "")
         .replace(/-south-towards-/g, " south toward ")
@@ -3418,7 +3457,15 @@ function setupSidebar() {
 let infiniteScrollObserver = null;
 let pwaServiceWorkerRegistration = null;
 let pwaUpdateCheckInProgress = false;
+let pwaManualUpdatePending = false;
+let pwaReloadQueued = false;
 const observedLoadMoreButtons = new Set();
+
+function reloadForPwaUpdate() {
+    if (pwaReloadQueued) return;
+    pwaReloadQueued = true;
+    window.location.reload();
+}
 
 function observeInfiniteScrollButton(button) {
     if (!button || !infiniteScrollObserver) return;
@@ -3472,12 +3519,12 @@ function registerPwaServiceWorker() {
     navigator.serviceWorker.addEventListener("controllerchange", () => {
         if (!hasController) {
             hasController = true;
-            return;
+            if (!pwaManualUpdatePending) return;
         }
 
         if (reloadingForControllerChange) return;
         reloadingForControllerChange = true;
-        window.location.reload();
+        reloadForPwaUpdate();
     });
 
     navigator.serviceWorker.register("./service-worker.js", { scope: "./" })
@@ -3499,32 +3546,85 @@ function registerPwaServiceWorker() {
 async function checkForPwaUpdate() {
     if (pwaUpdateCheckInProgress) return;
     pwaUpdateCheckInProgress = true;
+    pwaManualUpdatePending = true;
+    const updateButton = document.getElementById("pwaUpdateButton");
+    const status = document.getElementById("pwaUpdateStatus");
+    if (updateButton) updateButton.disabled = true;
+    if (status) status.textContent = "Haetaan päivityksiä…";
 
     try {
         if (!("serviceWorker" in navigator) || !window.isSecureContext) {
-            window.location.reload();
+            if (status) status.textContent = "Ladataan uusin sivu…";
+            reloadForPwaUpdate();
             return;
         }
 
-        const registration = pwaServiceWorkerRegistration
+        let registration = pwaServiceWorkerRegistration
             || await navigator.serviceWorker.getRegistration("./");
 
         if (!registration) {
-            window.location.reload();
-            return;
+            registration = await navigator.serviceWorker.register("./service-worker.js", { scope: "./" });
         }
 
         pwaServiceWorkerRegistration = registration;
         await registration.update();
 
-        if (registration.waiting) {
-            registration.waiting.postMessage({ type: "SKIP_WAITING" });
+        const waitingWorker = registration.waiting;
+        const installingWorker = registration.installing;
+        if (waitingWorker) {
+            if (status) status.textContent = "Uusi versio löytyi. Päivitetään sovellus…";
+            waitingWorker.postMessage({ type: "SKIP_WAITING" });
+            return;
         }
+        if (installingWorker) {
+            if (status) status.textContent = "Uusi versio latautuu. Sovellus avautuu päivityksen jälkeen…";
+            installingWorker.addEventListener("statechange", () => {
+                if (installingWorker.state === "redundant") {
+                    pwaManualUpdatePending = false;
+                    if (status) status.textContent = "Päivityksen lataus epäonnistui. Yritä uudelleen.";
+                }
+            });
+            return;
+        }
+
+        if (status) status.textContent = "Päivitystarkistus valmis. Ladataan uusin sisältö…";
+        window.setTimeout(reloadForPwaUpdate, 250);
     } catch (error) {
         console.warn("PWA update check failed", error);
+        pwaManualUpdatePending = false;
+        if (status) status.textContent = "Päivitysten haku epäonnistui. Tarkista verkkoyhteys.";
     } finally {
         pwaUpdateCheckInProgress = false;
+        if (updateButton) updateButton.disabled = false;
     }
+}
+
+function setupPwaUpdateMenu() {
+    const wrapper = document.querySelector(".pokedex-header-menu");
+    const menuButton = document.getElementById("pwaMenuButton");
+    const menu = document.getElementById("pwaUpdateMenu");
+    const updateButton = document.getElementById("pwaUpdateButton");
+    if (!wrapper || !menuButton || !menu || !updateButton) return;
+
+    const closeMenu = () => {
+        menu.hidden = true;
+        menuButton.setAttribute("aria-expanded", "false");
+    };
+
+    menuButton.addEventListener("click", () => {
+        const isOpening = menu.hidden;
+        menu.hidden = !isOpening;
+        menuButton.setAttribute("aria-expanded", String(isOpening));
+    });
+    updateButton.addEventListener("click", () => void checkForPwaUpdate());
+    document.addEventListener("click", event => {
+        if (!wrapper.contains(event.target)) closeMenu();
+    });
+    document.addEventListener("keydown", event => {
+        if (event.key !== "Escape" || menu.hidden) return;
+        closeMenu();
+        menuButton.focus();
+    });
 }
 
 function setupPullToRefresh() {
@@ -3658,6 +3758,7 @@ function setupEvents() {
     setupInfiniteScroll();
     setupPokedexVoiceSettings();
     setupPwaInstallPrompt();
+    setupPwaUpdateMenu();
     setupPullToRefresh();
 
     const clearGameSelect = document.getElementById("clearGameSelect");

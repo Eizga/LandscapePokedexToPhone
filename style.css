@@ -1922,11 +1922,80 @@ select:focus {
     display: flex;
     align-items: center;
     gap: 7px;
-    margin-left: auto;
     padding: 4px 7px;
     border: 1px solid rgba(255, 255, 255, .12);
     border-radius: 99px;
     background: rgba(10, 12, 17, .75);
+    cursor: pointer;
+}
+
+.pokedex-header-menu {
+    position: relative;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.pokedex-status-lights:hover {
+    border-color: rgba(255, 255, 255, .55);
+    box-shadow: 0 0 12px rgba(255, 255, 255, .16);
+}
+
+.pokedex-status-lights:focus-visible,
+.pwa-update-button:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+}
+
+.pwa-update-menu {
+    position: absolute;
+    z-index: 180;
+    top: calc(100% + 9px);
+    right: 0;
+    width: min(280px, calc(100vw - 24px));
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--panel);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, .42);
+}
+
+.pwa-update-menu[hidden] {
+    display: none;
+}
+
+.pwa-update-button {
+    width: 100%;
+    min-height: 40px;
+    padding: 9px 12px;
+    border: 1px solid rgba(255, 255, 255, .18);
+    border-radius: 9px;
+    color: white;
+    background: var(--accent-dark);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.pwa-update-button:hover:not(:disabled) {
+    background: var(--accent);
+}
+
+.pwa-update-button:disabled {
+    opacity: .65;
+    cursor: wait;
+}
+
+.pwa-update-note,
+.pwa-update-status {
+    margin: 8px 2px 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.pwa-update-status:empty {
+    display: none;
 }
 
 .status-light {
