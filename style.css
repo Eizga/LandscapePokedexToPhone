@@ -2716,9 +2716,12 @@ select:focus {
     }
 
     .mobile-menu-button .pokedex-glass-orb {
+        position: absolute;
+        top: 50%;
+        left: 50%;
         width: 31px;
         height: 31px;
-        place-self: center;
+        transform: translate(-50%, -50%);
     }
 
     .topbar {
