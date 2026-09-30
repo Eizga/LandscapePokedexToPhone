@@ -691,6 +691,15 @@ function capitalize(value) {
 }
 
 
+function formatPokemonName(value) {
+    const name = String(value || "");
+    const normalized = name.toLowerCase().replaceAll("_", "-");
+    if (["nidoran-f", "nidoran-female"].includes(normalized)) return "Nidoran♀";
+    if (["nidoran-m", "nidoran-male"].includes(normalized)) return "Nidoran♂";
+    return capitalize(name);
+}
+
+
 function hexToRgba(hex, alpha = .25) {
 
     const clean = hex.replace("#", "");
@@ -1019,14 +1028,14 @@ function createPokemonCard(
                 pokemon.sprites.other?.["official-artwork"]?.front_default
                 || pokemon.sprites.front_default
             }"
-            alt="${pokemon.name}"
+            alt="${formatPokemonName(pokemon.name)}"
             loading="lazy"
         >
 
         <div class="pokemon-card-bottom">
 
             <h3 class="pokemon-card-name">
-                ${capitalize(pokemon.name)}
+                ${formatPokemonName(pokemon.name)}
             </h3>
 
             <div class="type-row">
@@ -1373,7 +1382,7 @@ function createGamePokemonCard(
         caughtButton.classList.toggle("caught", caught);
         caughtButton.setAttribute("aria-pressed", String(caught));
         caughtButton.innerHTML = `<span aria-hidden="true">${caught ? "✓" : "+"}</span><span>${caught ? "Caught" : "Mark caught"}</span>`;
-        caughtButton.setAttribute("aria-label", `${caught ? "Unmark" : "Mark"} ${capitalize(pokemon.name)} as caught in ${game.name}`);
+        caughtButton.setAttribute("aria-label", `${caught ? "Unmark" : "Mark"} ${formatPokemonName(pokemon.name)} as caught in ${game.name}`);
     };
 
     updateCaughtButton();
@@ -1577,7 +1586,7 @@ async function openPokemon(
     document.getElementById(
         "pageTitle"
     ).textContent =
-        capitalize(pokemon.name);
+        formatPokemonName(pokemon.name);
 
 
     document.getElementById(
@@ -1616,7 +1625,7 @@ async function openPokemon(
                             pokemon.sprites.other?.["official-artwork"]?.front_default
                             || pokemon.sprites.front_default
                         }"
-                        alt="${pokemon.name}"
+                        alt="${formatPokemonName(pokemon.name)}"
                     >
 
                 </div>
@@ -1629,7 +1638,7 @@ async function openPokemon(
                     </div>
 
                     <h2>
-                        ${capitalize(pokemon.name)}
+                        ${formatPokemonName(pokemon.name)}
                     </h2>
 
                     <div class="type-row">
@@ -1842,7 +1851,7 @@ function renderSpeciesDescription(species) {
         ? entry.flavor_text.replace(/[\n\f\r]+/g, " ").replace(/\s+/g, " ").trim()
         : "Tästä Pokémonista ei ole lajikuvausta saatavilla.";
     description.dataset.speechLang = entry?.language.name || "en";
-    description.dataset.speechName = capitalize(state.currentPokemon?.name || species.name);
+    description.dataset.speechName = formatPokemonName(state.currentPokemon?.name || species.name);
     description.dataset.speechHeight = String((state.currentPokemon?.height ?? 0) / 10);
     description.dataset.speechWeight = String((state.currentPokemon?.weight ?? 0) / 10);
     const speechAvailable = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
@@ -2067,7 +2076,7 @@ function renderEvolutionNode(node, isRoot = true) {
         <div class="evolution-path-node${isRoot ? " root" : ""}">
             <button class="evolution-pokemon" data-species-id="${speciesId}">
                 <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${speciesId}.png" alt="" loading="lazy">
-                <span>#${String(speciesId).padStart(4, "0")} ${capitalize(node.species.name)}</span>
+                <span>#${String(speciesId).padStart(4, "0")} ${formatPokemonName(node.species.name)}</span>
             </button>
             ${children.length ? `<div class="evolution-branches">${children.map(child => `
                 <div class="evolution-branch">
@@ -2147,7 +2156,7 @@ async function renderPokemonForms(species, requestId = state.pokemonRequest) {
             const button = document.createElement("button");
             button.className = "pokemon-form-card";
             const image = pokemon.sprites.other?.["official-artwork"]?.front_default || pokemon.sprites.front_default;
-            button.innerHTML = `<img src="${image || ""}" alt="" loading="lazy"><span>${capitalize(pokemon.name)}</span>${variety.is_default ? "<small>Default form</small>" : ""}`;
+            button.innerHTML = `<img src="${image || ""}" alt="" loading="lazy"><span>${formatPokemonName(pokemon.name)}</span>${variety.is_default ? "<small>Default form</small>" : ""}`;
             button.addEventListener("click", () => openPokemon(pokemon.id, state.currentGame?.id || null));
             container.appendChild(button);
         });
@@ -2455,7 +2464,21 @@ async function renderPokemonLocations(speciesId, requestId = state.pokemonReques
             getAvailableGamesForPokemon(speciesId)
         ]);
         if (requestId !== state.pokemonRequest || getPokemonIdFromUrl(state.currentPokemon?.species?.url || "") !== speciesId) return;
-        const locationGames = availableGames.filter(game => game.id !== "pokemon-go");
+        const availableGameIds = new Set(availableGames.map(game => game.id));
+        const encounteredVersions = new Set(encounters.flatMap(encounter =>
+            (encounter.version_details || []).map(detail => detail.version?.name).filter(Boolean)
+        ));
+        const locationGames = GAMES.filter(game => {
+            if (game.id === "pokemon-go") return false;
+            const withinNationalDex = speciesId <= game.nationalLimit
+                || Boolean(game.nationalExtras?.includes(speciesId));
+            const hasEncounter = (GAME_API_VERSIONS[game.id] || [])
+                .some(version => encounteredVersions.has(version));
+            if (game.regionalOnlyNational) {
+                return availableGameIds.has(game.id) || hasEncounter;
+            }
+            return availableGameIds.has(game.id) || withinNationalDex || hasEncounter;
+        });
         if (!locationGames.length) {
             gameSelect.disabled = true;
             container.innerHTML = `<div class="empty-state">No games with a Pokédex entry were found for this Pokémon.</div>`;
@@ -2474,89 +2497,34 @@ async function renderPokemonLocations(speciesId, requestId = state.pokemonReques
                 versionDetails: (encounter.version_details || []).filter(item => versions.has(item.version.name))
             })).filter(encounter => encounter.versionDetails.length);
 
-            if (locations.length) {
-                const byLocation = new Map();
-                locations.forEach(location => {
-                    const name = location.location_area.name;
-                    const existing = byLocation.get(name) || { name, versionDetails: [] };
-                    existing.versionDetails.push(...location.versionDetails);
-                    byLocation.set(name, existing);
-                });
+            const byLocation = new Map();
+            locations.forEach(location => {
+                const name = formatEncounterLocation(location.location_area.name);
+                const key = name.toLocaleLowerCase();
+                const existing = byLocation.get(key) || { name, versionDetails: [] };
+                existing.versionDetails.push(...location.versionDetails);
+                byLocation.set(key, existing);
+            });
 
-                container.innerHTML = `<div class="pokemon-location-list" id="pokemonLocationResults"></div>`;
-                const results = document.getElementById("pokemonLocationResults");
-                [...byLocation.values()].forEach(location => {
-                    const card = document.createElement("article");
-                    card.className = "pokemon-location-card";
-                    const title = document.createElement("strong");
-                    title.textContent = formatEncounterLocation(location.name);
-                    const details = document.createElement("span");
-                    const versions = [...new Set(location.versionDetails.map(item => capitalize(item.version.name.replaceAll("-", " "))))];
-                    const methods = formatEncounterDetails(location.versionDetails);
-                    details.textContent = [...versions, ...methods].join(" · ") || "Encounter method not specified";
-                    card.append(title, details);
-                    results.appendChild(card);
-                });
+            if (!byLocation.size) {
+                container.innerHTML = `<div class="empty-state">PokéAPI has no encounter locations for ${game.name}.</div>`;
                 return;
             }
 
-            container.innerHTML = `<div class="empty-state">PokéAPI has no encounter entry for ${game.name}. Checking PokémonDB…</div>`;
-            const speciesName = state.currentPokemon.species.name;
-            try {
-                const database = await getPokemonDbLocations(speciesId, speciesName);
-                if (requestId !== state.pokemonRequest
-                    || getPokemonIdFromUrl(state.currentPokemon?.species?.url || "") !== speciesId
-                    || gameSelect.value !== game.id) return;
-
-                const found = database.byGame.get(game.id) || [];
-                container.replaceChildren();
-                if (found.length) {
-                    const list = document.createElement("div");
-                    list.className = "pokemon-location-list";
-                    found.forEach(value => {
-                        const card = document.createElement("article");
-                        card.className = "pokemon-location-card";
-                        const title = document.createElement("strong");
-                        title.textContent = game.name;
-                        const details = document.createElement("span");
-                        details.textContent = value;
-                        card.append(title, details);
-                        list.appendChild(card);
-                    });
-                    container.appendChild(list);
-                } else {
-                    const empty = document.createElement("div");
-                    empty.className = "empty-state";
-                    empty.textContent = `No acquisition details were found for ${game.name} in PokéAPI or PokémonDB.`;
-                    container.appendChild(empty);
-                }
-                const sourceLink = document.createElement("a");
-                sourceLink.href = database.pageUrl;
-                sourceLink.target = "_blank";
-                sourceLink.rel = "noopener noreferrer";
-                sourceLink.className = "pokemon-location-source";
-                sourceLink.textContent = "PokémonDB · Where to find";
-                container.appendChild(sourceLink);
-            } catch (error) {
-                if (requestId !== state.pokemonRequest
-                    || getPokemonIdFromUrl(state.currentPokemon?.species?.url || "") !== speciesId
-                    || gameSelect.value !== game.id) return;
-                console.warn("PokemonDB location fallback failed", error);
-                const message = document.createElement("div");
-                message.className = "empty-state";
+            container.innerHTML = `<div class="pokemon-location-list" id="pokemonLocationResults"></div>`;
+            const results = document.getElementById("pokemonLocationResults");
+            [...byLocation.values()].forEach(location => {
+                const card = document.createElement("article");
+                card.className = "pokemon-location-card";
                 const title = document.createElement("strong");
-                title.textContent = game.name;
-                const note = document.createElement("p");
-                note.textContent = "PokémonDB could not be read inside the app. Open its Where to find section instead.";
-                const sourceLink = document.createElement("a");
-                sourceLink.href = getPokemonDbPageUrl(speciesName);
-                sourceLink.target = "_blank";
-                sourceLink.rel = "noopener noreferrer";
-                sourceLink.className = "pokemon-location-source";
-                sourceLink.textContent = "PokémonDB · Where to find";
-                message.append(title, note, sourceLink);
-                container.replaceChildren(message);
-            }
+                title.textContent = location.name;
+                const details = document.createElement("span");
+                const versions = [...new Set(location.versionDetails.map(item => capitalize(item.version.name.replaceAll("-", " "))))];
+                const methods = formatEncounterDetails(location.versionDetails);
+                details.textContent = [...versions, ...methods].join(" · ") || "Encounter method not specified";
+                card.append(title, details);
+                results.appendChild(card);
+            });
         };
 
         gameSelect.onchange = renderSelectedGame;
@@ -2711,7 +2679,7 @@ async function searchPokemon(
 
                 <span>
                     #${String(result.id).padStart(4, "0")}
-                    ${capitalize(result.name)}
+                    ${formatPokemonName(result.name)}
                 </span>
 
             `;
