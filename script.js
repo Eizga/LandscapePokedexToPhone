@@ -3109,6 +3109,39 @@ function observeInfiniteScrollButton(button) {
     }
 }
 
+function setupPwaInstallPrompt() {
+    const installButton = document.getElementById("installPwaButton");
+    if (!installButton) return;
+
+    let installPrompt = null;
+    window.addEventListener("beforeinstallprompt", event => {
+        event.preventDefault();
+        installPrompt = event;
+        installButton.hidden = false;
+    });
+
+    installButton.addEventListener("click", async () => {
+        if (!installPrompt) return;
+        const prompt = installPrompt;
+        installPrompt = null;
+        installButton.hidden = true;
+        await prompt.prompt();
+        await prompt.userChoice;
+    });
+
+    window.addEventListener("appinstalled", () => {
+        installPrompt = null;
+        installButton.hidden = true;
+    });
+}
+
+
+function registerPwaServiceWorker() {
+    if (!("serviceWorker" in navigator) || !window.isSecureContext) return;
+    navigator.serviceWorker.register("./service-worker.js", { scope: "./" })
+        .catch(error => console.warn("PWA offline support could not be enabled", error));
+}
+
 function setupInfiniteScroll() {
     if (!("IntersectionObserver" in window)) return;
 
@@ -3183,6 +3216,7 @@ function setupEvents() {
 
     setupInfiniteScroll();
     setupPokedexVoiceSettings();
+    setupPwaInstallPrompt();
 
     const clearGameSelect = document.getElementById("clearGameSelect");
     clearGameSelect.innerHTML = GAMES.map(game => `<option value="${game.id}">${game.name}</option>`).join("");
@@ -3476,6 +3510,7 @@ function setupEvents() {
 
 async function init() {
 
+    registerPwaServiceWorker();
     setupSidebar();
 
     setupEvents();

@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokédex Web</title>
+    <meta name="theme-color" content="#d9343b">
+    <meta name="description" content="Pokédex ja Pokémon-pelien keräilyseuranta.">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Pokédex">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="apple-touch-icon" href="./assets/pwa-icon-180.png">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -330,6 +338,14 @@
             <div class="settings-panel">
 
                 <h2>Settings</h2>
+
+                <div class="setting-row">
+                    <div>
+                        <strong>Install Pokédex</strong>
+                        <p>On iPhone and iPad, use the browser Share menu and choose “Add to Home Screen”. Other supported browsers show an install option in their menu.</p>
+                    </div>
+                    <button id="installPwaButton" class="pwa-install-button" type="button" hidden>Install app</button>
+                </div>
 
                 <div class="setting-row voice-setting-row">
                     <div>

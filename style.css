@@ -1707,6 +1707,20 @@ select:focus {
     border-radius: 9px;
 }
 
+.pwa-install-button {
+    flex: 0 0 auto;
+    padding: 9px 13px;
+    border: 1px solid var(--accent-dark);
+    border-radius: 9px;
+    color: #fff;
+    background: var(--accent);
+    white-space: nowrap;
+}
+
+.pwa-install-button[hidden] {
+    display: none;
+}
+
 .voice-settings-controls {
     display: grid;
     grid-template-columns: repeat(2, minmax(140px, 1fr));
