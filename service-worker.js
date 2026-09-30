@@ -1,4 +1,4 @@
-const SHELL_CACHE = "pokedex-web-shell-v1";
+const SHELL_CACHE = "pokedex-web-shell-v2";
 const API_CACHE = "pokedex-web-api-v1";
 const IMAGE_CACHE = "pokedex-web-images-v1";
 const MAX_CACHED_SPRITES = 120;
@@ -19,6 +19,12 @@ self.addEventListener("install", event => {
             .then(cache => cache.addAll(SHELL_FILES))
             .then(() => self.skipWaiting())
     );
+});
+
+self.addEventListener("message", event => {
+    if (event.data?.type === "SKIP_WAITING") {
+        self.skipWaiting();
+    }
 });
 
 self.addEventListener("activate", event => {

@@ -555,6 +555,7 @@ button {
     height: 100vh;
 
     overflow-y: auto;
+    overscroll-behavior-y: contain;
 
     background:
         radial-gradient(

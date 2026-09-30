@@ -3091,6 +3091,8 @@ function setupSidebar() {
 ========================================================= */
 
 let infiniteScrollObserver = null;
+let pwaServiceWorkerRegistration = null;
+let pwaUpdateCheckInProgress = false;
 const observedLoadMoreButtons = new Set();
 
 function observeInfiniteScrollButton(button) {
@@ -3138,8 +3140,122 @@ function setupPwaInstallPrompt() {
 
 function registerPwaServiceWorker() {
     if (!("serviceWorker" in navigator) || !window.isSecureContext) return;
+
+    let hasController = Boolean(navigator.serviceWorker.controller);
+    let reloadingForControllerChange = false;
+
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (!hasController) {
+            hasController = true;
+            return;
+        }
+
+        if (reloadingForControllerChange) return;
+        reloadingForControllerChange = true;
+        window.location.reload();
+    });
+
     navigator.serviceWorker.register("./service-worker.js", { scope: "./" })
+        .then(registration => {
+            pwaServiceWorkerRegistration = registration;
+            registration.update()
+                .catch(error => console.warn("PWA update check failed", error));
+
+            document.addEventListener("visibilitychange", () => {
+                if (document.visibilityState === "visible") {
+                    registration.update()
+                        .catch(error => console.warn("PWA update check failed", error));
+                }
+            });
+        })
         .catch(error => console.warn("PWA offline support could not be enabled", error));
+}
+
+async function checkForPwaUpdate() {
+    if (pwaUpdateCheckInProgress) return;
+    pwaUpdateCheckInProgress = true;
+
+    try {
+        if (!("serviceWorker" in navigator) || !window.isSecureContext) {
+            window.location.reload();
+            return;
+        }
+
+        const registration = pwaServiceWorkerRegistration
+            || await navigator.serviceWorker.getRegistration("./");
+
+        if (!registration) {
+            window.location.reload();
+            return;
+        }
+
+        pwaServiceWorkerRegistration = registration;
+        await registration.update();
+
+        if (registration.waiting) {
+            registration.waiting.postMessage({ type: "SKIP_WAITING" });
+        }
+    } catch (error) {
+        console.warn("PWA update check failed", error);
+    } finally {
+        pwaUpdateCheckInProgress = false;
+    }
+}
+
+function setupPullToRefresh() {
+    const scroller = document.querySelector(".main-content");
+    if (!scroller || !("ontouchstart" in window)) return;
+
+    const refreshThreshold = 72;
+    let startX = 0;
+    let startY = 0;
+    let pullDistance = 0;
+    let trackingPull = false;
+
+    scroller.addEventListener("touchstart", event => {
+        if (event.touches.length !== 1 || scroller.scrollTop > 0) {
+            trackingPull = false;
+            return;
+        }
+
+        if (event.target.closest(".topbar, .sidebar")) {
+            trackingPull = false;
+            return;
+        }
+
+        startX = event.touches[0].clientX;
+        startY = event.touches[0].clientY;
+        pullDistance = 0;
+        trackingPull = true;
+    }, { passive: true });
+
+    scroller.addEventListener("touchmove", event => {
+        if (!trackingPull || event.touches.length !== 1) return;
+
+        const deltaX = event.touches[0].clientX - startX;
+        const deltaY = event.touches[0].clientY - startY;
+        if (deltaY <= 0 || Math.abs(deltaX) > deltaY) {
+            trackingPull = false;
+            return;
+        }
+
+        pullDistance = deltaY;
+        if (pullDistance > 8 && event.cancelable) event.preventDefault();
+    }, { passive: false });
+
+    scroller.addEventListener("touchend", () => {
+        if (trackingPull && pullDistance >= refreshThreshold) {
+            void checkForPwaUpdate();
+        }
+
+        trackingPull = false;
+        pullDistance = 0;
+    }, { passive: true });
+
+    scroller.addEventListener("touchcancel", () => {
+        trackingPull = false;
+        pullDistance = 0;
+    }, { passive: true });
 }
 
 function setupInfiniteScroll() {
@@ -3217,6 +3333,7 @@ function setupEvents() {
     setupInfiniteScroll();
     setupPokedexVoiceSettings();
     setupPwaInstallPrompt();
+    setupPullToRefresh();
 
     const clearGameSelect = document.getElementById("clearGameSelect");
     clearGameSelect.innerHTML = GAMES.map(game => `<option value="${game.id}">${game.name}</option>`).join("");
