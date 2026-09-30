@@ -310,6 +310,24 @@ const GAME_API_VERSIONS = {
     "pokemon-go": []
 };
 
+const POKEMONDB_GAME_LABELS = [
+    ["Let's Go Pikachu", "letsgopikachu"], ["Let's Go Eevee", "letsgoeevee"],
+    ["Brilliant Diamond", "brilliantdiamond"], ["Shining Pearl", "shiningpearl"],
+    ["Legends: Arceus", "legendsarceus"], ["Legends: Z-A", "legendsza"],
+    ["Alpha Sapphire", "alphasapphire"], ["Omega Ruby", "omegaruby"],
+    ["Ultra Sun", "ultrasun"], ["Ultra Moon", "ultramoon"],
+    ["Black 2", "black2"], ["White 2", "white2"],
+    ["HeartGold", "heartgold"], ["SoulSilver", "soulsilver"],
+    ["FireRed", "firered"], ["LeafGreen", "leafgreen"],
+    ["Red", "red"], ["Blue", "blue"], ["Yellow", "yellow"],
+    ["Gold", "gold"], ["Silver", "silver"], ["Crystal", "crystal"],
+    ["Ruby", "ruby"], ["Sapphire", "sapphire"], ["Emerald", "emerald"],
+    ["Diamond", "diamond"], ["Pearl", "pearl"], ["Platinum", "platinum"],
+    ["Black", "black"], ["White", "white"], ["X", "x"], ["Y", "y"],
+    ["Sun", "sun"], ["Moon", "moon"], ["Sword", "sword"], ["Shield", "shield"],
+    ["Scarlet", "scarlet"], ["Violet", "violet"]
+];
+
 // Covers are shipped with the app so the Games view does not depend on an
 // external image service being available at runtime.
 const GAME_COVER_FILE_NAMES = {
@@ -367,6 +385,18 @@ const state = {
 
     searchRequest: 0,
 
+    dexRequest: 0,
+
+    gameRequest: 0,
+
+    gameRenderRequest: 0,
+
+    pokemonRequest: 0,
+
+    moveRenderRequest: 0,
+
+    profileRequest: 0,
+
     gameRegionalEntries: [],
 
     gameNationalEntries: [],
@@ -376,6 +406,10 @@ const state = {
     dexCache: new Map(),
 
     encounterCache: new Map(),
+
+    gameAvailabilityCache: new Map(),
+
+    pokemonDbLocationCache: new Map(),
 
     dexEntriesById: new Map(),
 
@@ -416,12 +450,13 @@ function getCaughtData() {
 
 
 function saveCaughtData(data) {
-
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(data)
-    );
-
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        return true;
+    } catch (error) {
+        console.warn("Caught data could not be saved", error);
+        return false;
+    }
 }
 
 
@@ -455,7 +490,7 @@ function setCaught(gameId, pokemonId, value) {
 
     }
 
-    saveCaughtData(data);
+    return saveCaughtData(data);
 
 }
 
@@ -519,10 +554,12 @@ async function getMove(name) {
 
 
 async function openPokemonSpecies(speciesId, gameId = null, navigationContext = undefined) {
+    const requestId = ++state.pokemonRequest;
     const species = await getPokemonSpecies(speciesId);
+    if (requestId !== state.pokemonRequest) return;
     const defaultPokemon = species.varieties.find(item => item.is_default) || species.varieties[0];
     const pokemonId = getPokemonIdFromPokemonUrl(defaultPokemon.pokemon.url);
-    await openPokemon(pokemonId, gameId, navigationContext);
+    await openPokemon(pokemonId, gameId, navigationContext, requestId);
 }
 
 
@@ -766,6 +803,13 @@ function setSidebarSelection(mainButtonId, childButtonSelector = null) {
 ========================================================= */
 
 async function openDex(dexId) {
+    const dex = POKEDEXES.find(item => item.id === dexId);
+    if (!dex) return;
+
+    const requestId = ++state.dexRequest;
+    state.gameRequest += 1;
+    state.pokemonRequest += 1;
+    stopSpeciesSpeech();
 
     state.currentDex = dexId;
     state.currentGame = null;
@@ -773,13 +817,6 @@ async function openDex(dexId) {
 
     state.dexSort =
         document.getElementById("dexSort").value;
-
-    const dex =
-        POKEDEXES.find(
-            item => item.id === dexId
-        );
-
-    if (!dex) return;
 
     setSidebarSelection(
         "pokedexMenuButton",
@@ -807,12 +844,13 @@ async function openDex(dexId) {
 
         if (dexId === "national") {
 
-            await loadNationalDex();
+            await loadNationalDex(requestId);
 
         } else {
 
             const data =
                 await getDexData(dex.api);
+            if (requestId !== state.dexRequest) return;
 
             state.dexEntries =
                 data.pokemon_entries.map((entry, order) => {
@@ -839,12 +877,15 @@ async function openDex(dexId) {
             });
 
             await renderDexEntries(
-                state.dexEntries
+                state.dexEntries,
+                false,
+                requestId
             );
 
         }
 
     } catch (error) {
+        if (requestId !== state.dexRequest) return;
 
         console.error(error);
 
@@ -859,8 +900,10 @@ async function openDex(dexId) {
 
     }
 
-    document.getElementById("loading")
-        .classList.remove("active");
+    if (requestId === state.dexRequest) {
+        document.getElementById("loading")
+            .classList.remove("active");
+    }
 
 }
 
@@ -869,10 +912,14 @@ async function openDex(dexId) {
    NATIONAL DEX
 ========================================================= */
 
-async function loadNationalDex() {
-    state.dexEntries = await getNationalEntries();
+async function loadNationalDex(requestId = state.dexRequest) {
+    const entries = await getNationalEntries();
+    if (requestId !== state.dexRequest) return;
+    state.dexEntries = entries;
     await renderDexEntries(
-        state.dexEntries
+        state.dexEntries,
+        false,
+        requestId
     );
 
 }
@@ -882,7 +929,8 @@ async function loadNationalDex() {
    RENDER DEX
 ========================================================= */
 
-async function renderDexEntries(entries, append = false) {
+async function renderDexEntries(entries, append = false, requestId = state.dexRequest) {
+    if (requestId !== state.dexRequest) return;
 
     const sorted =
         [...entries].sort(
@@ -922,6 +970,7 @@ async function renderDexEntries(entries, append = false) {
             return null;
         }
     }));
+    if (requestId !== state.dexRequest) return;
     cards.filter(Boolean).forEach(card => grid.appendChild(card));
 
     const loadMoreButton = document.getElementById("loadMoreButton");
@@ -1015,6 +1064,10 @@ async function openGame(gameId) {
 
     if (!game) return;
 
+    const requestId = ++state.gameRequest;
+    state.pokemonRequest += 1;
+    stopSpeciesSpeech();
+
     setSidebarSelection(
         "gamesMenuButton",
         `.game-button[data-game="${gameId}"]`
@@ -1088,7 +1141,7 @@ async function openGame(gameId) {
 
     });
 
-    await loadGameDex();
+    await loadGameDex(game, requestId);
 
 }
 
@@ -1122,10 +1175,7 @@ function renderGameCover(game) {
 }
 
 
-async function loadGameDex() {
-
-    const game =
-        state.currentGame;
+async function loadGameDex(game = state.currentGame, requestId = state.gameRequest) {
 
     if (!game) return;
 
@@ -1135,6 +1185,7 @@ async function loadGameDex() {
     for (const dexId of game.dexes) {
         try {
             const entries = await getDexEntriesById(dexId);
+            if (requestId !== state.gameRequest) return;
             entries.forEach(entry => {
                 if (game.excludesRegional?.includes(entry.pokemonId)) return;
                 if (regionalIds.has(entry.pokemonId)) return;
@@ -1146,12 +1197,15 @@ async function loadGameDex() {
         }
     }
 
+    if (requestId !== state.gameRequest) return;
+
     state.gameRegionalEntries =
         regionalEntries;
 
 
     try {
         const national = await getNationalEntries();
+        if (requestId !== state.gameRequest) return;
         state.gameNationalEntries = national.filter(entry => {
             const withinLimit = entry.id <= game.nationalLimit || game.nationalExtras?.includes(entry.pokemonId);
             const availableInGame = game.regionalOnlyNational
@@ -1160,10 +1214,12 @@ async function loadGameDex() {
             return availableInGame;
         });
     } catch (error) {
+        if (requestId !== state.gameRequest) return;
         console.error("National dex error", error);
         state.gameNationalEntries = [];
     }
 
+    if (requestId !== state.gameRequest) return;
     state.gamePage = 0;
     await renderGameDex();
 
@@ -1176,12 +1232,17 @@ async function loadGameDex() {
 
 async function renderGameDex(append = false) {
 
+    const game = state.currentGame;
+    if (!game) return;
+    const requestId = state.gameRequest;
+    const renderId = ++state.gameRenderRequest;
+
     const entries =
         state.currentGameDex === "regional"
             ? state.gameRegionalEntries
             : state.gameNationalEntries;
 
-    const caughtData = getCaughtData()[state.currentGame.id] || {};
+    const caughtData = getCaughtData()[game.id] || {};
     const filtered =
         entries.filter(entry => {
 
@@ -1229,6 +1290,9 @@ async function renderGameDex(append = false) {
             }
         );
 
+    const lastPage = Math.max(0, Math.ceil(sorted.length / POKEMON_PAGE_SIZE) - 1);
+    state.gamePage = Math.min(state.gamePage, lastPage);
+
 
     const grid =
         document.getElementById(
@@ -1270,6 +1334,7 @@ async function renderGameDex(append = false) {
             return null;
         }
     }));
+    if (requestId !== state.gameRequest || renderId !== state.gameRenderRequest || game !== state.currentGame) return;
     cards.filter(Boolean).forEach(card => grid.appendChild(card));
     loadMoreButton.hidden = start + page.length >= sorted.length;
 
@@ -1315,10 +1380,17 @@ function createGamePokemonCard(
     caughtButton.addEventListener("click", async event => {
         event.stopPropagation();
         const nextCaught = !isCaught(game.id, speciesId);
-        setCaught(game.id, speciesId, nextCaught);
+        if (!setCaught(game.id, speciesId, nextCaught)) {
+            alert("Caught-merkintää ei voitu tallentaa tähän selaimeen.");
+            return;
+        }
         updateCaughtButton();
         updateGameProgress();
-        if (state.gameFilter !== "all") await renderGameDex();
+        if (state.currentView === "pokemonView") updatePokemonNavigation();
+        if (state.gameFilter !== "all") {
+            state.gamePage = 0;
+            await renderGameDex();
+        }
     });
     card.appendChild(caughtButton);
 
@@ -1469,8 +1541,15 @@ function navigatePokemon(offset) {
 async function openPokemon(
     pokemonId,
     gameId = null,
-    navigationContext = undefined
+    navigationContext = undefined,
+    requestId = null
 ) {
+
+    if (requestId === null) requestId = ++state.pokemonRequest;
+    if (requestId !== state.pokemonRequest) return;
+    state.gameRequest += 1;
+    state.gameRenderRequest += 1;
+    state.moveRenderRequest += 1;
 
     stopSpeciesSpeech();
 
@@ -1478,8 +1557,10 @@ async function openPokemon(
         await getPokemon(
             pokemonId
         );
+    if (requestId !== state.pokemonRequest) return;
     const speciesId = getPokemonIdFromUrl(pokemon.species.url) || pokemon.id;
     const species = await getPokemonSpecies(speciesId);
+    if (requestId !== state.pokemonRequest) return;
 
     state.currentPokemon =
         pokemon;
@@ -1694,11 +1775,11 @@ async function openPokemon(
     renderPokemonMatchups(pokemon);
     await Promise.all([
         renderSpeciesDescription(species),
-        renderEvolutionChain(species),
-        renderPokemonGames(pokemon.id, species.id),
-        renderPokemonForms(species),
-        renderPokemonLocations(pokemon.id),
-        renderPokemonMoves(pokemon)
+        renderEvolutionChain(species, requestId),
+        renderPokemonGames(species.id, requestId),
+        renderPokemonForms(species, requestId),
+        renderPokemonLocations(species.id, requestId),
+        renderPokemonMoves(pokemon, false, requestId)
     ]);
 
 }
@@ -1999,15 +2080,17 @@ function renderEvolutionNode(node, isRoot = true) {
 }
 
 
-async function renderEvolutionChain(species) {
+async function renderEvolutionChain(species, requestId = state.pokemonRequest) {
     const container = document.getElementById("evolutionChain");
     try {
         const data = await apiFetch(species.evolution_chain.url);
+        if (requestId !== state.pokemonRequest) return;
         container.innerHTML = renderEvolutionNode(data.chain);
         container.querySelectorAll("[data-species-id]").forEach(button => {
             button.addEventListener("click", () => openPokemonSpecies(Number(button.dataset.speciesId), state.currentGame?.id || null));
         });
     } catch (error) {
+        if (requestId !== state.pokemonRequest) return;
         console.warn("Evolution chain load failed", error);
         container.textContent = "Kehityspolkua ei voitu ladata.";
     }
@@ -2051,13 +2134,14 @@ function renderPokemonMatchups(pokemon) {
 }
 
 
-async function renderPokemonForms(species) {
+async function renderPokemonForms(species, requestId = state.pokemonRequest) {
     const container = document.getElementById("pokemonFormsList");
     try {
         const forms = await Promise.all(species.varieties.map(async variety => {
             const pokemon = await getPokemon(getPokemonIdFromPokemonUrl(variety.pokemon.url));
             return { variety, pokemon };
         }));
+        if (requestId !== state.pokemonRequest) return;
         container.innerHTML = "";
         forms.forEach(({ variety, pokemon }) => {
             const button = document.createElement("button");
@@ -2068,6 +2152,7 @@ async function renderPokemonForms(species) {
             container.appendChild(button);
         });
     } catch (error) {
+        if (requestId !== state.pokemonRequest) return;
         console.warn("Pokemon forms load failed", error);
         container.textContent = "Muotoja ei voitu ladata.";
     }
@@ -2088,10 +2173,11 @@ async function loadAllMoveDetails(pokemon) {
 }
 
 
-async function renderPokemonMoves(pokemon, append = false) {
+async function renderPokemonMoves(pokemon, append = false, requestId = state.pokemonRequest) {
     const container = document.getElementById("pokemonMovesList");
     const loadMore = document.getElementById("loadMoreMovesButton");
     if (!container || !loadMore) return;
+    const renderId = ++state.moveRenderRequest;
     if (!append) loadMore.hidden = true;
     const moveEntries = [...pokemon.moves];
     if (state.moveSort === "name") {
@@ -2134,13 +2220,17 @@ async function renderPokemonMoves(pokemon, append = false) {
             return null;
         }
     }));
+    if (requestId !== state.pokemonRequest || renderId !== state.moveRenderRequest) return;
     cards.filter(Boolean).forEach(card => container.appendChild(card));
     loadMore.hidden = start + moves.length >= moveEntries.length;
 }
 
 
 async function getAvailableGamesForPokemon(speciesId) {
-    const availability = await Promise.all(GAMES.map(async game => {
+    if (state.gameAvailabilityCache.has(speciesId)) {
+        return state.gameAvailabilityCache.get(speciesId);
+    }
+    const availabilityPromise = Promise.all(GAMES.map(async game => {
         let available = speciesId <= game.nationalLimit;
         if (game.id === "pokemon-go") return { game, available: true };
         if (game.regionalOnlyNational || game.id === "letsgopikachu" || game.id === "letsgoeevee") {
@@ -2153,9 +2243,9 @@ async function getAvailableGamesForPokemon(speciesId) {
             }
         }
         return { game, available };
-    }));
-
-    return availability.filter(item => item.available).map(item => item.game);
+    })).then(availability => availability.filter(item => item.available).map(item => item.game));
+    state.gameAvailabilityCache.set(speciesId, availabilityPromise);
+    return availabilityPromise;
 }
 
 
@@ -2196,68 +2286,283 @@ function formatEncounterDetails(versionDetails) {
 }
 
 
-async function renderPokemonLocations(pokemonId) {
+function normalizePokemonDbText(value) {
+    return String(value || "")
+        .toLowerCase()
+        .replace(/pok[eé]mon/g, " ")
+        .replace(/&/g, " and ")
+        .replace(/[^a-z0-9]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+
+function getPokemonDbGameIds(label) {
+    let normalized = ` ${normalizePokemonDbText(label)} `;
+    const matches = POKEMONDB_GAME_LABELS
+        .map(([name, id]) => [normalizePokemonDbText(name), id])
+        .sort((a, b) => b[0].length - a[0].length)
+        .filter(([name]) => normalized.includes(` ${name} `))
+        .map(([, id]) => id);
+    const ids = new Set(matches);
+    [
+        ["ultrasun", "sun"], ["ultramoon", "moon"],
+        ["black2", "black"], ["white2", "white"],
+        ["omegaruby", "ruby"], ["alphasapphire", "sapphire"],
+        ["brilliantdiamond", "diamond"], ["shiningpearl", "pearl"]
+    ].forEach(([specific, base]) => {
+        if (ids.has(specific)) ids.delete(base);
+    });
+    return [...ids];
+}
+
+
+function getPokemonDbNodeText(node) {
+    if (node.nodeType === Node.TEXT_NODE) return node.nodeValue || "";
+    if (node.nodeName === "BR") return " ";
+    return [...node.childNodes].map(getPokemonDbNodeText).join(" ");
+}
+
+
+function parsePokemonDbLocations(html) {
+    const page = new DOMParser().parseFromString(html, "text/html");
+    const heading = [...page.querySelectorAll("h1, h2, h3")]
+        .find(element => /where to find/i.test(element.textContent || ""));
+    const locationsTable = heading && [...page.querySelectorAll("table")]
+        .find(table => (heading.compareDocumentPosition(table) & 4) !== 0);
+    if (!locationsTable) throw new Error("PokémonDB locations table was not found");
+
+    const byGame = new Map();
+    let spanningGames = [];
+    let spanningRows = 0;
+    [...locationsTable.querySelectorAll("tr")].forEach(row => {
+        const cells = [...row.children].filter(cell => ["TD", "TH"].includes(cell.tagName));
+        if (!cells.length) return;
+        const currentGameIds = getPokemonDbGameIds(getPokemonDbNodeText(cells[0]));
+        let gameIds = currentGameIds;
+        let infoCells = cells.slice(1);
+        if (currentGameIds.length) {
+            spanningGames = currentGameIds;
+            spanningRows = Math.max(0, Number(cells[0].rowSpan || 1) - 1);
+        } else if (spanningRows > 0) {
+            gameIds = spanningGames;
+            infoCells = cells;
+            spanningRows -= 1;
+        } else {
+            return;
+        }
+
+        const acquisition = infoCells
+            .map(getPokemonDbNodeText)
+            .map(text => text.replace(/\s+/g, " ").trim())
+            .filter(Boolean)
+            .join(" · ");
+        if (!acquisition) return;
+        gameIds.forEach(gameId => {
+            const values = byGame.get(gameId) || [];
+            if (!values.includes(acquisition)) values.push(acquisition);
+            byGame.set(gameId, values);
+        });
+    });
+    return byGame;
+}
+
+
+let pokemonDbRequestQueue = Promise.resolve();
+let pokemonDbLastRequestTime = 0;
+
+function getPokemonDbPageUrl(speciesName) {
+    const normalizedName = String(speciesName || "").toLowerCase();
+    const knownSlugs = {
+        "nidoran-female": "nidoran-f",
+        "nidoran-male": "nidoran-m"
+    };
+    const slug = knownSlugs[normalizedName] || normalizedName
+        .replace(/♀/g, "-f")
+        .replace(/♂/g, "-m")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+    return `https://pokemondb.net/pokedex/${encodeURIComponent(slug)}#locations`;
+}
+
+
+function getPokemonDbLocations(speciesId, speciesName) {
+    if (state.pokemonDbLocationCache.has(speciesId)) {
+        return state.pokemonDbLocationCache.get(speciesId);
+    }
+
+    const pageUrl = getPokemonDbPageUrl(speciesName);
+    const request = pokemonDbRequestQueue.then(async () => {
+        const delay = Math.max(0, 4000 - (Date.now() - pokemonDbLastRequestTime));
+        if (delay) await new Promise(resolve => setTimeout(resolve, delay));
+        pokemonDbLastRequestTime = Date.now();
+        const sourceUrl = pageUrl.replace(/#.*$/, "");
+
+        try {
+            const response = await fetch(sourceUrl);
+            if (response.ok) {
+                const byGame = parsePokemonDbLocations(await response.text());
+                return { pageUrl, byGame };
+            }
+        } catch (error) {
+            // PokémonDB may not allow direct cross-origin page reads from GitHub Pages.
+            console.info("Direct PokémonDB read unavailable; trying the reader relay.", error);
+        }
+
+        const relayResponse = await fetch(`https://r.jina.ai/${sourceUrl}`, {
+            headers: { "X-Respond-With": "html" }
+        });
+        if (!relayResponse.ok) throw new Error(`PokémonDB reader returned ${relayResponse.status}`);
+        return { pageUrl, byGame: parsePokemonDbLocations(await relayResponse.text()) };
+    });
+    pokemonDbRequestQueue = request.catch(() => undefined);
+    const cachedRequest = request.catch(error => {
+        if (state.pokemonDbLocationCache.get(speciesId) === cachedRequest) {
+            state.pokemonDbLocationCache.delete(speciesId);
+        }
+        throw error;
+    });
+    state.pokemonDbLocationCache.set(speciesId, cachedRequest);
+    return cachedRequest;
+}
+
+
+function getGameAcquisitionSummary(encounters, game) {
+    const versions = new Set(GAME_API_VERSIONS[game.id] || []);
+    const summaries = new Set();
+    encounters.forEach(encounter => {
+        const matchingDetails = (encounter.version_details || []).filter(item => versions.has(item.version.name));
+        if (!matchingDetails.length) return;
+        const methods = formatEncounterDetails(matchingDetails);
+        summaries.add(`${formatEncounterLocation(encounter.location_area.name)}: ${methods.join(", ") || "Encounter listed; method not specified"}`);
+    });
+    if (summaries.size) return [...summaries].join("; ");
+    return "No encounter listed by PokéAPI; trade, transfer, and other acquisition methods are not documented.";
+}
+
+
+async function renderPokemonLocations(speciesId, requestId = state.pokemonRequest) {
     const gameSelect = document.getElementById("pokemonLocationGameSelect");
     const container = document.getElementById("pokemonLocationsList");
     if (!gameSelect || !container) return;
 
     try {
-        const encounters = await getPokemonEncounters(pokemonId);
-        if (state.currentPokemon?.id !== pokemonId) return;
-        const encounteredVersions = new Set(encounters.flatMap(encounter =>
-            (encounter.version_details || []).map(item => item.version.name)
-        ));
-        const availableGames = GAMES.filter(game => game.id !== "pokemon-go"
-            && (GAME_API_VERSIONS[game.id] || []).some(version => encounteredVersions.has(version)));
-        if (!availableGames.length) {
+        const [encounters, availableGames] = await Promise.all([
+            getPokemonEncounters(speciesId).catch(error => {
+                console.warn("Pokemon encounter data load failed", error);
+                return [];
+            }),
+            getAvailableGamesForPokemon(speciesId)
+        ]);
+        if (requestId !== state.pokemonRequest || getPokemonIdFromUrl(state.currentPokemon?.species?.url || "") !== speciesId) return;
+        const locationGames = availableGames.filter(game => game.id !== "pokemon-go");
+        if (!locationGames.length) {
             gameSelect.disabled = true;
-            container.innerHTML = `<div class="empty-state">PokéAPI has no game location encounters for this Pokémon.</div>`;
+            container.innerHTML = `<div class="empty-state">No games with a Pokédex entry were found for this Pokémon.</div>`;
             return;
         }
 
-        gameSelect.innerHTML = availableGames.map(game => `<option value="${game.id}">${game.name}</option>`).join("");
+        gameSelect.innerHTML = locationGames.map(game => `<option value="${game.id}">${game.name}</option>`).join("");
         gameSelect.disabled = false;
 
-        const renderSelectedGame = () => {
-            const game = availableGames.find(item => item.id === gameSelect.value);
+        const renderSelectedGame = async () => {
+            const game = locationGames.find(item => item.id === gameSelect.value);
+            if (!game) return;
             const versions = new Set(GAME_API_VERSIONS[game?.id] || []);
             const locations = encounters.map(encounter => ({
                 ...encounter,
                 versionDetails: (encounter.version_details || []).filter(item => versions.has(item.version.name))
             })).filter(encounter => encounter.versionDetails.length);
 
-            if (!locations.length) {
-                container.innerHTML = `<div class="empty-state">PokéAPI does not list a location encounter for this Pokémon in ${game.name}.</div>`;
+            if (locations.length) {
+                const byLocation = new Map();
+                locations.forEach(location => {
+                    const name = location.location_area.name;
+                    const existing = byLocation.get(name) || { name, versionDetails: [] };
+                    existing.versionDetails.push(...location.versionDetails);
+                    byLocation.set(name, existing);
+                });
+
+                container.innerHTML = `<div class="pokemon-location-list" id="pokemonLocationResults"></div>`;
+                const results = document.getElementById("pokemonLocationResults");
+                [...byLocation.values()].forEach(location => {
+                    const card = document.createElement("article");
+                    card.className = "pokemon-location-card";
+                    const title = document.createElement("strong");
+                    title.textContent = formatEncounterLocation(location.name);
+                    const details = document.createElement("span");
+                    const versions = [...new Set(location.versionDetails.map(item => capitalize(item.version.name.replaceAll("-", " "))))];
+                    const methods = formatEncounterDetails(location.versionDetails);
+                    details.textContent = [...versions, ...methods].join(" · ") || "Encounter method not specified";
+                    card.append(title, details);
+                    results.appendChild(card);
+                });
                 return;
             }
 
-            const byLocation = new Map();
-            locations.forEach(location => {
-                const name = location.location_area.name;
-                const existing = byLocation.get(name) || { name, versionDetails: [] };
-                existing.versionDetails.push(...location.versionDetails);
-                byLocation.set(name, existing);
-            });
+            container.innerHTML = `<div class="empty-state">PokéAPI has no encounter entry for ${game.name}. Checking PokémonDB…</div>`;
+            const speciesName = state.currentPokemon.species.name;
+            try {
+                const database = await getPokemonDbLocations(speciesId, speciesName);
+                if (requestId !== state.pokemonRequest
+                    || getPokemonIdFromUrl(state.currentPokemon?.species?.url || "") !== speciesId
+                    || gameSelect.value !== game.id) return;
 
-            container.innerHTML = `<div class="pokemon-location-list" id="pokemonLocationResults"></div>`;
-            const results = document.getElementById("pokemonLocationResults");
-            [...byLocation.values()].forEach(location => {
-                const card = document.createElement("article");
-                card.className = "pokemon-location-card";
+                const found = database.byGame.get(game.id) || [];
+                container.replaceChildren();
+                if (found.length) {
+                    const list = document.createElement("div");
+                    list.className = "pokemon-location-list";
+                    found.forEach(value => {
+                        const card = document.createElement("article");
+                        card.className = "pokemon-location-card";
+                        const title = document.createElement("strong");
+                        title.textContent = game.name;
+                        const details = document.createElement("span");
+                        details.textContent = value;
+                        card.append(title, details);
+                        list.appendChild(card);
+                    });
+                    container.appendChild(list);
+                } else {
+                    const empty = document.createElement("div");
+                    empty.className = "empty-state";
+                    empty.textContent = `No acquisition details were found for ${game.name} in PokéAPI or PokémonDB.`;
+                    container.appendChild(empty);
+                }
+                const sourceLink = document.createElement("a");
+                sourceLink.href = database.pageUrl;
+                sourceLink.target = "_blank";
+                sourceLink.rel = "noopener noreferrer";
+                sourceLink.className = "pokemon-location-source";
+                sourceLink.textContent = "PokémonDB · Where to find";
+                container.appendChild(sourceLink);
+            } catch (error) {
+                if (requestId !== state.pokemonRequest
+                    || getPokemonIdFromUrl(state.currentPokemon?.species?.url || "") !== speciesId
+                    || gameSelect.value !== game.id) return;
+                console.warn("PokemonDB location fallback failed", error);
+                const message = document.createElement("div");
+                message.className = "empty-state";
                 const title = document.createElement("strong");
-                title.textContent = formatEncounterLocation(location.name);
-                const details = document.createElement("span");
-                const versions = [...new Set(location.versionDetails.map(item => capitalize(item.version.name.replaceAll("-", " "))))];
-                const methods = formatEncounterDetails(location.versionDetails);
-                details.textContent = [...versions, ...methods].join(" · ") || "Encounter method not specified";
-                card.append(title, details);
-                results.appendChild(card);
-            });
+                title.textContent = game.name;
+                const note = document.createElement("p");
+                note.textContent = "PokémonDB could not be read inside the app. Open its Where to find section instead.";
+                const sourceLink = document.createElement("a");
+                sourceLink.href = getPokemonDbPageUrl(speciesName);
+                sourceLink.target = "_blank";
+                sourceLink.rel = "noopener noreferrer";
+                sourceLink.className = "pokemon-location-source";
+                sourceLink.textContent = "PokémonDB · Where to find";
+                message.append(title, note, sourceLink);
+                container.replaceChildren(message);
+            }
         };
 
         gameSelect.onchange = renderSelectedGame;
         renderSelectedGame();
     } catch (error) {
+        if (requestId !== state.pokemonRequest || getPokemonIdFromUrl(state.currentPokemon?.species?.url || "") !== speciesId) return;
         console.warn("Pokemon location load failed", error);
         gameSelect.disabled = true;
         container.innerHTML = `<div class="empty-state">Location data could not be loaded.</div>`;
@@ -2266,14 +2571,21 @@ async function renderPokemonLocations(pokemonId) {
 
 
 async function renderPokemonGames(
-    pokemonId,
-    speciesId = pokemonId
+    speciesId,
+    requestId = state.pokemonRequest
 ) {
     const container = document.getElementById("pokemonGamesList");
     if (!container) return;
     container.innerHTML = `<div class="empty-state">Etsitään pelejä...</div>`;
 
-    const availableGames = await getAvailableGamesForPokemon(speciesId);
+    const [availableGames, encounters] = await Promise.all([
+        getAvailableGamesForPokemon(speciesId),
+        getPokemonEncounters(speciesId).catch(error => {
+            console.warn("Pokemon acquisition data load failed", error);
+            return [];
+        })
+    ]);
+    if (requestId !== state.pokemonRequest) return;
 
     container.innerHTML = "";
     if (!availableGames.length) {
@@ -2281,23 +2593,59 @@ async function renderPokemonGames(
         return;
     }
 
+    const acquisitionByGame = new Map();
     availableGames.forEach(game => {
         const caught = isCaught(game.id, speciesId);
         const button = document.createElement("button");
         button.type = "button";
         button.className = `game-catch-button${caught ? " caught" : ""}`;
         button.setAttribute("aria-pressed", String(caught));
-        button.innerHTML = `<span>${game.name}</span><strong>${caught ? "Caught ✓" : "Merkitse napatuksi"}</strong>`;
+        const name = document.createElement("span");
+        name.textContent = game.name;
+        const acquisition = document.createElement("small");
+        acquisition.textContent = getGameAcquisitionSummary(encounters, game);
+        acquisitionByGame.set(game.id, acquisition);
+        const caughtStatus = document.createElement("strong");
+        caughtStatus.textContent = caught ? "Caught ✓" : "Merkitse napatuksi";
+        button.append(name, acquisition, caughtStatus);
         button.addEventListener("click", () => {
             const nextCaught = !isCaught(game.id, speciesId);
-            setCaught(game.id, speciesId, nextCaught);
+            if (!setCaught(game.id, speciesId, nextCaught)) {
+                alert("Caught-merkintää ei voitu tallentaa tähän selaimeen.");
+                return;
+            }
             button.classList.toggle("caught", nextCaught);
             button.setAttribute("aria-pressed", String(nextCaught));
-            button.querySelector("strong").textContent = nextCaught ? "Caught ✓" : "Merkitse napatuksi";
+            caughtStatus.textContent = nextCaught ? "Caught ✓" : "Merkitse napatuksi";
             if (state.currentGame?.id === game.id) updateGameProgress();
+            if (state.currentView === "pokemonView") updatePokemonNavigation();
             if (state.currentView === "profileView") renderProfile();
         });
         container.appendChild(button);
+    });
+
+    const missingApiDetails = availableGames.filter(game =>
+        getGameAcquisitionSummary(encounters, game).startsWith("No encounter listed")
+    );
+    if (!missingApiDetails.length) return;
+
+    const speciesName = state.currentPokemon?.species?.name || String(speciesId);
+    missingApiDetails.forEach(game => {
+        const field = acquisitionByGame.get(game.id);
+        if (field) field.textContent = "PokéAPI has no encounter entry; checking PokémonDB…";
+    });
+    getPokemonDbLocations(speciesId, speciesName).then(database => {
+        if (requestId !== state.pokemonRequest) return;
+        missingApiDetails.forEach(game => {
+            const field = acquisitionByGame.get(game.id);
+            if (!field) return;
+            const details = database.byGame.get(game.id) || [];
+            field.textContent = details.length
+                ? `${details.join("; ")} · PokémonDB`
+                : "PokéAPI and PokémonDB have no acquisition details for this game.";
+        });
+    }).catch(error => {
+        console.warn("PokemonDB game availability fallback failed", error);
     });
 }
 
@@ -2737,9 +3085,17 @@ function renderTypeMatchup() {
 ========================================================= */
 
 async function renderProfile() {
+    const requestId = ++state.profileRequest;
     const container = document.getElementById("profileStats");
     container.innerHTML = `<div class="empty-state">Lasketaan...</div>`;
     const national = await getNationalEntries();
+    if (requestId !== state.profileRequest) return;
+    const dexIds = [...new Set(GAMES.flatMap(game => game.dexes))];
+    const dexEntriesById = new Map(await Promise.all(dexIds.map(async id => [
+        id,
+        await getDexEntriesById(id).catch(() => [])
+    ])));
+    if (requestId !== state.profileRequest) return;
     const caughtData = getCaughtData();
     const nationalIds = new Set(national.map(entry => entry.pokemonId));
     const caughtAcrossGames = new Set();
@@ -2761,7 +3117,7 @@ async function renderProfile() {
     const gameCardsByGeneration = new Map();
 
     for (const game of GAMES) {
-        const lists = await Promise.all(game.dexes.map(id => getDexEntriesById(id).catch(() => [])));
+        const lists = game.dexes.map(id => dexEntriesById.get(id) || []);
         const regionalById = new Map();
         lists.flat().forEach(entry => {
             if (!game.excludesRegional?.includes(entry.pokemonId)) regionalById.set(entry.pokemonId, entry);
@@ -2802,6 +3158,7 @@ async function renderProfile() {
             <div class="profile-generation-cards">${generationCards.join("")}</div>
         </section>
     `);
+    if (requestId !== state.profileRequest) return;
     container.innerHTML = [...cards, ...generationSections].join("");
     container.querySelectorAll(".profile-generation-toggle").forEach(button => {
         button.addEventListener("click", () => {
@@ -3522,9 +3879,10 @@ function setupEvents() {
             if (!confirmed) return;
 
 
-            localStorage.removeItem(
-                STORAGE_KEY
-            );
+            if (!saveCaughtData({})) {
+                alert("Caught-merkintöjä ei voitu tyhjentää tästä selaimesta.");
+                return;
+            }
 
 
             if (
@@ -3559,7 +3917,10 @@ function setupEvents() {
             delete data[gameId];
             if (gameId === "brilliantdiamond") delete data.brilliantdiamond2;
             if (gameId === "shiningpearl") delete data.shiningpearl2;
-            saveCaughtData(data);
+            if (!saveCaughtData(data)) {
+                alert(`${game.name}-pelin caught-merkintöjä ei voitu tyhjentää tästä selaimesta.`);
+                return;
+            }
             if (state.currentGame?.id === gameId) {
                 updateGameProgress();
                 renderGameDex();
