@@ -306,8 +306,8 @@ const GAME_API_VERSIONS = {
     sun: ["sun"], moon: ["moon"], ultrasun: ["ultra-sun"], ultramoon: ["ultra-moon"],
     letsgopikachu: ["lets-go-pikachu"], letsgoeevee: ["lets-go-eevee"],
     sword: ["sword"], shield: ["shield"], legendsarceus: ["legends-arceus"],
-    brilliantdiamond: ["brilliant-diamond", "brilliant-diamond-shining-pearl"],
-    shiningpearl: ["shining-pearl", "brilliant-diamond-shining-pearl"],
+    brilliantdiamond: ["brilliant-diamond", "brilliant-diamond-shining-pearl", "brilliant-diamond-and-shining-pearl"],
+    shiningpearl: ["shining-pearl", "brilliant-diamond-shining-pearl", "brilliant-diamond-and-shining-pearl"],
     scarlet: ["scarlet"], violet: ["violet"], legendsza: ["legends-z-a"],
     "pokemon-go": []
 };
@@ -2584,7 +2584,22 @@ async function renderPokemonLocations(speciesId, requestId = state.pokemonReques
                 const title = document.createElement("strong");
                 title.textContent = location.name;
                 const details = document.createElement("span");
-                const versions = [...new Set(location.versionDetails.map(item => capitalize(item.version.name.replaceAll("-", " "))))];
+                const versionChances = new Map();
+                location.versionDetails.forEach(item => {
+                    const versionName = getEncounterVersionName(item);
+                    if (!versionName) return;
+                    const chance = Number(item.max_chance);
+                    const previousChance = versionChances.get(versionName);
+                    versionChances.set(versionName, Number.isFinite(chance)
+                        ? Math.max(previousChance ?? 0, chance)
+                        : previousChance);
+                });
+                const versions = [...versionChances].map(([name, chance]) => {
+                    const label = name.startsWith("brilliant-diamond-")
+                        ? game.name
+                        : capitalize(name.replaceAll("-", " "));
+                    return chance === undefined ? label : `${label} · max chance ${chance}%`;
+                });
                 const methods = formatEncounterDetails(location.versionDetails);
                 details.textContent = [...versions, ...methods].join(" · ") || "Encounter method not specified";
                 card.append(title, details);
@@ -3575,7 +3590,10 @@ async function checkForPwaUpdate() {
     pwaManualUpdatePending = true;
     const updateButton = document.getElementById("pwaUpdateButton");
     const status = document.getElementById("pwaUpdateStatus");
-    if (updateButton) updateButton.disabled = true;
+    if (updateButton) {
+        updateButton.disabled = true;
+        updateButton.setAttribute("aria-busy", "true");
+    }
     if (status) status.textContent = "Haetaan päivityksiä…";
 
     try {
@@ -3621,36 +3639,18 @@ async function checkForPwaUpdate() {
         if (status) status.textContent = "Päivitysten haku epäonnistui. Tarkista verkkoyhteys.";
     } finally {
         pwaUpdateCheckInProgress = false;
-        if (updateButton) updateButton.disabled = false;
+        if (updateButton) {
+            updateButton.disabled = false;
+            updateButton.setAttribute("aria-busy", "false");
+        }
     }
 }
 
-function setupPwaUpdateMenu() {
-    const wrapper = document.querySelector(".pokedex-header-menu");
-    const menuButton = document.getElementById("pwaMenuButton");
-    const menu = document.getElementById("pwaUpdateMenu");
+function setupPwaUpdateButton() {
     const updateButton = document.getElementById("pwaUpdateButton");
-    if (!wrapper || !menuButton || !menu || !updateButton) return;
+    if (!updateButton) return;
 
-    const closeMenu = () => {
-        menu.hidden = true;
-        menuButton.setAttribute("aria-expanded", "false");
-    };
-
-    menuButton.addEventListener("click", () => {
-        const isOpening = menu.hidden;
-        menu.hidden = !isOpening;
-        menuButton.setAttribute("aria-expanded", String(isOpening));
-    });
     updateButton.addEventListener("click", () => void checkForPwaUpdate());
-    document.addEventListener("click", event => {
-        if (!wrapper.contains(event.target)) closeMenu();
-    });
-    document.addEventListener("keydown", event => {
-        if (event.key !== "Escape" || menu.hidden) return;
-        closeMenu();
-        menuButton.focus();
-    });
 }
 
 function setupPullToRefresh() {
@@ -3784,7 +3784,7 @@ function setupEvents() {
     setupInfiniteScroll();
     setupPokedexVoiceSettings();
     setupPwaInstallPrompt();
-    setupPwaUpdateMenu();
+    setupPwaUpdateButton();
     setupPullToRefresh();
 
     const clearGameSelect = document.getElementById("clearGameSelect");
