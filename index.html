@@ -31,10 +31,10 @@
 
         <!-- SEARCH -->
         <div class="search-area">
-            <div class="search-input-wrap">
-                <span class="search-icon" aria-hidden="true">
+            <form id="searchForm" class="search-input-wrap">
+                <button id="searchSubmitButton" class="search-submit-button" type="submit" aria-label="Search" data-i18n-aria-label="searchPokemon">
                     <svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="m15.5 15.5 5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-                </span>
+                </button>
                 <input
                     type="text"
                     id="searchInput"
@@ -42,8 +42,7 @@
                     data-i18n-aria-label="searchPokemon"
                     autocomplete="off"
                 >
-            </div>
-            <div id="searchSuggestions" class="search-suggestions"></div>
+            </form>
         </div>
 
         <nav class="sidebar-nav">
@@ -354,14 +353,6 @@
                         <option value="fi">Suomi</option>
                         <option value="en">English</option>
                     </select>
-                </div>
-
-                <div class="setting-row">
-                    <div>
-                        <strong data-i18n="installPokedex">Install Pokédex</strong>
-                        <p data-i18n="installDescription">On iPhone and iPad, use the browser Share menu and choose “Add to Home Screen”. Other supported browsers show an install option in their menu.</p>
-                    </div>
-                    <button id="installPwaButton" class="pwa-install-button" type="button" hidden data-i18n="installApp">Install app</button>
                 </div>
 
                 <div class="setting-row voice-setting-row">

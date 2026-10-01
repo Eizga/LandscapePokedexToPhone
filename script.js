@@ -4,26 +4,26 @@ const STORAGE_KEY = "pokedexGameCaughtV3";
 const CAUGHT_BACKUP_KEY = "pokedexGameCaughtBackupV1";
 const VOICE_SETTINGS_KEY = "pokedexVoiceSettingsV1";
 const LANGUAGE_STORAGE_KEY = "pokedexLanguageV1";
+const DESCRIPTION_TRANSLATION_CACHE_KEY = "pokedexDescriptionTranslationsV1";
 
 const UI_TEXT = {
     fi: {
-        pokedex: "Pokédex", games: "Pelit", types: "Tyypit", profile: "Profiili", settings: "Asetukset",
+        pokedex: "Pokédex", games: "Pelit", types: "Tyyppikaavio", profile: "Profiili", settings: "Asetukset",
         searchPokemon: "Hae Pokémonia", nationalPokedex: "Kansallinen Pokédex", regionalPokedex: "Alueellinen Pokédex",
-        typeMatchup: "Tyyppien vaikutukset", typeMatchupHelp: "Tarkastele Pokémon-tyyppien hyökkäys- ja puolustusvaikutuksia.",
-        typeOne: "Tyyppi 1", typeTwo: "Tyyppi 2", sort: "Järjestys", pokedexNumber: "Pokédex-numero", name: "Nimi",
+        typeMatchup: "Tyyppikaavio", typeMatchupHelp: "Tarkastele Pokémon-tyyppien hyökkäys- ja puolustusvaikutuksia.",
+        typeOne: "Tyyppi 1", typeTwo: "Tyyppi 2", none: "Ei mitään", sort: "Järjestys", pokedexNumber: "Pokédex-numero", name: "Nimi",
         loading: "Ladataan...", loadMore: "Lataa lisää", back: "← Takaisin", previous: "‹ Edellinen", next: "Seuraava ›",
         nationalListSubtitle: "Koko kansallinen lista", gameCollectionDescription: "Pelin Pokédex · {generation}",
         gameCover: "Pelin kansikuva", collected: "kerätty", regional: "Alueellinen", national: "Kansallinen",
         all: "Kaikki", caught: "Napattu", missing: "Puuttuvat", profileDescription: "Kansallinen yhteistilanne sekä jokaisen pelin alueellinen ja kansallinen laskuri.",
         language: "Kieli", languageDescription: "Valitse Pokédexissä ja ääneen luetuissa kuvauksissa käytettävä kieli.",
-        installPokedex: "Asenna Pokédex", installDescription: "iPhonella ja iPadilla avaa selaimen jakovalikko ja valitse Lisää kotinäyttöön. Muissa tuetuissa selaimissa asennus löytyy selaimen valikosta.",
-        installApp: "Asenna sovellus", pokedexVoice: "Pokédexin puheääni", voiceDescription: "Matalampi sävelkorkeus kuulostaa syvemmältä. Säätö ulottuu selaimen tukemaan alarajaan.",
+        pokedexVoice: "Pokédexin puheääni", voiceDescription: "Matalampi sävelkorkeus kuulostaa syvemmältä. Säätö ulottuu selaimen tukemaan alarajaan.",
         pitch: "Sävelkorkeus", readingSpeed: "Lukunopeus", clearOneGame: "Tyhjennä yhden pelin tiedot", clearOneGameDescription: "Poistaa valitun pelin napattu-merkinnät.",
         selectGame: "Valitse peli", clearGame: "Tyhjennä peli", clearAll: "Tyhjennä kaikki tiedot", clearAllDescription: "Poistaa kaikkien pelien napattu-merkinnät.", clearAllButton: "Tyhjennä kaikki",
-        overview: "Yleiskuvaus", species: "Lajikuvaus", listen: "🔊 Kuuntele", stop: "■ Pysäytä", category: "Lajiryhmä", height: "Pituus", weight: "Paino", baseXp: "Peruskokemus", abilities: "Kyvyt",
-        typeChart: "Tyyppitaulukko", defense: "Puolustus", attack: "Hyökkäys", evolutions: "Evoluutiot", moves: "Liikkeet", forms: "Muodot", locations: "Sijainnit", gamesTab: "Pelit",
-        notAvailable: "Ei saatavilla", noSpeciesDescription: "Tästä Pokémonista ei ole lajikuvausta saatavilla.", speechUnsupported: "Tämä selain ei tue tekstin puheeksi lukemista.",
-        overviewVersion: "Versio", noOverviewForLanguage: "Tälle Pokémonille ei ole kuvausta valitulla kielellä.", moveSort: "Järjestä", moveGeneration: "Sukupolvi", allGenerations: "Kaikki sukupolvet", bp: "BP", acc: "Tarkkuus", pp: "PP", level: "Taso",
+        overview: "Yleiskuvaus", species: "Pokédex-kuvaus", readPokedexEntry: "Lue Pokédex-kuvaus ääneen", listen: "🔊 Kuuntele", stop: "■ Pysäytä", category: "Laji", height: "Pituus", weight: "Paino", baseXp: "Peruskokemus", abilities: "Kyvyt",
+        typeChart: "Tyyppikaavio", defense: "Puolustus", attack: "Hyökkäys", evolutions: "Evoluutiot", moves: "Liikkeet", forms: "Formit", locations: "Sijainnit", gamesTab: "Pelit",
+        notAvailable: "Ei saatavilla", noSpeciesDescription: "Tästä Pokémonista ei ole Pokédex-kuvausta saatavilla.", speechUnsupported: "Tämä selain ei tue tekstin puheeksi lukemista.",
+        overviewVersion: "Versio", noOverviewForLanguage: "Tälle Pokémonille ei ole kuvausta saatavilla.", translating: "Käännetään kuvausta…", searchResults: "Hakutulokset", noSearchResults: "Hakua vastaavia Pokémoneja ei löytynyt.", allGenerations: "Kaikki sukupolvet", moveSort: "Järjestä", moveGeneration: "Sukupolvi", bp: "BP", acc: "Acc", pp: "PP", level: "Taso",
         defenseMatchup: "Puolustus", attackMatchup: "Hyökkäys", chooseType: "Valitse vähintään yksi tyyppi.", caughtStatus: "Napattu ✓", markCaught: "Merkitse napatuksi", gameListLoading: "Etsitään pelejä...", noAvailableGames: "Pokémonille ei löytynyt saatavilla olevia pelejä.",
         pokemon: "Pokémon", generation: "Sukupolvi", mobileSpecial: "Mobiili / erikoisversio", nationalSummaryTitle: "Koko kansallinen Pokédex", nationalSummaryDescription: "Saman Pokémonin merkintä riittää riippumatta siitä, missä pelissä se on napattu.", pokemonCount: "Pokémonia", gamesCount: "peliä", regionalCount: "Alueellinen", nationalCount: "Kansallinen", defaultForm: "Oletusmuoto", movesWord: "liikkeet", openGame: "Avaa peli",
         typeNames: { normal: "normaali", fire: "tuli", water: "vesi", electric: "sähkö", grass: "ruoho", ice: "jää", fighting: "taistelu", poison: "myrkky", ground: "maa", flying: "lento", psychic: "meedio", bug: "ötökkä", rock: "kivi", ghost: "aave", dragon: "lohikäärme", dark: "pimeys", steel: "teräs", fairy: "keiju" },
@@ -35,23 +35,22 @@ const UI_TEXT = {
         checkingUpdates: "Haetaan päivityksiä...", loadingMore: "Ladataan lisää...", updateLoadingPage: "Ladataan uusin sivu...", updateFound: "Uusi versio löytyi. Päivitetään sovellus...", updateDownloading: "Uusi versio latautuu. Sovellus avautuu päivityksen jälkeen...", updateFailed: "Päivitysten haku epäonnistui. Tarkista verkkoyhteys.", updateDone: "Päivitystarkistus valmis. Ladataan uusin sisältö...", updateDownloadFailed: "Päivityksen lataus epäonnistui. Yritä uudelleen."
     },
     en: {
-        pokedex: "Pokédex", games: "Games", types: "Types", profile: "Profile", settings: "Settings",
+        pokedex: "Pokédex", games: "Games", types: "Type Chart", profile: "Profile", settings: "Settings",
         searchPokemon: "Search Pokémon", nationalPokedex: "National Pokédex", regionalPokedex: "Regional Pokédex",
         typeMatchup: "Type Matchup", typeMatchupHelp: "Review the offensive and defensive effects of Pokémon types.",
-        typeOne: "Type 1", typeTwo: "Type 2", sort: "Sort", pokedexNumber: "Pokédex number", name: "Name",
+        typeOne: "Type 1", typeTwo: "Type 2", none: "None", sort: "Sort", pokedexNumber: "Pokédex number", name: "Name",
         loading: "Loading...", loadMore: "Load more", back: "← Back", previous: "‹ Previous", next: "Next ›",
         nationalListSubtitle: "Full national list", gameCollectionDescription: "Game Pokédex · {generation}",
         gameCover: "Game cover", collected: "caught", regional: "Regional", national: "National",
         all: "All", caught: "Caught", missing: "Missing", profileDescription: "National progress and regional and national counts for each game.",
         language: "Language", languageDescription: "Choose the language used throughout the Pokédex and for spoken descriptions.",
-        installPokedex: "Install Pokédex", installDescription: "On iPhone and iPad, use the browser Share menu and choose “Add to Home Screen”. Other supported browsers show an install option in their menu.",
-        installApp: "Install app", pokedexVoice: "Pokédex voice", voiceDescription: "Lower pitch values sound deeper. Pitch can be lowered to the browser-supported minimum.",
+        pokedexVoice: "Pokédex voice", voiceDescription: "Lower pitch values sound deeper. Pitch can be lowered to the browser-supported minimum.",
         pitch: "Pitch", readingSpeed: "Reading speed", clearOneGame: "Clear one game's data", clearOneGameDescription: "Removes caught marks for the selected game.",
         selectGame: "Select a game", clearGame: "Clear game", clearAll: "Clear all data", clearAllDescription: "Removes caught marks from all games.", clearAllButton: "Clear all",
-        overview: "Overview", species: "Species", listen: "🔊 Listen", stop: "■ Stop", category: "Category", height: "Height", weight: "Weight", baseXp: "Base XP", abilities: "Abilities",
+        overview: "Overview", species: "Pokédex entry", readPokedexEntry: "Read Pokédex entry aloud", listen: "🔊 Listen", stop: "■ Stop", category: "Species", height: "Height", weight: "Weight", baseXp: "Base XP", abilities: "Abilities",
         typeChart: "Type Chart", defense: "Defense", attack: "Attack", evolutions: "Evolutions", moves: "Moves", forms: "Forms", locations: "Locations", gamesTab: "Games",
         notAvailable: "Not available", noSpeciesDescription: "No species description is available for this Pokémon.", speechUnsupported: "Text-to-speech is not supported by this browser.",
-        overviewVersion: "Version", noOverviewForLanguage: "No description is available for this Pokémon in the selected language.", moveSort: "Sort", moveGeneration: "Generation", allGenerations: "All generations", bp: "BP", acc: "Acc", pp: "PP", level: "Level",
+        overviewVersion: "Version", noOverviewForLanguage: "No description is available for this Pokémon.", translating: "Translating description…", searchResults: "Search results", noSearchResults: "No Pokémon matched your search.", moveSort: "Sort", moveGeneration: "Generation", allGenerations: "All generations", bp: "BP", acc: "Acc", pp: "PP", level: "Level",
         defenseMatchup: "Defense", attackMatchup: "Attack", chooseType: "Choose at least one type.", caughtStatus: "Caught ✓", markCaught: "Mark caught", gameListLoading: "Looking up games...", noAvailableGames: "No available games were found for this Pokémon.",
         pokemon: "Pokémon", generation: "Generation", mobileSpecial: "Mobile / Special", nationalSummaryTitle: "Entire National Pokédex", nationalSummaryDescription: "A Pokémon only needs to be marked once, regardless of which game it was caught in.", pokemonCount: "Pokémon", gamesCount: "games", regionalCount: "Regional", nationalCount: "National", defaultForm: "Default form", movesWord: "moves", openGame: "Open game",
         typeNames: { normal: "Normal", fire: "Fire", water: "Water", electric: "Electric", grass: "Grass", ice: "Ice", fighting: "Fighting", poison: "Poison", ground: "Ground", flying: "Flying", psychic: "Psychic", bug: "Bug", rock: "Rock", ghost: "Ghost", dragon: "Dragon", dark: "Dark", steel: "Steel", fairy: "Fairy" },
@@ -556,7 +555,11 @@ const state = {
 
     overviewTextIndex: 0,
 
-    searchIndex: null
+    searchIndex: null,
+
+    searchResults: [],
+
+    searchQuery: ""
 
 };
 
@@ -1134,7 +1137,7 @@ async function loadNationalDex(requestId = state.dexRequest) {
    RENDER DEX
 ========================================================= */
 
-async function renderDexEntries(entries, append = false, requestId = state.dexRequest) {
+async function renderDexEntries(entries, append = false, requestId = state.dexRequest, navigationContext = state.pokemonNavigationContext === "search" ? "search" : "dex") {
     if (requestId !== state.dexRequest) return;
 
     const sorted =
@@ -1169,7 +1172,7 @@ async function renderDexEntries(entries, append = false, requestId = state.dexRe
     const cards = await Promise.all(page.map(async entry => {
         try {
             const pokemon = await getPokemon(entry.pokemonId);
-            return createPokemonCard(pokemon, entry.id);
+            return createPokemonCard(pokemon, entry.id, navigationContext);
         } catch (error) {
             console.warn("Pokemon load failed", entry, error);
             return null;
@@ -1702,7 +1705,7 @@ function getPokemonNavigationEntries() {
             : (a.order ?? a.id) - (b.order ?? b.id));
     }
 
-    if (state.pokemonNavigationContext === "dex") {
+    if (state.pokemonNavigationContext === "dex" || state.pokemonNavigationContext === "search") {
         return [...state.dexEntries].sort((a, b) => state.dexSort === "name"
             ? a.name.localeCompare(b.name)
             : (a.order ?? a.id) - (b.order ?? b.id));
@@ -1878,7 +1881,7 @@ async function openPokemon(
                                             <span id="overviewVersionLabel"></span>
                                             <button id="nextOverviewText" type="button" aria-label="${t("next")}" disabled>›</button>
                                         </div>
-                                        <button id="readSpeciesButton" class="species-speak-button" type="button" aria-label="${appLanguage === "fi" ? "Lue lajikuvaus ääneen" : "Read species description aloud"}" aria-pressed="false" disabled>${t("listen")}</button>
+                                        <button id="readSpeciesButton" class="species-speak-button" type="button" aria-label="${t("readPokedexEntry")}" aria-pressed="false" disabled>${t("listen")}</button>
                                     </div>
                                 </div>
                                 <p id="speciesDescription">${t("loading")}</p>
@@ -1936,8 +1939,8 @@ async function openPokemon(
                             <label for="moveSort">${t("moveSort")}</label>
                             <select id="moveSort">
                                 <option value="name">${t("name")}</option>
-                                <option value="bp">${t("bp")}</option>
                                 <option value="acc">${t("acc")}</option>
+                                <option value="bp">${t("bp")}</option>
                             </select>
                             <label for="moveGenerationFilter">${t("moveGeneration")}</label>
                             <select id="moveGenerationFilter">
@@ -2077,13 +2080,22 @@ function setupDetailTabs() {
 
 function renderSpeciesDescription(species) {
     state.currentSpecies = species;
-    state.overviewEntries = (species.flavor_text_entries || [])
+    const allEntries = species.flavor_text_entries || [];
+    const localizedEntries = allEntries
         .filter(item => item.language?.name === appLanguage)
         .reduce((entries, item) => {
             const version = item.version?.name || "unknown";
             if (!entries.some(entry => entry.version?.name === version)) entries.push(item);
             return entries;
         }, []);
+    const englishEntries = allEntries
+        .filter(item => item.language?.name === "en")
+        .reduce((entries, item) => {
+            const version = item.version?.name || "unknown";
+            if (!entries.some(entry => entry.version?.name === version)) entries.push(item);
+            return entries;
+        }, []);
+    state.overviewEntries = localizedEntries.length ? localizedEntries : englishEntries;
     state.overviewTextIndex = Math.max(0, state.overviewEntries.length - 1);
     updateSpeciesOverviewText();
 }
@@ -2096,29 +2108,88 @@ function moveOverviewText(offset) {
     updateSpeciesOverviewText();
 }
 
-function updateSpeciesOverviewText() {
+function loadDescriptionTranslations() {
+    try {
+        return JSON.parse(localStorage.getItem(DESCRIPTION_TRANSLATION_CACHE_KEY) || "{}");
+    } catch {
+        return {};
+    }
+}
+
+
+async function translateEnglishTextToFinnish(value) {
+    const sourceText = String(value || "").replace(/[\n\f\r]+/g, " ").replace(/\s+/g, " ").trim();
+    if (!sourceText) return null;
+    const translations = loadDescriptionTranslations();
+    if (translations[sourceText]) return translations[sourceText];
+
+    const chunks = [];
+    let remaining = sourceText;
+    const getByteLength = text => new TextEncoder().encode(text).length;
+    while (getByteLength(remaining) > 430) {
+        const candidate = remaining.slice(0, 400);
+        const splitAt = candidate.lastIndexOf(" ");
+        const boundary = splitAt > 0 ? splitAt : 400;
+        chunks.push(remaining.slice(0, boundary).trim());
+        remaining = remaining.slice(boundary).trim();
+    }
+    if (remaining) chunks.push(remaining);
+
+    const translatedChunks = [];
+    for (const chunk of chunks) {
+        try {
+            const params = new URLSearchParams({ q: chunk, langpair: "en|fi" });
+            const response = await fetch(`https://api.mymemory.translated.net/get?${params}`);
+            if (!response.ok) return null;
+            const data = await response.json();
+            const translated = data.responseData?.translatedText?.trim();
+            if (!translated || Number(data.responseStatus) >= 400) return null;
+            translatedChunks.push(translated);
+        } catch {
+            return null;
+        }
+    }
+
+    const translatedText = translatedChunks.join(" ").replace(/\s+/g, " ").trim();
+    if (!translatedText || translatedText.toLowerCase() === sourceText.toLowerCase()) return null;
+    translations[sourceText] = translatedText;
+    try {
+        localStorage.setItem(DESCRIPTION_TRANSLATION_CACHE_KEY, JSON.stringify(translations));
+    } catch {
+        // The translation remains usable in this view if local storage is full or unavailable.
+    }
+    return translatedText;
+}
+
+
+async function updateSpeciesOverviewText() {
     const description = document.getElementById("speciesDescription");
     if (!description) return;
     const entry = state.overviewEntries[state.overviewTextIndex];
     const species = state.currentSpecies;
-    const genus = species?.genera?.find(item => item.language?.name === appLanguage)?.genus || "";
+    const language = appLanguage;
+    const localGenus = species?.genera?.find(item => item.language?.name === language)?.genus || "";
+    const englishGenus = species?.genera?.find(item => item.language?.name === "en")?.genus || "";
+    const sourceGenus = localGenus || englishGenus;
     const genusElement = document.getElementById("pokemonGenus");
     const readButton = document.getElementById("readSpeciesButton");
     const versionLabel = document.getElementById("overviewVersionLabel");
     const previousButton = document.getElementById("previousOverviewText");
     const nextButton = document.getElementById("nextOverviewText");
-    if (genusElement) genusElement.textContent = genus || t("notAvailable");
-    description.textContent = entry
-        ? entry.flavor_text.replace(/[\n\f\r]+/g, " ").replace(/\s+/g, " ").trim()
-        : t("noOverviewForLanguage");
-    description.dataset.speechLang = appLanguage;
+    const sourceText = entry?.flavor_text?.replace(/[\n\f\r]+/g, " ").replace(/\s+/g, " ").trim() || "";
+    const sourceLanguage = entry?.language?.name || language;
+    const needsTranslation = language === "fi" && sourceLanguage === "en";
+    const speechLanguage = needsTranslation ? "en" : sourceLanguage;
+    if (genusElement) genusElement.textContent = (language === "fi" && !localGenus ? t("translating") : sourceGenus) || t("notAvailable");
+    description.textContent = entry ? (needsTranslation ? t("translating") : sourceText) : t("noOverviewForLanguage");
+    description.dataset.speechLang = speechLanguage;
     description.dataset.speechName = formatPokemonName(state.currentPokemon?.name || species?.name);
-    description.dataset.speechGenus = genus;
+    description.dataset.speechGenus = sourceGenus;
     description.dataset.speechHeight = String((state.currentPokemon?.height ?? 0) / 10);
     description.dataset.speechWeight = String((state.currentPokemon?.weight ?? 0) / 10);
     const speechAvailable = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
     if (readButton) {
-        readButton.disabled = !entry || !speechAvailable;
+        readButton.disabled = !entry || !speechAvailable || needsTranslation;
         readButton.title = speechAvailable ? "" : t("speechUnsupported");
     }
     if (versionLabel) {
@@ -2127,6 +2198,30 @@ function updateSpeciesOverviewText() {
     }
     if (previousButton) previousButton.disabled = !entry || state.overviewTextIndex <= 0;
     if (nextButton) nextButton.disabled = !entry || state.overviewTextIndex >= state.overviewEntries.length - 1;
+
+    if (!entry) return;
+    const selectedIndex = state.overviewTextIndex;
+    const translateGenus = language === "fi" && !localGenus && Boolean(englishGenus);
+    const [translatedText, translatedGenus] = await Promise.all([
+        needsTranslation ? translateEnglishTextToFinnish(sourceText) : Promise.resolve(null),
+        translateGenus ? translateEnglishTextToFinnish(englishGenus) : Promise.resolve(null)
+    ]);
+    if (state.currentSpecies !== species || state.overviewTextIndex !== selectedIndex || appLanguage !== language) return;
+
+    if (translatedText) {
+        description.textContent = translatedText;
+        description.dataset.speechLang = "fi";
+    } else if (needsTranslation) {
+        description.textContent = sourceText;
+        description.dataset.speechLang = "en";
+    }
+    if (translatedGenus) {
+        if (genusElement) genusElement.textContent = translatedGenus;
+        description.dataset.speechGenus = translatedGenus;
+    } else if (translateGenus && genusElement) {
+        genusElement.textContent = englishGenus || t("notAvailable");
+    }
+    if (readButton) readButton.disabled = !speechAvailable || !sourceText;
 }
 
 
@@ -2156,7 +2251,7 @@ function toggleSpeciesSpeech() {
 
     stopSpeciesSpeech();
 
-    const isFinnish = appLanguage === "fi";
+    const isFinnish = description.dataset.speechLang === "fi";
     const types = state.currentPokemon?.types?.map(item => item.type.name) || [];
     const spokenTypes = types.map(type => UI_TEXT[appLanguage].typeNames[type] || capitalize(type));
     const typeIntroduction = spokenTypes.length
@@ -2181,7 +2276,7 @@ function toggleSpeciesSpeech() {
     const spokenText = `${description.dataset.speechName}. ${typeIntroduction}${genusIntroduction}${measurements}${description.textContent}`;
     const utterance = new SpeechSynthesisUtterance(spokenText);
     const voiceSettings = getPokedexVoiceSettings();
-    utterance.lang = appLanguage === "fi" ? "fi-FI" : "en-US";
+    utterance.lang = description.dataset.speechLang === "fi" ? "fi-FI" : "en-US";
     utterance.pitch = voiceSettings.pitch;
     utterance.rate = voiceSettings.rate;
 
@@ -2319,15 +2414,15 @@ function evolutionMethodText(details, targetSpeciesName = "") {
     const orderedMethods = methods.sort((a, b) => Number(a.startsWith("Level up near")) - Number(b.startsWith("Level up near")));
     if (appLanguage !== "fi") return orderedMethods.join(" or ");
     const translate = value => value
-        .replaceAll("Level up near an Icy Rock", "Nouse tasoa jääkiven lähellä")
-        .replaceAll("Level up near a Mossy Rock", "Nouse tasoa sammaleisen kiven lähellä")
+        .replaceAll("Level up near an Icy Rock", "Tasonnousu jääkiven lähellä")
+        .replaceAll("Level up near a Mossy Rock", "Tasonnousu sammaleisen kiven lähellä")
+        .replaceAll("Level up with an empty party slot and a Poké Ball in your bag", "Tasonnousu, kun ryhmässä on tilaa ja laukussa Poképallo")
         .replace(/Level (\d+)/g, "Taso $1")
-        .replaceAll("Level up", "Nouse tasoa")
+        .replaceAll("Level up", "Tasonnousu")
         .replaceAll("Meet the evolution requirement", "Täytä evoluution ehdot")
         .replaceAll("Trade for ", "Vaihda Pokémoniin ")
         .replaceAll("Trade", "Vaihda")
         .replaceAll("Using ", "Käytä ")
-        .replaceAll("Level up with an empty party slot and a Poké Ball in your bag", "Nouse tasoa, kun ryhmässä on tilaa ja laukussa Poképallo")
         .replaceAll("Spin around with this Pokémon in your party", "Pyörähdä, kun tämä Pokémon on ryhmässäsi")
         .replaceAll("Land 3 critical hits in one battle", "Tee 3 kriittistä osumaa saman taistelun aikana")
         .replaceAll("Complete the Tower of Darkness trial", "Suorita Pimeyden tornin koe")
@@ -2928,32 +3023,55 @@ async function renderPokemonGames(
         return;
     }
 
-    availableGames.forEach(game => {
-        const caught = isCaught(game.id, speciesId);
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = `game-catch-button${caught ? " caught" : ""}`;
-        button.setAttribute("aria-pressed", String(caught));
-        const name = document.createElement("span");
-        name.textContent = displayGameName(game);
-        const caughtStatus = document.createElement("strong");
-        caughtStatus.textContent = caught ? t("caughtStatus") : t("markCaught");
-        button.append(name, caughtStatus);
-        button.addEventListener("click", () => {
-            const nextCaught = !isCaught(game.id, speciesId);
-            if (!setCaught(game.id, speciesId, nextCaught)) {
-                alert(appLanguage === "fi" ? "Napattu-merkintää ei voitu tallentaa tähän selaimeen." : "Could not save the caught mark in this browser.");
-                return;
-            }
-            button.classList.toggle("caught", nextCaught);
-            button.setAttribute("aria-pressed", String(nextCaught));
-            caughtStatus.textContent = nextCaught ? t("caughtStatus") : t("markCaught");
-            if (state.currentGame?.id === game.id) updateGameProgress();
-            if (state.currentView === "pokemonView") updatePokemonNavigation();
-            if (state.currentView === "profileView") renderProfile();
-        });
-        container.appendChild(button);
-    });
+    const generations = [...new Set(availableGames.map(game => game.generation))];
+    container.className = "pokemon-games-panel";
+    container.innerHTML = `
+        <label class="pokemon-games-filter" for="pokemonGamesGenerationFilter">
+            <span>${t("generation")}</span>
+            <select id="pokemonGamesGenerationFilter">
+                <option value="all">${t("allGenerations")}</option>
+                ${generations.map(generation => `<option value="${generation}">${formatGenerationName(generation)}</option>`).join("")}
+            </select>
+        </label>
+        <div id="pokemonGameCatchButtons" class="game-list"></div>
+    `;
+
+    const buttonList = document.getElementById("pokemonGameCatchButtons");
+    const generationFilter = document.getElementById("pokemonGamesGenerationFilter");
+    const renderButtons = () => {
+        const selectedGeneration = generationFilter.value;
+        buttonList.innerHTML = "";
+        availableGames
+            .filter(game => selectedGeneration === "all" || game.generation === selectedGeneration)
+            .forEach(game => {
+                const caught = isCaught(game.id, speciesId);
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = `game-catch-button${caught ? " caught" : ""}`;
+                button.setAttribute("aria-pressed", String(caught));
+                const name = document.createElement("span");
+                name.textContent = displayGameName(game);
+                const caughtStatus = document.createElement("strong");
+                caughtStatus.textContent = caught ? t("caughtStatus") : t("markCaught");
+                button.append(name, caughtStatus);
+                button.addEventListener("click", () => {
+                    const nextCaught = !isCaught(game.id, speciesId);
+                    if (!setCaught(game.id, speciesId, nextCaught)) {
+                        alert(t("caughtSaveFailed"));
+                        return;
+                    }
+                    button.classList.toggle("caught", nextCaught);
+                    button.setAttribute("aria-pressed", String(nextCaught));
+                    caughtStatus.textContent = nextCaught ? t("caughtStatus") : t("markCaught");
+                    if (state.currentGame?.id === game.id) updateGameProgress();
+                    if (state.currentView === "pokemonView") updatePokemonNavigation();
+                    if (state.currentView === "profileView") renderProfile();
+                });
+                buttonList.appendChild(button);
+            });
+    };
+    generationFilter.addEventListener("change", renderButtons);
+    renderButtons();
 }
 
 
@@ -2967,89 +3085,67 @@ async function prepareSearchIndex() {
         return state.searchIndex;
     }
     const entries = await getNationalEntries();
-    state.searchIndex = entries.map(entry => ({ id: entry.id, name: entry.name }));
+    state.searchIndex = entries.map((entry, order) => ({ ...entry, order }));
     return state.searchIndex;
 
 }
 
 
-async function searchPokemon(
-    query
-) {
+async function showSearchResults(query, results) {
+    const requestId = ++state.dexRequest;
+    state.gameRequest += 1;
+    state.pokemonRequest += 1;
+    state.currentGame = null;
+    state.pokemonNavigationContext = "search";
+    state.searchQuery = query;
+    state.searchResults = results;
+    state.dexEntries = results;
+    state.dexPage = 0;
+
+    showView("dexView");
+    document.getElementById("pageTitle").textContent = t("searchResults");
+    document.getElementById("breadcrumb").textContent = query;
+    document.getElementById("pokemonGrid").innerHTML = "";
+    document.getElementById("loadMoreButton").hidden = true;
+
+    if (!results.length) {
+        document.getElementById("pokemonGrid").innerHTML = `<div class="empty-state">${t("noSearchResults")}</div>`;
+        document.getElementById("loading").classList.remove("active");
+        return;
+    }
+
+    document.getElementById("loading").classList.add("active");
+    await renderDexEntries(results, false, requestId, "search");
+    if (requestId === state.dexRequest) document.getElementById("loading").classList.remove("active");
+}
+
+
+async function searchPokemon(query) {
     const requestId = ++state.searchRequest;
     const rawQuery = query.trim().replace(/^#/, "");
-    const container = document.getElementById("searchSuggestions");
     if (!rawQuery) {
-        container.innerHTML = "";
         return;
     }
     const index =
         await prepareSearchIndex();
     if (requestId !== state.searchRequest) return;
     const numericQuery = /^\d+$/.test(rawQuery);
-    const normalizedQuery = rawQuery.toLowerCase().replace(/\s+/g, "-");
+    const normalizedQuery = rawQuery.toLowerCase().trim().replace(/[\s_]+/g, "-");
     const results = index.filter(item => numericQuery
         ? item.id === Number(rawQuery)
-        : item.name.includes(normalizedQuery)).slice(0, 8);
-    container.innerHTML = "";
-    if (!results.length) {
-        container.innerHTML = `<div class="search-no-results">${appLanguage === "fi" ? "Pokémonia ei löytynyt." : "No Pokémon found."}</div>`;
+        : item.name.includes(normalizedQuery));
+
+    if (results.length === 1) {
+        state.searchQuery = rawQuery;
+        state.searchResults = results;
+        state.dexEntries = results;
+        state.currentGame = null;
+        state.pokemonNavigationContext = "search";
+        await openPokemonSpecies(results[0].pokemonId, null, "search");
         return;
     }
 
-    results.forEach(
-        result => {
-
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-            button.className =
-                "search-suggestion";
-
-
-            button.innerHTML = `
-
-                <img
-                    src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${result.id}.png"
-                    alt=""
-                >
-
-                <span>
-                    #${String(result.id).padStart(4, "0")}
-                    ${formatPokemonName(result.name)}
-                </span>
-
-            `;
-
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    container.innerHTML = "";
-
-                    document.getElementById(
-                        "searchInput"
-                    ).value = "";
-
-                    openPokemonSpecies(
-                        result.id,
-                        null,
-                        null
-                    );
-
-                }
-            );
-
-
-            container.appendChild(
-                button
-            );
-
-        }
-    );
+    await showSearchResults(rawQuery, results);
 
 }
 
@@ -3071,11 +3167,10 @@ function renderTypeSelector(slot) {
 
     const selectedType = state.typeSelection[slot];
     const buttons = [
-        `<button class="type-choice-button type-choice-none${selectedType ? "" : " active"}" type="button" data-type="" aria-pressed="${!selectedType}"><span class="type-choice-icon">×</span><span>None</span></button>`,
+        `<button class="type-choice-button type-choice-none${selectedType ? "" : " active"}" type="button" data-type="" aria-pressed="${!selectedType}" aria-label="${t("none")}"><span class="type-badge" style="--type-color:#626a76">${t("none")}</span></button>`,
         ...TYPES.map(type => `
-            <button class="type-choice-button${selectedType === type ? " active" : ""}" type="button" data-type="${type}" style="--type-color:${TYPE_COLORS[type]}" aria-pressed="${selectedType === type}" aria-label="${capitalize(type)}">
-                <span class="type-choice-icon">${capitalize(type).charAt(0)}</span>
-                <span>${capitalize(type)}</span>
+            <button class="type-choice-button${selectedType === type ? " active" : ""}" type="button" data-type="${type}" style="--type-color:${TYPE_COLORS[type]}" aria-pressed="${selectedType === type}" aria-label="${UI_TEXT[appLanguage].typeNames[type] || capitalize(type)}">
+                ${getTypeBadge(type)}
             </button>
         `)
     ];
@@ -3802,33 +3897,6 @@ function observeInfiniteScrollButton(button) {
     }
 }
 
-function setupPwaInstallPrompt() {
-    const installButton = document.getElementById("installPwaButton");
-    if (!installButton) return;
-
-    let installPrompt = null;
-    window.addEventListener("beforeinstallprompt", event => {
-        event.preventDefault();
-        installPrompt = event;
-        installButton.hidden = false;
-    });
-
-    installButton.addEventListener("click", async () => {
-        if (!installPrompt) return;
-        const prompt = installPrompt;
-        installPrompt = null;
-        installButton.hidden = true;
-        await prompt.prompt();
-        await prompt.userChoice;
-    });
-
-    window.addEventListener("appinstalled", () => {
-        installPrompt = null;
-        installButton.hidden = true;
-    });
-}
-
-
 function registerPwaServiceWorker() {
     if (!("serviceWorker" in navigator) || !window.isSecureContext) return;
 
@@ -3928,7 +3996,15 @@ function setupPwaUpdateButton() {
     const updateButton = document.getElementById("pwaUpdateButton");
     if (!updateButton) return;
 
-    updateButton.addEventListener("click", () => void checkForPwaUpdate());
+    let animationTimer = null;
+    updateButton.addEventListener("click", () => {
+        updateButton.classList.remove("animating");
+        void updateButton.offsetWidth;
+        updateButton.classList.add("animating");
+        window.clearTimeout(animationTimer);
+        animationTimer = window.setTimeout(() => updateButton.classList.remove("animating"), 3400);
+        void checkForPwaUpdate();
+    });
 }
 
 function setupPullToRefresh() {
@@ -4061,7 +4137,6 @@ function setupEvents() {
 
     setupInfiniteScroll();
     setupPokedexVoiceSettings();
-    setupPwaInstallPrompt();
     setupPwaUpdateButton();
     setupPullToRefresh();
 
@@ -4089,18 +4164,10 @@ function setupEvents() {
     const clearGameSelect = document.getElementById("clearGameSelect");
     clearGameSelect.innerHTML = GAMES.map(game => `<option value="${game.id}">${game.name}</option>`).join("");
 
-    document.getElementById(
-        "searchInput"
-    ).addEventListener(
-        "input",
-        event => {
-
-            searchPokemon(
-                event.target.value
-            );
-
-        }
-    );
+    document.getElementById("searchForm").addEventListener("submit", event => {
+        event.preventDefault();
+        void searchPokemon(document.getElementById("searchInput").value);
+    });
 
 
     document.getElementById(
@@ -4217,6 +4284,11 @@ function setupEvents() {
     ).addEventListener(
         "click",
         () => {
+
+            if (state.pokemonNavigationContext === "search") {
+                void showSearchResults(state.searchQuery, state.searchResults);
+                return;
+            }
 
             if (
                 state.currentGame
@@ -4346,26 +4418,6 @@ function setupEvents() {
                 sidebar.closest(".app")?.classList.remove("sidebar-open");
                 mobileMenuButton.setAttribute("aria-expanded", "false");
                 animateSidebarOrb(mobileMenuButton, false);
-            }
-
-            const search =
-                document.getElementById(
-                    "searchSuggestions"
-                );
-
-            const input =
-                document.getElementById(
-                    "searchInput"
-                );
-
-
-            if (
-                !search.contains(event.target) &&
-                event.target !== input
-            ) {
-
-                search.innerHTML = "";
-
             }
 
         }
