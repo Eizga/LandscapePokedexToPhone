@@ -328,24 +328,6 @@ function getEncounterVersionName(versionDetail) {
     return normalizeApiVersionName(versionDetail?.version?.name);
 }
 
-const POKEMONDB_GAME_LABELS = [
-    ["Let's Go Pikachu", "letsgopikachu"], ["Let's Go Eevee", "letsgoeevee"],
-    ["Brilliant Diamond", "brilliantdiamond"], ["Shining Pearl", "shiningpearl"],
-    ["Legends: Arceus", "legendsarceus"], ["Legends: Z-A", "legendsza"],
-    ["Alpha Sapphire", "alphasapphire"], ["Omega Ruby", "omegaruby"],
-    ["Ultra Sun", "ultrasun"], ["Ultra Moon", "ultramoon"],
-    ["Black 2", "black2"], ["White 2", "white2"],
-    ["HeartGold", "heartgold"], ["SoulSilver", "soulsilver"],
-    ["FireRed", "firered"], ["LeafGreen", "leafgreen"],
-    ["Red", "red"], ["Blue", "blue"], ["Yellow", "yellow"],
-    ["Gold", "gold"], ["Silver", "silver"], ["Crystal", "crystal"],
-    ["Ruby", "ruby"], ["Sapphire", "sapphire"], ["Emerald", "emerald"],
-    ["Diamond", "diamond"], ["Pearl", "pearl"], ["Platinum", "platinum"],
-    ["Black", "black"], ["White", "white"], ["X", "x"], ["Y", "y"],
-    ["Sun", "sun"], ["Moon", "moon"], ["Sword", "sword"], ["Shield", "shield"],
-    ["Scarlet", "scarlet"], ["Violet", "violet"]
-];
-
 // Covers are shipped with the app so the Games view does not depend on an
 // external image service being available at runtime.
 const GAME_COVER_FILE_NAMES = {
@@ -426,8 +408,6 @@ const state = {
     encounterCache: new Map(),
 
     gameAvailabilityCache: new Map(),
-
-    pokemonDbLocationCache: new Map(),
 
     dexEntriesById: new Map(),
 
@@ -2360,161 +2340,6 @@ function formatEncounterDetails(versionDetails) {
 }
 
 
-function normalizePokemonDbText(value) {
-    return String(value || "")
-        .toLowerCase()
-        .replace(/pok[eé]mon/g, " ")
-        .replace(/&/g, " and ")
-        .replace(/[^a-z0-9]+/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-}
-
-
-function getPokemonDbGameIds(label) {
-    let normalized = ` ${normalizePokemonDbText(label)} `;
-    const matches = POKEMONDB_GAME_LABELS
-        .map(([name, id]) => [normalizePokemonDbText(name), id])
-        .sort((a, b) => b[0].length - a[0].length)
-        .filter(([name]) => normalized.includes(` ${name} `))
-        .map(([, id]) => id);
-    const ids = new Set(matches);
-    [
-        ["ultrasun", "sun"], ["ultramoon", "moon"],
-        ["black2", "black"], ["white2", "white"],
-        ["omegaruby", "ruby"], ["alphasapphire", "sapphire"],
-        ["brilliantdiamond", "diamond"], ["shiningpearl", "pearl"]
-    ].forEach(([specific, base]) => {
-        if (ids.has(specific)) ids.delete(base);
-    });
-    return [...ids];
-}
-
-
-function getPokemonDbNodeText(node) {
-    if (node.nodeType === Node.TEXT_NODE) return node.nodeValue || "";
-    if (node.nodeName === "BR") return " ";
-    return [...node.childNodes].map(getPokemonDbNodeText).join(" ");
-}
-
-
-function parsePokemonDbLocations(html) {
-    const page = new DOMParser().parseFromString(html, "text/html");
-    const heading = [...page.querySelectorAll("h1, h2, h3")]
-        .find(element => /where to find/i.test(element.textContent || ""));
-    const locationsTable = heading && [...page.querySelectorAll("table")]
-        .find(table => (heading.compareDocumentPosition(table) & 4) !== 0);
-    if (!locationsTable) throw new Error("PokémonDB locations table was not found");
-
-    const byGame = new Map();
-    let spanningGames = [];
-    let spanningRows = 0;
-    [...locationsTable.querySelectorAll("tr")].forEach(row => {
-        const cells = [...row.children].filter(cell => ["TD", "TH"].includes(cell.tagName));
-        if (!cells.length) return;
-        const currentGameIds = getPokemonDbGameIds(getPokemonDbNodeText(cells[0]));
-        let gameIds = currentGameIds;
-        let infoCells = cells.slice(1);
-        if (currentGameIds.length) {
-            spanningGames = currentGameIds;
-            spanningRows = Math.max(0, Number(cells[0].rowSpan || 1) - 1);
-        } else if (spanningRows > 0) {
-            gameIds = spanningGames;
-            infoCells = cells;
-            spanningRows -= 1;
-        } else {
-            return;
-        }
-
-        const acquisition = infoCells
-            .map(getPokemonDbNodeText)
-            .map(text => text.replace(/\s+/g, " ").trim())
-            .filter(Boolean)
-            .join(" · ");
-        if (!acquisition) return;
-        gameIds.forEach(gameId => {
-            const values = byGame.get(gameId) || [];
-            if (!values.includes(acquisition)) values.push(acquisition);
-            byGame.set(gameId, values);
-        });
-    });
-    return byGame;
-}
-
-
-let pokemonDbRequestQueue = Promise.resolve();
-let pokemonDbLastRequestTime = 0;
-
-function getPokemonDbPageUrl(speciesName) {
-    const normalizedName = String(speciesName || "").toLowerCase();
-    const knownSlugs = {
-        "nidoran-female": "nidoran-f",
-        "nidoran-male": "nidoran-m"
-    };
-    const slug = knownSlugs[normalizedName] || normalizedName
-        .replace(/♀/g, "-f")
-        .replace(/♂/g, "-m")
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "");
-    return `https://pokemondb.net/pokedex/${encodeURIComponent(slug)}#locations`;
-}
-
-
-function getPokemonDbLocations(speciesId, speciesName) {
-    if (state.pokemonDbLocationCache.has(speciesId)) {
-        return state.pokemonDbLocationCache.get(speciesId);
-    }
-
-    const pageUrl = getPokemonDbPageUrl(speciesName);
-    const request = pokemonDbRequestQueue.then(async () => {
-        const delay = Math.max(0, 4000 - (Date.now() - pokemonDbLastRequestTime));
-        if (delay) await new Promise(resolve => setTimeout(resolve, delay));
-        pokemonDbLastRequestTime = Date.now();
-        const sourceUrl = pageUrl.replace(/#.*$/, "");
-
-        try {
-            const response = await fetch(sourceUrl);
-            if (response.ok) {
-                const byGame = parsePokemonDbLocations(await response.text());
-                return { pageUrl, byGame };
-            }
-        } catch (error) {
-            // PokémonDB may not allow direct cross-origin page reads from GitHub Pages.
-            console.info("Direct PokémonDB read unavailable; trying the reader relay.", error);
-        }
-
-        const relayResponse = await fetch(`https://r.jina.ai/${sourceUrl}`, {
-            headers: { "X-Respond-With": "html" }
-        });
-        if (!relayResponse.ok) throw new Error(`PokémonDB reader returned ${relayResponse.status}`);
-        return { pageUrl, byGame: parsePokemonDbLocations(await relayResponse.text()) };
-    });
-    pokemonDbRequestQueue = request.catch(() => undefined);
-    const cachedRequest = request.catch(error => {
-        if (state.pokemonDbLocationCache.get(speciesId) === cachedRequest) {
-            state.pokemonDbLocationCache.delete(speciesId);
-        }
-        throw error;
-    });
-    state.pokemonDbLocationCache.set(speciesId, cachedRequest);
-    return cachedRequest;
-}
-
-
-function getGameAcquisitionSummary(encounters, game) {
-    const versions = getGameApiVersionNames(game.id);
-    const summaries = new Set();
-    encounters.forEach(encounter => {
-        const matchingDetails = (encounter.version_details || []).filter(item => versions.has(getEncounterVersionName(item)));
-        if (!matchingDetails.length) return;
-        const methods = formatEncounterDetails(matchingDetails);
-        summaries.add(`${formatEncounterLocation(encounter.location_area.name)}: ${methods.join(", ") || "Encounter listed; method not specified"}`);
-    });
-    if (summaries.size) return [...summaries].join("; ");
-    return "No encounter listed by PokéAPI; trade, transfer, and other acquisition methods are not documented.";
-}
-
-
 async function renderPokemonLocations(speciesId, requestId = state.pokemonRequest) {
     const gameSelect = document.getElementById("pokemonLocationGameSelect");
     const container = document.getElementById("pokemonLocationsList");
@@ -2626,13 +2451,7 @@ async function renderPokemonGames(
     if (!container) return;
     container.innerHTML = `<div class="empty-state">Etsitään pelejä...</div>`;
 
-    const [availableGames, encounters] = await Promise.all([
-        getAvailableGamesForPokemon(speciesId),
-        getPokemonEncounters(speciesId).catch(error => {
-            console.warn("Pokemon acquisition data load failed", error);
-            return [];
-        })
-    ]);
+    const availableGames = await getAvailableGamesForPokemon(speciesId);
     if (requestId !== state.pokemonRequest) return;
 
     container.innerHTML = "";
@@ -2641,7 +2460,6 @@ async function renderPokemonGames(
         return;
     }
 
-    const acquisitionByGame = new Map();
     availableGames.forEach(game => {
         const caught = isCaught(game.id, speciesId);
         const button = document.createElement("button");
@@ -2650,12 +2468,9 @@ async function renderPokemonGames(
         button.setAttribute("aria-pressed", String(caught));
         const name = document.createElement("span");
         name.textContent = game.name;
-        const acquisition = document.createElement("small");
-        acquisition.textContent = getGameAcquisitionSummary(encounters, game);
-        acquisitionByGame.set(game.id, acquisition);
         const caughtStatus = document.createElement("strong");
         caughtStatus.textContent = caught ? "Caught ✓" : "Merkitse napatuksi";
-        button.append(name, acquisition, caughtStatus);
+        button.append(name, caughtStatus);
         button.addEventListener("click", () => {
             const nextCaught = !isCaught(game.id, speciesId);
             if (!setCaught(game.id, speciesId, nextCaught)) {
@@ -2670,30 +2485,6 @@ async function renderPokemonGames(
             if (state.currentView === "profileView") renderProfile();
         });
         container.appendChild(button);
-    });
-
-    const missingApiDetails = availableGames.filter(game =>
-        getGameAcquisitionSummary(encounters, game).startsWith("No encounter listed")
-    );
-    if (!missingApiDetails.length) return;
-
-    const speciesName = state.currentPokemon?.species?.name || String(speciesId);
-    missingApiDetails.forEach(game => {
-        const field = acquisitionByGame.get(game.id);
-        if (field) field.textContent = "PokéAPI has no encounter entry; checking PokémonDB…";
-    });
-    getPokemonDbLocations(speciesId, speciesName).then(database => {
-        if (requestId !== state.pokemonRequest) return;
-        missingApiDetails.forEach(game => {
-            const field = acquisitionByGame.get(game.id);
-            if (!field) return;
-            const details = database.byGame.get(game.id) || [];
-            field.textContent = details.length
-                ? `${details.join("; ")} · PokémonDB`
-                : "PokéAPI and PokémonDB have no acquisition details for this game.";
-        });
-    }).catch(error => {
-        console.warn("PokemonDB game availability fallback failed", error);
     });
 }
 
