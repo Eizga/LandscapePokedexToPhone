@@ -3,6 +3,95 @@ const API = "https://pokeapi.co/api/v2";
 const STORAGE_KEY = "pokedexGameCaughtV3";
 const CAUGHT_BACKUP_KEY = "pokedexGameCaughtBackupV1";
 const VOICE_SETTINGS_KEY = "pokedexVoiceSettingsV1";
+const LANGUAGE_STORAGE_KEY = "pokedexLanguageV1";
+
+const UI_TEXT = {
+    fi: {
+        pokedex: "Pokédex", games: "Pelit", types: "Tyypit", profile: "Profiili", settings: "Asetukset",
+        searchPokemon: "Hae Pokémonia", nationalPokedex: "Kansallinen Pokédex", regionalPokedex: "Alueellinen Pokédex",
+        typeMatchup: "Tyyppien vaikutukset", typeMatchupHelp: "Tarkastele Pokémon-tyyppien hyökkäys- ja puolustusvaikutuksia.",
+        typeOne: "Tyyppi 1", typeTwo: "Tyyppi 2", sort: "Järjestys", pokedexNumber: "Pokédex-numero", name: "Nimi",
+        loading: "Ladataan...", loadMore: "Lataa lisää", back: "← Takaisin", previous: "‹ Edellinen", next: "Seuraava ›",
+        nationalListSubtitle: "Koko kansallinen lista", gameCollectionDescription: "Pelin Pokédex · {generation}",
+        gameCover: "Pelin kansikuva", collected: "kerätty", regional: "Alueellinen", national: "Kansallinen",
+        all: "Kaikki", caught: "Napattu", missing: "Puuttuvat", profileDescription: "Kansallinen yhteistilanne sekä jokaisen pelin alueellinen ja kansallinen laskuri.",
+        language: "Kieli", languageDescription: "Valitse Pokédexissä ja ääneen luetuissa kuvauksissa käytettävä kieli.",
+        installPokedex: "Asenna Pokédex", installDescription: "iPhonella ja iPadilla avaa selaimen jakovalikko ja valitse Lisää kotinäyttöön. Muissa tuetuissa selaimissa asennus löytyy selaimen valikosta.",
+        installApp: "Asenna sovellus", pokedexVoice: "Pokédexin puheääni", voiceDescription: "Matalampi sävelkorkeus kuulostaa syvemmältä. Säätö ulottuu selaimen tukemaan alarajaan.",
+        pitch: "Sävelkorkeus", readingSpeed: "Lukunopeus", clearOneGame: "Tyhjennä yhden pelin tiedot", clearOneGameDescription: "Poistaa valitun pelin napattu-merkinnät.",
+        selectGame: "Valitse peli", clearGame: "Tyhjennä peli", clearAll: "Tyhjennä kaikki tiedot", clearAllDescription: "Poistaa kaikkien pelien napattu-merkinnät.", clearAllButton: "Tyhjennä kaikki",
+        overview: "Yleiskuvaus", species: "Lajikuvaus", listen: "🔊 Kuuntele", stop: "■ Pysäytä", category: "Lajiryhmä", height: "Pituus", weight: "Paino", baseXp: "Peruskokemus", abilities: "Kyvyt",
+        typeChart: "Tyyppitaulukko", defense: "Puolustus", attack: "Hyökkäys", evolutions: "Evoluutiot", moves: "Liikkeet", forms: "Muodot", locations: "Sijainnit", gamesTab: "Pelit",
+        notAvailable: "Ei saatavilla", noSpeciesDescription: "Tästä Pokémonista ei ole lajikuvausta saatavilla.", speechUnsupported: "Tämä selain ei tue tekstin puheeksi lukemista.",
+        overviewVersion: "Versio", noOverviewForLanguage: "Tälle Pokémonille ei ole kuvausta valitulla kielellä.", moveSort: "Järjestä", moveGeneration: "Sukupolvi", allGenerations: "Kaikki sukupolvet", bp: "BP", acc: "Tarkkuus", pp: "PP", level: "Taso",
+        defenseMatchup: "Puolustus", attackMatchup: "Hyökkäys", chooseType: "Valitse vähintään yksi tyyppi.", caughtStatus: "Napattu ✓", markCaught: "Merkitse napatuksi", gameListLoading: "Etsitään pelejä...", noAvailableGames: "Pokémonille ei löytynyt saatavilla olevia pelejä.",
+        pokemon: "Pokémon", generation: "Sukupolvi", mobileSpecial: "Mobiili / erikoisversio", nationalSummaryTitle: "Koko kansallinen Pokédex", nationalSummaryDescription: "Saman Pokémonin merkintä riittää riippumatta siitä, missä pelissä se on napattu.", pokemonCount: "Pokémonia", gamesCount: "peliä", regionalCount: "Alueellinen", nationalCount: "Kansallinen", defaultForm: "Oletusmuoto", movesWord: "liikkeet", openGame: "Avaa peli",
+        typeNames: { normal: "normaali", fire: "tuli", water: "vesi", electric: "sähkö", grass: "ruoho", ice: "jää", fighting: "taistelu", poison: "myrkky", ground: "maa", flying: "lento", psychic: "meedio", bug: "ötökkä", rock: "kivi", ghost: "aave", dragon: "lohikäärme", dark: "pimeys", steel: "teräs", fairy: "keiju" },
+        whereToFind: "Mistä löytää", howToObtain: "Miten saada", sourcePokeApi: "Lähde: PokéAPI", encounterMethodUnspecified: "Kohtaamistapaa ei ole määritetty",
+        menuToggle: "Avaa tai sulje valikko", checkUpdates: "Hae sovelluksen päivitykset", typeFire: "Tulityyppi", markInGame: "Merkitse napatuksi pelissä", unmarkInGame: "Poista napattu-merkintä pelistä",
+        noGameDex: "Tässä näkymässä ei ole tällä hetkellä Pokémonia.", locationsLoading: "Ladataan sijainteja...", noLocationGames: "Pokédex-merkintää sisältäviä pelejä ei löytynyt.", noEncounterDetails: "Kohtaamis- tai saamistietoja ei löytynyt pelille {game}.",
+        evolutionLoadFailed: "Evoluutioketjua ei voitu ladata.", formsLoadFailed: "Muotoja ei voitu ladata.", caughtSaveFailed: "Napattu-merkintää ei voitu tallentaa tähän selaimeen.",
+        clearAllConfirm: "Haluatko varmasti poistaa kaikki napattu-merkinnät?", caughtClearFailed: "Napattu-merkintöjä ei voitu tyhjentää tästä selaimesta.", clearGameConfirm: "Poistetaanko kaikki pelin {game} napattu-merkinnät?", gameCaughtClearFailed: "Pelin {game} napattu-merkintöjä ei voitu tyhjentää tästä selaimesta.",
+        checkingUpdates: "Haetaan päivityksiä...", loadingMore: "Ladataan lisää...", updateLoadingPage: "Ladataan uusin sivu...", updateFound: "Uusi versio löytyi. Päivitetään sovellus...", updateDownloading: "Uusi versio latautuu. Sovellus avautuu päivityksen jälkeen...", updateFailed: "Päivitysten haku epäonnistui. Tarkista verkkoyhteys.", updateDone: "Päivitystarkistus valmis. Ladataan uusin sisältö...", updateDownloadFailed: "Päivityksen lataus epäonnistui. Yritä uudelleen."
+    },
+    en: {
+        pokedex: "Pokédex", games: "Games", types: "Types", profile: "Profile", settings: "Settings",
+        searchPokemon: "Search Pokémon", nationalPokedex: "National Pokédex", regionalPokedex: "Regional Pokédex",
+        typeMatchup: "Type Matchup", typeMatchupHelp: "Review the offensive and defensive effects of Pokémon types.",
+        typeOne: "Type 1", typeTwo: "Type 2", sort: "Sort", pokedexNumber: "Pokédex number", name: "Name",
+        loading: "Loading...", loadMore: "Load more", back: "← Back", previous: "‹ Previous", next: "Next ›",
+        nationalListSubtitle: "Full national list", gameCollectionDescription: "Game Pokédex · {generation}",
+        gameCover: "Game cover", collected: "caught", regional: "Regional", national: "National",
+        all: "All", caught: "Caught", missing: "Missing", profileDescription: "National progress and regional and national counts for each game.",
+        language: "Language", languageDescription: "Choose the language used throughout the Pokédex and for spoken descriptions.",
+        installPokedex: "Install Pokédex", installDescription: "On iPhone and iPad, use the browser Share menu and choose “Add to Home Screen”. Other supported browsers show an install option in their menu.",
+        installApp: "Install app", pokedexVoice: "Pokédex voice", voiceDescription: "Lower pitch values sound deeper. Pitch can be lowered to the browser-supported minimum.",
+        pitch: "Pitch", readingSpeed: "Reading speed", clearOneGame: "Clear one game's data", clearOneGameDescription: "Removes caught marks for the selected game.",
+        selectGame: "Select a game", clearGame: "Clear game", clearAll: "Clear all data", clearAllDescription: "Removes caught marks from all games.", clearAllButton: "Clear all",
+        overview: "Overview", species: "Species", listen: "🔊 Listen", stop: "■ Stop", category: "Category", height: "Height", weight: "Weight", baseXp: "Base XP", abilities: "Abilities",
+        typeChart: "Type Chart", defense: "Defense", attack: "Attack", evolutions: "Evolutions", moves: "Moves", forms: "Forms", locations: "Locations", gamesTab: "Games",
+        notAvailable: "Not available", noSpeciesDescription: "No species description is available for this Pokémon.", speechUnsupported: "Text-to-speech is not supported by this browser.",
+        overviewVersion: "Version", noOverviewForLanguage: "No description is available for this Pokémon in the selected language.", moveSort: "Sort", moveGeneration: "Generation", allGenerations: "All generations", bp: "BP", acc: "Acc", pp: "PP", level: "Level",
+        defenseMatchup: "Defense", attackMatchup: "Attack", chooseType: "Choose at least one type.", caughtStatus: "Caught ✓", markCaught: "Mark caught", gameListLoading: "Looking up games...", noAvailableGames: "No available games were found for this Pokémon.",
+        pokemon: "Pokémon", generation: "Generation", mobileSpecial: "Mobile / Special", nationalSummaryTitle: "Entire National Pokédex", nationalSummaryDescription: "A Pokémon only needs to be marked once, regardless of which game it was caught in.", pokemonCount: "Pokémon", gamesCount: "games", regionalCount: "Regional", nationalCount: "National", defaultForm: "Default form", movesWord: "moves", openGame: "Open game",
+        typeNames: { normal: "Normal", fire: "Fire", water: "Water", electric: "Electric", grass: "Grass", ice: "Ice", fighting: "Fighting", poison: "Poison", ground: "Ground", flying: "Flying", psychic: "Psychic", bug: "Bug", rock: "Rock", ghost: "Ghost", dragon: "Dragon", dark: "Dark", steel: "Steel", fairy: "Fairy" },
+        whereToFind: "Where to find", howToObtain: "How to obtain", sourcePokeApi: "Source: PokéAPI", encounterMethodUnspecified: "Encounter method not specified",
+        menuToggle: "Open or close menu", checkUpdates: "Check for app updates", typeFire: "Fire type", markInGame: "Mark caught in game", unmarkInGame: "Remove caught mark from game",
+        noGameDex: "There are no Pokémon in this view.", locationsLoading: "Loading locations...", noLocationGames: "No games with a Pokédex entry were found.", noEncounterDetails: "No encounter or acquisition details were found for {game}.",
+        evolutionLoadFailed: "The evolution chain could not be loaded.", formsLoadFailed: "Forms could not be loaded.", caughtSaveFailed: "Could not save the caught mark in this browser.",
+        clearAllConfirm: "Are you sure you want to remove all caught marks?", caughtClearFailed: "Caught marks could not be cleared in this browser.", clearGameConfirm: "Remove all caught marks for {game}?", gameCaughtClearFailed: "Caught marks for {game} could not be cleared in this browser.",
+        checkingUpdates: "Checking for updates...", loadingMore: "Loading more...", updateLoadingPage: "Loading the latest page...", updateFound: "A new version was found. Updating the app...", updateDownloading: "The new version is downloading. The app will reopen when it is ready...", updateFailed: "Could not check for updates. Check your connection.", updateDone: "Update check complete. Loading the latest content...", updateDownloadFailed: "The update could not be downloaded. Try again."
+    }
+};
+
+function getStoredLanguage() {
+    try {
+        return localStorage.getItem(LANGUAGE_STORAGE_KEY) === "en" ? "en" : "fi";
+    } catch {
+        return "fi";
+    }
+}
+
+let appLanguage = getStoredLanguage();
+
+function t(key) {
+    return UI_TEXT[appLanguage]?.[key] ?? UI_TEXT.en[key] ?? key;
+}
+
+function applyStaticTranslations() {
+    document.documentElement.lang = appLanguage;
+    document.querySelectorAll("[data-i18n]").forEach(element => {
+        element.textContent = t(element.dataset.i18n);
+    });
+    document.querySelectorAll("[data-i18n-aria-label]").forEach(element => {
+        element.setAttribute("aria-label", t(element.dataset.i18nAriaLabel));
+    });
+    document.querySelectorAll("[data-i18n-title]").forEach(element => {
+        element.title = t(element.dataset.i18nTitle);
+    });
+    const languageSelect = document.getElementById("appLanguageSelect");
+    if (languageSelect) languageSelect.value = appLanguage;
+}
 
 const POKEMON_PAGE_SIZE = 60;
 
@@ -290,8 +379,26 @@ function formatGenerationName(generation) {
         VI: 6, VII: 7, VIII: 8, IX: 9
     };
     const match = /^Generation (I|II|III|IV|V|VI|VII|VIII|IX)$/.exec(generation);
-    if (match) return `Generation ${romanToArabic[match[1]]}`;
-    return generation === "Mobile" ? "Mobile / Special" : generation;
+    if (match) return `${t("generation")} ${romanToArabic[match[1]]}`;
+    return generation === "Mobile" ? t("mobileSpecial") : generation;
+}
+
+const VERSION_GROUP_GENERATIONS = new Map([
+    [1, ["red-blue", "yellow"]],
+    [2, ["gold-silver", "crystal"]],
+    [3, ["ruby-sapphire", "emerald", "firered-leafgreen"]],
+    [4, ["diamond-pearl", "platinum", "heartgold-soulsilver"]],
+    [5, ["black-white", "black-2-white-2"]],
+    [6, ["x-y", "omega-ruby-alpha-sapphire"]],
+    [7, ["sun-moon", "ultra-sun-ultra-moon", "lets-go-pikachu-lets-go-eevee"]],
+    [8, ["sword-shield", "brilliant-diamond-shining-pearl", "legends-arceus"]],
+    [9, ["scarlet-violet"]]
+].flatMap(([generation, groups]) => groups.map(group => [group, generation])));
+
+function getMoveGenerationLearnInfo(entry, generation = state.moveGeneration) {
+    const details = entry.version_group_details || [];
+    if (generation === "all") return details.at(-1);
+    return details.find(detail => VERSION_GROUP_GENERATIONS.get(detail.version_group?.name) === Number(generation));
 }
 
 const GAME_API_VERSIONS = {
@@ -435,9 +542,19 @@ const state = {
 
     moveCache: new Map(),
 
+    abilityCache: new Map(),
+
     movePage: 0,
 
     moveSort: "name",
+
+    moveGeneration: "all",
+
+    currentSpecies: null,
+
+    overviewEntries: [],
+
+    overviewTextIndex: 0,
 
     searchIndex: null
 
@@ -604,6 +721,13 @@ async function getMove(name) {
     return move;
 }
 
+async function getAbility(name) {
+    if (state.abilityCache.has(name)) return state.abilityCache.get(name);
+    const ability = await apiFetch(`${API}/ability/${name}`);
+    state.abilityCache.set(name, ability);
+    return ability;
+}
+
 
 async function openPokemonSpecies(speciesId, gameId = null, navigationContext = undefined) {
     const requestId = ++state.pokemonRequest;
@@ -751,6 +875,26 @@ function formatPokemonName(value) {
     return capitalize(name);
 }
 
+function localizedResourceName(resource, fallbackName = "") {
+    const localized = resource?.names?.find(item => item.language?.name === appLanguage)?.name;
+    return localized || fallbackName || capitalize(resource?.name || "");
+}
+
+function getDexDisplayName(dex) {
+    return dex.id === "national" ? t("nationalPokedex") : dex.name;
+}
+
+function getDexSubtitle(dex) {
+    if (dex.id === "national") return t("nationalListSubtitle");
+    const generationNumber = /Generation (\d+)/.exec(dex.subtitle)?.[1];
+    if (generationNumber) return formatGenerationName(`Generation ${generationNumber}`);
+    return dex.subtitle;
+}
+
+function displayGameName(game) {
+    return game.name.replace(/^Pokémon\s+/, "");
+}
+
 
 function hexToRgba(hex, alpha = .25) {
 
@@ -786,7 +930,7 @@ function getTypeBadge(type) {
             class="type-badge"
             style="--type-color:${color}"
         >
-            ${type}
+            ${UI_TEXT[appLanguage].typeNames[type] || type}
         </span>
     `;
 
@@ -887,7 +1031,7 @@ async function openDex(dexId) {
     showView("dexView");
 
     document.getElementById("pageTitle")
-        .textContent = dexId === "national" ? dex.name : `Pokédex ${dex.name}`;
+        .textContent = dexId === "national" ? t("nationalPokedex") : `${t("pokedex")} ${dex.name}`;
 
     document.getElementById("breadcrumb")
         .textContent = "";
@@ -953,7 +1097,7 @@ async function openDex(dexId) {
         document.getElementById("pokemonGrid")
             .innerHTML = `
                 <div class="error-state">
-                    Pokédexin lataaminen epäonnistui.
+                    ${appLanguage === "fi" ? "Pokédexin lataaminen epäonnistui." : "The Pokédex could not be loaded."}
                     <br><br>
                     ${error.message}
                 </div>
@@ -1169,14 +1313,14 @@ async function openGame(gameId) {
         .textContent = game.name;
 
     document.getElementById("breadcrumb")
-        .textContent = "Games";
+        .textContent = t("games");
 
     document.getElementById("gameTitle")
         .textContent = game.name;
 
     document.getElementById("gameDescription")
         .textContent =
-        `Pelikohtainen Pokémon-lista · ${formatGenerationName(game.generation)}`;
+        t("gameCollectionDescription").replace("{generation}", formatGenerationName(game.generation));
 
     renderGameCover(game);
 
@@ -1371,7 +1515,7 @@ async function renderGameDex(append = false) {
 
         grid.innerHTML = `
             <div class="empty-state">
-                Tässä näkymässä ei ole tällä hetkellä Pokémonia.
+                ${t("noGameDex")}
             </div>
         `;
 
@@ -1433,8 +1577,8 @@ function createGamePokemonCard(
         const caught = isCaught(game.id, speciesId);
         caughtButton.classList.toggle("caught", caught);
         caughtButton.setAttribute("aria-pressed", String(caught));
-        caughtButton.innerHTML = `<span aria-hidden="true">${caught ? "✓" : "+"}</span><span>${caught ? "Caught" : "Mark caught"}</span>`;
-        caughtButton.setAttribute("aria-label", `${caught ? "Unmark" : "Mark"} ${formatPokemonName(pokemon.name)} as caught in ${game.name}`);
+        caughtButton.innerHTML = `<span aria-hidden="true">${caught ? "✓" : "+"}</span><span>${caught ? t("caughtStatus") : t("markCaught")}</span>`;
+        caughtButton.setAttribute("aria-label", `${caught ? t("unmarkInGame") : t("markInGame")} ${formatPokemonName(pokemon.name)} · ${game.name}`);
     };
 
     updateCaughtButton();
@@ -1442,7 +1586,7 @@ function createGamePokemonCard(
         event.stopPropagation();
         const nextCaught = !isCaught(game.id, speciesId);
         if (!setCaught(game.id, speciesId, nextCaught)) {
-            alert("Caught-merkintää ei voitu tallentaa tähän selaimeen.");
+            alert(appLanguage === "fi" ? "Napattu-merkintää ei voitu tallentaa tähän selaimeen." : "Could not save the caught mark in this browser.");
             return;
         }
         updateCaughtButton();
@@ -1534,7 +1678,7 @@ function updateGameProgress() {
     const nationalCaught = state.gameNationalEntries.filter(entry => caughtData[entry.pokemonId]).length;
     document.getElementById("gameRegionalCount").textContent = `${regionalCaught}/${state.gameRegionalEntries.length}`;
     document.getElementById("gameNationalCount").textContent = `${nationalCaught}/${state.gameNationalEntries.length}`;
-    document.getElementById("gameProgressLabel").textContent = state.currentGameDex === "regional" ? "Regional" : "National";
+    document.getElementById("gameProgressLabel").textContent = state.currentGameDex === "regional" ? t("regional") : t("national");
 
 }
 
@@ -1625,6 +1769,9 @@ async function openPokemon(
 
     state.currentPokemon =
         pokemon;
+    state.currentSpecies = species;
+    state.moveGeneration = "all";
+    state.overviewTextIndex = 0;
 
     state.currentGame = gameId
         ? GAMES.find(game => game.id === gameId) || null
@@ -1644,7 +1791,7 @@ async function openPokemon(
     document.getElementById(
         "breadcrumb"
     ).textContent =
-        "Pokémon";
+        t("pokemon");
 
 
     const detail =
@@ -1698,25 +1845,25 @@ async function openPokemon(
                     </div>
 
                     <div class="detail-tabs">
-                        <button class="detail-tab active" data-detail-tab="overview">Overview</button>
-                        <button class="detail-tab" data-detail-tab="type-chart">Type Chart</button>
-                        <button class="detail-tab" data-detail-tab="evolution">Evolutions</button>
+                        <button class="detail-tab active" data-detail-tab="overview">${t("overview")}</button>
+                        <button class="detail-tab" data-detail-tab="type-chart">${t("typeChart")}</button>
+                        <button class="detail-tab" data-detail-tab="evolution">${t("evolutions")}</button>
 
                         <button
                             class="detail-tab"
                             data-detail-tab="games"
                         >
-                            Games
+                            ${t("gamesTab")}
                         </button>
 
                         <button
                             class="detail-tab"
                             data-detail-tab="moves"
                         >
-                            Moves
+                            ${t("moves")}
                         </button>
-                        <button class="detail-tab" data-detail-tab="forms">Forms</button>
-                        <button class="detail-tab" data-detail-tab="locations">Locations</button>
+                        <button class="detail-tab" data-detail-tab="forms">${t("forms")}</button>
+                        <button class="detail-tab" data-detail-tab="locations">${t("locations")}</button>
 
                     </div>
 
@@ -1724,18 +1871,25 @@ async function openPokemon(
                         <div class="pokemon-summary-grid">
                             <section class="pokemon-summary-card">
                                 <div class="species-heading">
-                                    <h3>Species</h3>
-                                    <button id="readSpeciesButton" class="species-speak-button" type="button" aria-label="Read species description aloud" aria-pressed="false" disabled>🔊 Listen</button>
+                                    <h3>${t("species")}</h3>
+                                    <div class="species-heading-actions">
+                                        <div class="overview-version-switcher" aria-label="${t("overviewVersion")}">
+                                            <button id="previousOverviewText" type="button" aria-label="${t("previous")}" disabled>‹</button>
+                                            <span id="overviewVersionLabel"></span>
+                                            <button id="nextOverviewText" type="button" aria-label="${t("next")}" disabled>›</button>
+                                        </div>
+                                        <button id="readSpeciesButton" class="species-speak-button" type="button" aria-label="${appLanguage === "fi" ? "Lue lajikuvaus ääneen" : "Read species description aloud"}" aria-pressed="false" disabled>${t("listen")}</button>
+                                    </div>
                                 </div>
-                                <p id="speciesDescription">Loading species description...</p>
+                                <p id="speciesDescription">${t("loading")}</p>
                             </section>
                             <section class="pokemon-summary-card">
                                 <div class="overview-facts">
-                                    <span><small>Category</small><strong id="pokemonGenus">Loading...</strong></span>
-                                    <span><small>Height</small><strong>${pokemon.height / 10} m</strong></span>
-                                    <span><small>Weight</small><strong>${pokemon.weight / 10} kg</strong></span>
-                                    <span><small>Base XP</small><strong>${pokemon.base_experience ?? "-"}</strong></span>
-                                    <span><small>Abilities</small><strong>${pokemon.abilities.map(a => capitalize(a.ability.name)).join(", ")}</strong></span>
+                                    <span><small>${t("category")}</small><strong id="pokemonGenus">${t("loading")}</strong></span>
+                                    <span><small>${t("height")}</small><strong>${pokemon.height / 10} m</strong></span>
+                                    <span><small>${t("weight")}</small><strong>${pokemon.weight / 10} kg</strong></span>
+                                    <span><small>${t("baseXp")}</small><strong>${pokemon.base_experience ?? "-"}</strong></span>
+                                    <span><small>${t("abilities")}</small><strong id="pokemonAbilities">${pokemon.abilities.map(a => capitalize(a.ability.name)).join(", ")}</strong></span>
                                 </div>
                             </section>
                         </div>
@@ -1744,18 +1898,18 @@ async function openPokemon(
                     <div class="detail-tab-content" data-detail-content="type-chart">
                         <div class="pokemon-chart-grid">
                             <section class="matchup-section">
-                                <h3>Defence</h3>
+                                <h3>${t("defense")}</h3>
                                 <div id="pokemonDefenses" class="pokemon-matchups"></div>
                             </section>
                             <section class="matchup-section">
-                                <h3>Attacks</h3>
+                                <h3>${t("attack")}</h3>
                                 <div id="pokemonAttacks" class="pokemon-matchups"></div>
                             </section>
                         </div>
                     </div>
 
                     <div class="detail-tab-content" data-detail-content="evolution">
-                        <div id="evolutionChain" class="evolution-tree">Ladataan kehityspolkua...</div>
+                        <div id="evolutionChain" class="evolution-tree">${appLanguage === "fi" ? "Ladataan evoluutioketjua..." : "Loading evolution chain..."}</div>
                     </div>
 
 
@@ -1768,7 +1922,7 @@ async function openPokemon(
                             id="pokemonGamesList"
                             class="game-list"
                         >
-                            Ladataan pelejä...
+                            ${t("loading")}
                         </div>
 
                     </div>
@@ -1779,30 +1933,35 @@ async function openPokemon(
                         data-detail-content="moves"
                     >
                         <div class="moves-toolbar">
-                            <label for="moveSort">Sort by</label>
+                            <label for="moveSort">${t("moveSort")}</label>
                             <select id="moveSort">
-                                <option value="name">Name</option>
-                                <option value="bp">BP</option>
-                                <option value="acc">Acc</option>
+                                <option value="name">${t("name")}</option>
+                                <option value="bp">${t("bp")}</option>
+                                <option value="acc">${t("acc")}</option>
+                            </select>
+                            <label for="moveGenerationFilter">${t("moveGeneration")}</label>
+                            <select id="moveGenerationFilter">
+                                <option value="all">${t("allGenerations")}</option>
+                                ${Array.from({ length: 9 }, (_, index) => `<option value="${index + 1}">${formatGenerationName(`Generation ${index + 1}`)}</option>`).join("")}
                             </select>
                         </div>
                         <div id="pokemonMovesList" class="pokemon-moves-grid"></div>
-                        <button id="loadMoreMovesButton" class="load-more-button" hidden>Lataa lisää liikkeitä</button>
+                        <button id="loadMoreMovesButton" class="load-more-button" hidden>${t("loadMore")}</button>
                     </div>
 
                     <div class="detail-tab-content" data-detail-content="forms">
-                        <div id="pokemonFormsList" class="pokemon-forms-grid">Ladataan muotoja...</div>
+                        <div id="pokemonFormsList" class="pokemon-forms-grid">${t("loading")}</div>
                     </div>
 
                     <div class="detail-tab-content" data-detail-content="locations">
                         <div class="location-toolbar">
-                            <label for="pokemonLocationGameSelect">Game</label>
+                            <label for="pokemonLocationGameSelect">${t("gamesTab")}</label>
                             <select id="pokemonLocationGameSelect" disabled>
-                                <option>Loading available games...</option>
+                                <option>${t("loading")}</option>
                             </select>
                         </div>
                         <div id="pokemonLocationsList" class="pokemon-locations">
-                            <div class="empty-state">Loading game locations...</div>
+                            <div class="empty-state">${t("loading")}</div>
                         </div>
                     </div>
 
@@ -1818,16 +1977,22 @@ async function openPokemon(
     setupDetailTabs();
     state.moveSort = "name";
     document.getElementById("readSpeciesButton").addEventListener("click", toggleSpeciesSpeech);
+    document.getElementById("previousOverviewText").addEventListener("click", () => moveOverviewText(-1));
+    document.getElementById("nextOverviewText").addEventListener("click", () => moveOverviewText(1));
     document.getElementById("moveSort").addEventListener("change", async event => {
         const selectedSort = event.target.value;
         state.moveSort = selectedSort;
         const movesContainer = document.getElementById("pokemonMovesList");
         if (selectedSort !== "name") {
-            movesContainer.innerHTML = `<div class="empty-state">Loading move stats for sorting...</div>`;
+            movesContainer.innerHTML = `<div class="empty-state">${appLanguage === "fi" ? "Ladataan liikkeiden tietoja..." : "Loading move details..."}</div>`;
             await loadAllMoveDetails(pokemon);
         }
         if (state.currentPokemon?.id !== pokemon.id || state.moveSort !== selectedSort) return;
         await renderPokemonMoves(pokemon);
+    });
+    document.getElementById("moveGenerationFilter").addEventListener("change", event => {
+        state.moveGeneration = event.target.value;
+        void renderPokemonMoves(pokemon);
     });
     document.getElementById("loadMoreMovesButton").addEventListener("click", () => {
         loadMoreMoves();
@@ -1837,6 +2002,7 @@ async function openPokemon(
     renderPokemonMatchups(pokemon);
     await Promise.all([
         renderSpeciesDescription(species),
+        renderPokemonAbilities(pokemon, requestId),
         renderEvolutionChain(species, requestId),
         renderPokemonGames(species.id, requestId),
         renderPokemonForms(species, requestId),
@@ -1893,7 +2059,7 @@ function setupDetailTabs() {
 
                     container.dataset.loadingFor = String(speciesId);
                     gameSelect.disabled = true;
-                    container.innerHTML = `<div class="empty-state">Loading game locations...</div>`;
+                    container.innerHTML = `<div class="empty-state">${t("locationsLoading")}</div>`;
                     void renderPokemonLocations(speciesId, state.pokemonRequest);
                 }
 
@@ -1910,24 +2076,57 @@ function setupDetailTabs() {
 ========================================================= */
 
 function renderSpeciesDescription(species) {
+    state.currentSpecies = species;
+    state.overviewEntries = (species.flavor_text_entries || [])
+        .filter(item => item.language?.name === appLanguage)
+        .reduce((entries, item) => {
+            const version = item.version?.name || "unknown";
+            if (!entries.some(entry => entry.version?.name === version)) entries.push(item);
+            return entries;
+        }, []);
+    state.overviewTextIndex = Math.max(0, state.overviewEntries.length - 1);
+    updateSpeciesOverviewText();
+}
+
+function moveOverviewText(offset) {
+    const nextIndex = state.overviewTextIndex + offset;
+    if (nextIndex < 0 || nextIndex >= state.overviewEntries.length) return;
+    stopSpeciesSpeech();
+    state.overviewTextIndex = nextIndex;
+    updateSpeciesOverviewText();
+}
+
+function updateSpeciesOverviewText() {
     const description = document.getElementById("speciesDescription");
-    const entry = species.flavor_text_entries.find(item => item.language.name === "fi")
-        || species.flavor_text_entries.find(item => item.language.name === "en");
-    const genus = species.genera?.find(item => item.language.name === "en")?.genus || "";
+    if (!description) return;
+    const entry = state.overviewEntries[state.overviewTextIndex];
+    const species = state.currentSpecies;
+    const genus = species?.genera?.find(item => item.language?.name === appLanguage)?.genus || "";
     const genusElement = document.getElementById("pokemonGenus");
     const readButton = document.getElementById("readSpeciesButton");
-    if (genusElement) genusElement.textContent = genus || "Not available";
+    const versionLabel = document.getElementById("overviewVersionLabel");
+    const previousButton = document.getElementById("previousOverviewText");
+    const nextButton = document.getElementById("nextOverviewText");
+    if (genusElement) genusElement.textContent = genus || t("notAvailable");
     description.textContent = entry
         ? entry.flavor_text.replace(/[\n\f\r]+/g, " ").replace(/\s+/g, " ").trim()
-        : "Tästä Pokémonista ei ole lajikuvausta saatavilla.";
-    description.dataset.speechLang = entry?.language.name || "en";
-    description.dataset.speechName = formatPokemonName(state.currentPokemon?.name || species.name);
+        : t("noOverviewForLanguage");
+    description.dataset.speechLang = appLanguage;
+    description.dataset.speechName = formatPokemonName(state.currentPokemon?.name || species?.name);
     description.dataset.speechGenus = genus;
     description.dataset.speechHeight = String((state.currentPokemon?.height ?? 0) / 10);
     description.dataset.speechWeight = String((state.currentPokemon?.weight ?? 0) / 10);
     const speechAvailable = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
-    readButton.disabled = !entry || !speechAvailable;
-    readButton.title = speechAvailable ? "" : "Text-to-speech is not supported by this browser.";
+    if (readButton) {
+        readButton.disabled = !entry || !speechAvailable;
+        readButton.title = speechAvailable ? "" : t("speechUnsupported");
+    }
+    if (versionLabel) {
+        const version = entry?.version?.name ? capitalize(entry.version.name) : "";
+        versionLabel.textContent = entry ? `${t("overviewVersion")}: ${version} (${state.overviewTextIndex + 1}/${state.overviewEntries.length})` : "";
+    }
+    if (previousButton) previousButton.disabled = !entry || state.overviewTextIndex <= 0;
+    if (nextButton) nextButton.disabled = !entry || state.overviewTextIndex >= state.overviewEntries.length - 1;
 }
 
 
@@ -1937,7 +2136,7 @@ function stopSpeciesSpeech() {
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
 
     if (activeSpeciesSpeech?.button.isConnected) {
-        activeSpeciesSpeech.button.textContent = "🔊 Listen";
+        activeSpeciesSpeech.button.textContent = t("listen");
         activeSpeciesSpeech.button.setAttribute("aria-pressed", "false");
     }
 
@@ -1957,21 +2156,12 @@ function toggleSpeciesSpeech() {
 
     stopSpeciesSpeech();
 
+    const isFinnish = appLanguage === "fi";
     const types = state.currentPokemon?.types?.map(item => item.type.name) || [];
-    const typeNames = description.dataset.speechLang === "fi"
-        ? {
-            bug: "ötökkä", dark: "pimeys", dragon: "lohikäärme", electric: "sähkö",
-            fairy: "keiju", fighting: "taistelu", fire: "tuli", flying: "lento",
-            ghost: "aave", grass: "ruoho", ground: "maa", ice: "jää",
-            normal: "normaali", poison: "myrkky", psychic: "meedio",
-            rock: "kivi", steel: "teräs", water: "vesi"
-        }
-        : {};
-    const spokenTypes = types.map(type => typeNames[type] || capitalize(type));
+    const spokenTypes = types.map(type => UI_TEXT[appLanguage].typeNames[type] || capitalize(type));
     const typeIntroduction = spokenTypes.length
-        ? `${description.dataset.speechLang === "fi" ? (spokenTypes.length > 1 ? "Tyypit: " : "Tyyppi: ") : (spokenTypes.length > 1 ? "Types: " : "Type: ")}${spokenTypes.join(description.dataset.speechLang === "fi" ? " ja " : " and ")}. `
+        ? `${isFinnish ? (spokenTypes.length > 1 ? "Tyypit: " : "Tyyppi: ") : (spokenTypes.length > 1 ? "Types: " : "Type: ")}${spokenTypes.join(isFinnish ? " ja " : " and ")}. `
         : "";
-    const isFinnish = description.dataset.speechLang === "fi";
     const genus = description.dataset.speechGenus;
     const genusIntroduction = genus
         ? `${isFinnish ? "Laji" : "Category"}: ${genus}. `
@@ -1991,19 +2181,19 @@ function toggleSpeciesSpeech() {
     const spokenText = `${description.dataset.speechName}. ${typeIntroduction}${genusIntroduction}${measurements}${description.textContent}`;
     const utterance = new SpeechSynthesisUtterance(spokenText);
     const voiceSettings = getPokedexVoiceSettings();
-    utterance.lang = description.dataset.speechLang === "fi" ? "fi-FI" : "en-US";
+    utterance.lang = appLanguage === "fi" ? "fi-FI" : "en-US";
     utterance.pitch = voiceSettings.pitch;
     utterance.rate = voiceSettings.rate;
 
     activeSpeciesSpeech = { button, utterance };
-    button.textContent = "■ Stop";
+    button.textContent = t("stop");
     button.setAttribute("aria-pressed", "true");
 
     const resetButton = () => {
         if (activeSpeciesSpeech?.utterance !== utterance) return;
         activeSpeciesSpeech = null;
         if (!button.isConnected) return;
-        button.textContent = "🔊 Listen";
+        button.textContent = t("listen");
         button.setAttribute("aria-pressed", "false");
     };
 
@@ -2126,7 +2316,48 @@ function evolutionMethodText(details, targetSpeciesName = "") {
         return conditions.length ? `${action} ${conditions.join(", ")}` : action;
     }))];
 
-    return methods.sort((a, b) => Number(a.startsWith("Level up near")) - Number(b.startsWith("Level up near"))).join(" or ");
+    const orderedMethods = methods.sort((a, b) => Number(a.startsWith("Level up near")) - Number(b.startsWith("Level up near")));
+    if (appLanguage !== "fi") return orderedMethods.join(" or ");
+    const translate = value => value
+        .replaceAll("Level up near an Icy Rock", "Nouse tasoa jääkiven lähellä")
+        .replaceAll("Level up near a Mossy Rock", "Nouse tasoa sammaleisen kiven lähellä")
+        .replace(/Level (\d+)/g, "Taso $1")
+        .replaceAll("Level up", "Nouse tasoa")
+        .replaceAll("Meet the evolution requirement", "Täytä evoluution ehdot")
+        .replaceAll("Trade for ", "Vaihda Pokémoniin ")
+        .replaceAll("Trade", "Vaihda")
+        .replaceAll("Using ", "Käytä ")
+        .replaceAll("Level up with an empty party slot and a Poké Ball in your bag", "Nouse tasoa, kun ryhmässä on tilaa ja laukussa Poképallo")
+        .replaceAll("Spin around with this Pokémon in your party", "Pyörähdä, kun tämä Pokémon on ryhmässäsi")
+        .replaceAll("Land 3 critical hits in one battle", "Tee 3 kriittistä osumaa saman taistelun aikana")
+        .replaceAll("Complete the Tower of Darkness trial", "Suorita Pimeyden tornin koe")
+        .replaceAll("Complete the Tower of Waters trial", "Suorita Vesitornin koe")
+        .replaceAll("Take damage, then visit the required location", "Ota vahinkoa ja käy vaaditussa paikassa")
+        .replaceAll("then visit the required location", "ja käy vaaditussa paikassa")
+        .replaceAll("damage, then visit", "vahinkoa ja käy")
+        .replaceAll("with high friendship", "kun ystävyys on korkea")
+        .replaceAll("with high affection", "kun kiintymys on korkea")
+        .replaceAll("with Beauty ", "Kauneus-arvo ")
+        .replaceAll("after walking ", "kun olet kävellyt ")
+        .replaceAll(" steps", " askelta")
+        .replaceAll("if female", "jos Pokémon on naaras")
+        .replaceAll("if male", "jos Pokémon on uros")
+        .replaceAll("while knowing a ", "kun se osaa ")
+        .replaceAll("-type Pokémon in your party", "-tyypin Pokémon on ryhmässäsi")
+        .replaceAll(" move", "-liikkeen")
+        .replaceAll("while knowing ", "kun se osaa liikkeen ")
+        .replaceAll("holding the device upside down", "pitämällä laitetta ylösalaisin")
+        .replaceAll("while it is raining", "kun ulkona sataa")
+        .replaceAll("holding ", "kun sillä on varusteena ")
+        .replaceAll("at night", "yöllä")
+        .replaceAll("at day", "päivällä")
+        .replaceAll("at dusk", "hämärässä")
+        .replaceAll("at ", "paikassa ")
+        .replaceAll("use ", "käytä ")
+        .replaceAll("when Attack is higher than Defense", "kun hyökkäys on puolustusta suurempi")
+        .replaceAll("when Defense is higher than Attack", "kun puolustus on hyökkäystä suurempi")
+        .replaceAll("when Attack and Defense are equal", "kun hyökkäys ja puolustus ovat yhtä suuret");
+    return orderedMethods.map(translate).join(" tai ");
 }
 
 
@@ -2176,7 +2407,7 @@ async function renderEvolutionChain(species, requestId = state.pokemonRequest) {
     } catch (error) {
         if (requestId !== state.pokemonRequest) return;
         console.warn("Evolution chain load failed", error);
-        container.textContent = "Kehityspolkua ei voitu ladata.";
+        container.textContent = t("evolutionLoadFailed");
     }
 }
 
@@ -2188,7 +2419,7 @@ function matchupRows(groups) {
             <strong>${label}</strong>
             <div class="type-row">${groups[label].map(getTypeBadge).join("")}</div>
         </div>
-    `).join("") || `<span class="matchup-empty">Ei erityisiä tyyppivaikutuksia.</span>`;
+    `).join("") || `<span class="matchup-empty">${appLanguage === "fi" ? "Ei erityisiä tyyppivaikutuksia." : "No special type effects."}</span>`;
 }
 
 
@@ -2210,7 +2441,7 @@ function renderPokemonMatchups(pokemon) {
         });
         return `
             <div class="pokemon-attack-type">
-                <div class="pokemon-attack-heading">${getTypeBadge(attackingType)} <span>moves</span></div>
+                <div class="pokemon-attack-heading">${getTypeBadge(attackingType)} <span>${t("movesWord")}</span></div>
                 ${matchupRows(attacks)}
             </div>
         `;
@@ -2231,15 +2462,30 @@ async function renderPokemonForms(species, requestId = state.pokemonRequest) {
             const button = document.createElement("button");
             button.className = "pokemon-form-card";
             const image = pokemon.sprites.other?.["official-artwork"]?.front_default || pokemon.sprites.front_default;
-            button.innerHTML = `<img src="${image || ""}" alt="" loading="lazy"><span>${formatPokemonName(pokemon.name)}</span>${variety.is_default ? "<small>Default form</small>" : ""}`;
+            button.innerHTML = `<img src="${image || ""}" alt="" loading="lazy"><span>${formatPokemonName(pokemon.name)}</span>${variety.is_default ? `<small>${t("defaultForm")}</small>` : ""}`;
             button.addEventListener("click", () => openPokemon(pokemon.id, state.currentGame?.id || null));
             container.appendChild(button);
         });
     } catch (error) {
         if (requestId !== state.pokemonRequest) return;
         console.warn("Pokemon forms load failed", error);
-        container.textContent = "Muotoja ei voitu ladata.";
+        container.textContent = t("formsLoadFailed");
     }
+}
+
+async function renderPokemonAbilities(pokemon, requestId = state.pokemonRequest) {
+    const container = document.getElementById("pokemonAbilities");
+    if (!container) return;
+    const abilities = await Promise.all(pokemon.abilities.map(async entry => {
+        try {
+            const ability = await getAbility(entry.ability.name);
+            return localizedResourceName(ability, capitalize(entry.ability.name));
+        } catch {
+            return capitalize(entry.ability.name);
+        }
+    }));
+    if (requestId !== state.pokemonRequest || !container.isConnected) return;
+    container.textContent = abilities.join(", ") || t("notAvailable");
 }
 
 
@@ -2263,7 +2509,7 @@ async function renderPokemonMoves(pokemon, append = false, requestId = state.pok
     if (!container || !loadMore) return;
     const renderId = ++state.moveRenderRequest;
     if (!append) loadMore.hidden = true;
-    const moveEntries = [...pokemon.moves];
+    const moveEntries = pokemon.moves.filter(entry => getMoveGenerationLearnInfo(entry));
     if (state.moveSort === "name") {
         moveEntries.sort((a, b) => a.move.name.localeCompare(b.move.name));
     } else {
@@ -2286,17 +2532,22 @@ async function renderPokemonMoves(pokemon, append = false, requestId = state.pok
     const pageSize = 16;
     const start = state.movePage * pageSize;
     const moves = moveEntries.slice(start, start + pageSize);
+    if (!moves.length && !append) {
+        container.innerHTML = `<div class="empty-state">${appLanguage === "fi" ? "Tälle Pokémonille ei löytynyt liikkeitä tässä sukupolvessa." : "No moves were found for this Pokémon in this generation."}</div>`;
+        loadMore.hidden = true;
+        return;
+    }
     const cards = await Promise.all(moves.map(async entry => {
         try {
             const move = await getMove(entry.move.name);
             const card = document.createElement("article");
             card.className = "pokemon-move-card";
-            const learnInfo = entry.version_group_details.at(-1);
+            const learnInfo = getMoveGenerationLearnInfo(entry);
             const level = learnInfo?.level_learned_at;
             card.innerHTML = `
-                <strong>${capitalize(move.name)}</strong>
+                <strong>${localizedResourceName(move, capitalize(move.name))}</strong>
                 <div><span>BP</span><b>${move.power ?? "—"}</b><span>Acc</span><b>${move.accuracy == null ? "—" : `${move.accuracy}%`}</b><span>PP</span><b>${move.pp ?? "—"}</b></div>
-                ${level ? `<small>Level ${level}</small>` : ""}
+                ${level ? `<small>${t("level")} ${level}</small>` : ""}
             `;
             return card;
         } catch (error) {
@@ -2553,7 +2804,7 @@ async function renderPokemonLocations(speciesId, requestId = state.pokemonReques
         });
         if (!locationGames.length) {
             gameSelect.disabled = true;
-            container.innerHTML = `<div class="empty-state">No games with a Pokédex entry were found for this Pokémon.</div>`;
+            container.innerHTML = `<div class="empty-state">${t("noLocationGames")}</div>`;
             return;
         }
 
@@ -2591,13 +2842,11 @@ async function renderPokemonLocations(speciesId, requestId = state.pokemonReques
                     card.className = "pokemon-location-card";
                     const title = document.createElement("strong");
                     title.textContent = /^(trade|migrate|transfer|breed|evolve|gift|starter)/i.test(entry)
-                        ? "How to obtain"
-                        : "Where to find";
+                        ? t("howToObtain")
+                        : t("whereToFind");
                     const details = document.createElement("span");
                     details.textContent = entry;
-                    const source = document.createElement("small");
-                    source.textContent = "Source: PokémonDB";
-                    card.append(title, details, source);
+                    card.append(title, details);
                     results.appendChild(card);
                 });
                 return;
@@ -2612,7 +2861,7 @@ async function renderPokemonLocations(speciesId, requestId = state.pokemonReques
                 } else if (!pokemonDb) {
                     container.innerHTML = `<div class="empty-state">PokémonDB location data could not be loaded, and PokéAPI has no encounter record for ${game.name}.</div>`;
                 } else {
-                    container.innerHTML = `<div class="empty-state">No encounter or acquisition details were found for ${game.name}.</div>`;
+                    container.innerHTML = `<div class="empty-state">${t("noEncounterDetails").replace("{game}", game.name)}</div>`;
                 }
                 return;
             }
@@ -2642,9 +2891,9 @@ async function renderPokemonLocations(speciesId, requestId = state.pokemonReques
                     return chance === undefined ? label : `${label} · max chance ${chance}%`;
                 });
                 const methods = formatEncounterDetails(location.versionDetails);
-                details.textContent = [...versions, ...methods].join(" · ") || "Encounter method not specified";
+                details.textContent = [...versions, ...methods].join(" · ") || t("encounterMethodUnspecified");
                 const source = document.createElement("small");
-                source.textContent = "Source: PokéAPI";
+                source.textContent = t("sourcePokeApi");
                 card.append(title, details, source);
                 results.appendChild(card);
             });
@@ -2668,14 +2917,14 @@ async function renderPokemonGames(
 ) {
     const container = document.getElementById("pokemonGamesList");
     if (!container) return;
-    container.innerHTML = `<div class="empty-state">Etsitään pelejä...</div>`;
+    container.innerHTML = `<div class="empty-state">${t("gameListLoading")}</div>`;
 
     const availableGames = await getAvailableGamesForPokemon(speciesId);
     if (requestId !== state.pokemonRequest) return;
 
     container.innerHTML = "";
     if (!availableGames.length) {
-        container.innerHTML = `<div class="empty-state">Pokémonille ei löytynyt saatavilla olevia pelejä.</div>`;
+        container.innerHTML = `<div class="empty-state">${t("noAvailableGames")}</div>`;
         return;
     }
 
@@ -2686,19 +2935,19 @@ async function renderPokemonGames(
         button.className = `game-catch-button${caught ? " caught" : ""}`;
         button.setAttribute("aria-pressed", String(caught));
         const name = document.createElement("span");
-        name.textContent = game.name;
+        name.textContent = displayGameName(game);
         const caughtStatus = document.createElement("strong");
-        caughtStatus.textContent = caught ? "Caught ✓" : "Merkitse napatuksi";
+        caughtStatus.textContent = caught ? t("caughtStatus") : t("markCaught");
         button.append(name, caughtStatus);
         button.addEventListener("click", () => {
             const nextCaught = !isCaught(game.id, speciesId);
             if (!setCaught(game.id, speciesId, nextCaught)) {
-                alert("Caught-merkintää ei voitu tallentaa tähän selaimeen.");
+                alert(appLanguage === "fi" ? "Napattu-merkintää ei voitu tallentaa tähän selaimeen." : "Could not save the caught mark in this browser.");
                 return;
             }
             button.classList.toggle("caught", nextCaught);
             button.setAttribute("aria-pressed", String(nextCaught));
-            caughtStatus.textContent = nextCaught ? "Caught ✓" : "Merkitse napatuksi";
+            caughtStatus.textContent = nextCaught ? t("caughtStatus") : t("markCaught");
             if (state.currentGame?.id === game.id) updateGameProgress();
             if (state.currentView === "pokemonView") updatePokemonNavigation();
             if (state.currentView === "profileView") renderProfile();
@@ -2744,7 +2993,7 @@ async function searchPokemon(
         : item.name.includes(normalizedQuery)).slice(0, 8);
     container.innerHTML = "";
     if (!results.length) {
-        container.innerHTML = `<div class="search-no-results">Pokémonia ei löytynyt.</div>`;
+        container.innerHTML = `<div class="search-no-results">${appLanguage === "fi" ? "Pokémonia ei löytynyt." : "No Pokémon found."}</div>`;
         return;
     }
 
@@ -2914,7 +3163,7 @@ function renderTypeMatchup() {
 
         container.innerHTML = `
             <div class="empty-state">
-                Valitse vähintään yksi tyyppi.
+            ${t("chooseType")}
             </div>
         `;
 
@@ -3020,7 +3269,7 @@ function renderTypeMatchup() {
         <div class="matchup-section">
 
             <h3>
-                Defensive matchup
+                ${t("defenseMatchup")}
             </h3>
 
             ${
@@ -3068,7 +3317,7 @@ function renderTypeMatchup() {
         <div class="matchup-section">
 
             <h3>
-                Offensive matchup
+                ${t("attackMatchup")}
             </h3>
 
             ${
@@ -3145,7 +3394,7 @@ function renderTypeMatchup() {
 async function renderProfile() {
     const requestId = ++state.profileRequest;
     const container = document.getElementById("profileStats");
-    container.innerHTML = `<div class="empty-state">Lasketaan...</div>`;
+    container.innerHTML = `<div class="empty-state">${appLanguage === "fi" ? "Lasketaan..." : "Calculating..."}</div>`;
     const national = await getNationalEntries();
     if (requestId !== state.profileRequest) return;
     const dexIds = [...new Set(GAMES.flatMap(game => game.dexes))];
@@ -3166,10 +3415,10 @@ async function renderProfile() {
 
     const cards = [`
         <article class="profile-card profile-national-card">
-            <h3>Koko National Pokédex</h3>
-            <p>Saman Pokémonin merkintä riittää riippumatta siitä, missä pelissä se on napattu.</p>
+            <h3>${t("nationalSummaryTitle")}</h3>
+            <p>${t("nationalSummaryDescription")}</p>
             <div class="profile-progress"><div class="profile-progress-bar" style="width:${nationalPercent}%"></div></div>
-            <div class="profile-count">${nationalCaught} / ${nationalTotal} Pokémonia (${nationalPercent}%)</div>
+            <div class="profile-count">${nationalCaught} / ${nationalTotal} ${t("pokemonCount")} (${nationalPercent}%)</div>
         </article>
     `];
     const gameCardsByGeneration = new Map();
@@ -3191,15 +3440,15 @@ async function renderProfile() {
         const regionalPercent = regionalIds.length ? Math.round(regionalCaught / regionalIds.length * 100) : 0;
         const gameNationalPercent = gameNational.length ? Math.round(nationalCaughtForGame / gameNational.length * 100) : 0;
         const gameCard = `
-            <article class="profile-card profile-game-card" data-profile-game="${game.id}" role="button" tabindex="0" aria-label="Open ${game.name}">
+            <article class="profile-card profile-game-card" data-profile-game="${game.id}" role="button" tabindex="0" aria-label="${t("openGame")} ${game.name}">
                 <h3>${game.name}</h3>
                 <p>${formatGenerationName(game.generation)}</p>
                 <div class="profile-dex-progress">
-                    <div class="profile-dex-heading"><strong>Regional</strong><span>${regionalCaught} / ${regionalIds.length} (${regionalPercent}%)</span></div>
+                    <div class="profile-dex-heading"><strong>${t("regionalCount")}</strong><span>${regionalCaught} / ${regionalIds.length} (${regionalPercent}%)</span></div>
                     <div class="profile-progress"><div class="profile-progress-bar" style="width:${regionalPercent}%"></div></div>
                 </div>
                 <div class="profile-dex-progress">
-                    <div class="profile-dex-heading"><strong>National</strong><span>${nationalCaughtForGame} / ${gameNational.length} (${gameNationalPercent}%)</span></div>
+                    <div class="profile-dex-heading"><strong>${t("nationalCount")}</strong><span>${nationalCaughtForGame} / ${gameNational.length} (${gameNationalPercent}%)</span></div>
                     <div class="profile-progress"><div class="profile-progress-bar" style="width:${gameNationalPercent}%"></div></div>
                 </div>
             </article>
@@ -3211,7 +3460,7 @@ async function renderProfile() {
         <section class="profile-generation-group">
             <button class="profile-generation-toggle" type="button" aria-expanded="false">
                 <span>${formatGenerationName(generation)}</span>
-                <span>${generationCards.length} games <span class="profile-generation-arrow" aria-hidden="true">›</span></span>
+                <span>${generationCards.length} ${t("gamesCount")} <span class="profile-generation-arrow" aria-hidden="true">›</span></span>
             </button>
             <div class="profile-generation-cards">${generationCards.join("")}</div>
         </section>
@@ -3264,7 +3513,7 @@ function toggleMobileSidebar(button) {
 function renderSidebarLists() {
     const pokedexSubmenu = document.getElementById("pokedexSubmenu");
     pokedexSubmenu.innerHTML = POKEDEXES.map(dex => `
-        <button class="submenu-button${dex.id === "national" ? " active" : ""}" data-dex="${dex.id}"><span>${dex.name}</span><small>${dex.subtitle}</small></button>
+        <button class="submenu-button${dex.id === "national" ? " active" : ""}" data-dex="${dex.id}"><span>${getDexDisplayName(dex)}</span><small>${getDexSubtitle(dex)}</small></button>
     `).join("");
 
     const gamesSubmenu = document.getElementById("gamesSubmenu");
@@ -3280,10 +3529,26 @@ function renderSidebarLists() {
                 <span class="generation-arrow" aria-hidden="true">›</span>
             </button>
             <div class="generation-games">
-                ${games.map(game => `<button class="game-button" data-game="${game.id}">${game.name.replace(/^Pokémon\s+/, "")}</button>`).join("")}
+                ${games.map(game => `<button class="game-button" data-game="${game.id}">${displayGameName(game)}</button>`).join("")}
             </div>
         </section>
     `).join("");
+}
+
+function refreshSidebarLocalization() {
+    document.querySelectorAll(".submenu-button[data-dex]").forEach(button => {
+        const dex = POKEDEXES.find(item => item.id === button.dataset.dex);
+        if (!dex) return;
+        const [name, subtitle] = button.querySelectorAll("span, small");
+        if (name) name.textContent = getDexDisplayName(dex);
+        if (subtitle) subtitle.textContent = getDexSubtitle(dex);
+    });
+    document.querySelectorAll(".generation-group").forEach(group => {
+        const gameId = group.querySelector(".game-button")?.dataset.game;
+        const game = GAMES.find(item => item.id === gameId);
+        const label = group.querySelector(".generation-toggle span:first-child");
+        if (game && label) label.textContent = formatGenerationName(game.generation);
+    });
 }
 
 function setupSidebar() {
@@ -3430,16 +3695,19 @@ function setupSidebar() {
             setSidebarSelection("typesButton");
 
             showView("typeView");
+            renderTypeSelector("type1");
+            renderTypeSelector("type2");
+            renderTypeMatchup();
 
             document.getElementById(
                 "pageTitle"
             ).textContent =
-                "Types";
+                t("types");
 
             document.getElementById(
                 "breadcrumb"
             ).textContent =
-                "Types";
+                t("types");
 
         }
     );
@@ -3460,12 +3728,12 @@ function setupSidebar() {
             document.getElementById(
                 "pageTitle"
             ).textContent =
-                "Profile";
+                t("profile");
 
             document.getElementById(
                 "breadcrumb"
             ).textContent =
-                "Profile";
+                t("profile");
 
             renderProfile();
 
@@ -3488,12 +3756,12 @@ function setupSidebar() {
             document.getElementById(
                 "pageTitle"
             ).textContent =
-                "Settings";
+                t("settings");
 
             document.getElementById(
                 "breadcrumb"
             ).textContent =
-                "Settings";
+                t("settings");
 
         }
     );
@@ -3604,11 +3872,11 @@ async function checkForPwaUpdate() {
         updateButton.disabled = true;
         updateButton.setAttribute("aria-busy", "true");
     }
-    if (status) status.textContent = "Haetaan päivityksiä…";
+    if (status) status.textContent = t("checkingUpdates");
 
     try {
         if (!("serviceWorker" in navigator) || !window.isSecureContext) {
-            if (status) status.textContent = "Ladataan uusin sivu…";
+            if (status) status.textContent = t("updateLoadingPage");
             reloadForPwaUpdate();
             return;
         }
@@ -3626,27 +3894,27 @@ async function checkForPwaUpdate() {
         const waitingWorker = registration.waiting;
         const installingWorker = registration.installing;
         if (waitingWorker) {
-            if (status) status.textContent = "Uusi versio löytyi. Päivitetään sovellus…";
+            if (status) status.textContent = t("updateFound");
             waitingWorker.postMessage({ type: "SKIP_WAITING" });
             return;
         }
         if (installingWorker) {
-            if (status) status.textContent = "Uusi versio latautuu. Sovellus avautuu päivityksen jälkeen…";
+            if (status) status.textContent = t("updateDownloading");
             installingWorker.addEventListener("statechange", () => {
                 if (installingWorker.state === "redundant") {
                     pwaManualUpdatePending = false;
-                    if (status) status.textContent = "Päivityksen lataus epäonnistui. Yritä uudelleen.";
+                    if (status) status.textContent = t("updateDownloadFailed");
                 }
             });
             return;
         }
 
-        if (status) status.textContent = "Päivitystarkistus valmis. Ladataan uusin sisältö…";
+        if (status) status.textContent = t("updateDone");
         window.setTimeout(reloadForPwaUpdate, 250);
     } catch (error) {
         console.warn("PWA update check failed", error);
         pwaManualUpdatePending = false;
-        if (status) status.textContent = "Päivitysten haku epäonnistui. Tarkista verkkoyhteys.";
+        if (status) status.textContent = t("updateFailed");
     } finally {
         pwaUpdateCheckInProgress = false;
         if (updateButton) {
@@ -3747,7 +4015,7 @@ async function runLoadMore(button, loadPage) {
     const label = button.textContent.trim();
     button.dataset.loading = "true";
     button.disabled = true;
-    button.textContent = "Ladataan lisää...";
+    button.textContent = t("loadingMore");
 
     try {
         await loadPage();
@@ -3796,6 +4064,27 @@ function setupEvents() {
     setupPwaInstallPrompt();
     setupPwaUpdateButton();
     setupPullToRefresh();
+
+    const languageSelect = document.getElementById("appLanguageSelect");
+    if (languageSelect) {
+        languageSelect.value = appLanguage;
+        languageSelect.addEventListener("change", event => {
+            const nextLanguage = event.target.value === "en" ? "en" : "fi";
+            try {
+                localStorage.setItem(LANGUAGE_STORAGE_KEY, nextLanguage);
+            } catch (error) {
+                console.warn("Could not save language preference", error);
+            }
+            appLanguage = nextLanguage;
+            applyStaticTranslations();
+            refreshSidebarLocalization();
+            stopSpeciesSpeech();
+            if (state.currentView === "settingsView") {
+                document.getElementById("pageTitle").textContent = t("settings");
+                document.getElementById("breadcrumb").textContent = t("settings");
+            }
+        });
+    }
 
     const clearGameSelect = document.getElementById("clearGameSelect");
     clearGameSelect.innerHTML = GAMES.map(game => `<option value="${game.id}">${game.name}</option>`).join("");
@@ -3976,16 +4265,14 @@ function setupEvents() {
         () => {
 
             const confirmed =
-                confirm(
-                    "Haluatko varmasti poistaa kaikki caught-merkinnät?"
-                );
+                confirm(t("clearAllConfirm"));
 
 
             if (!confirmed) return;
 
 
             if (!saveCaughtData({})) {
-                alert("Caught-merkintöjä ei voitu tyhjentää tästä selaimesta.");
+                alert(t("caughtClearFailed"));
                 return;
             }
 
@@ -4017,13 +4304,13 @@ function setupEvents() {
         .addEventListener("click", () => {
             const gameId = clearGameSelect.value;
             const game = GAMES.find(item => item.id === gameId);
-            if (!game || !confirm(`Poistetaanko kaikki ${game.name}-pelin caught-merkinnät?`)) return;
+            if (!game || !confirm(t("clearGameConfirm").replace("{game}", game.name))) return;
             const data = getCaughtData();
             delete data[gameId];
             if (gameId === "brilliantdiamond") delete data.brilliantdiamond2;
             if (gameId === "shiningpearl") delete data.shiningpearl2;
             if (!saveCaughtData(data)) {
-                alert(`${game.name}-pelin caught-merkintöjä ei voitu tyhjentää tästä selaimesta.`);
+                alert(t("gameCaughtClearFailed").replace("{game}", game.name));
                 return;
             }
             if (state.currentGame?.id === gameId) {
@@ -4092,6 +4379,8 @@ function setupEvents() {
 ========================================================= */
 
 async function init() {
+
+    applyStaticTranslations();
 
     registerPwaServiceWorker();
     setupSidebar();

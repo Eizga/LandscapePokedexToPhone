@@ -23,23 +23,26 @@
     <aside class="sidebar" id="sidebar">
 
         <div class="sidebar-top">
-            <button class="icon-button" id="sidebarToggle" title="Avaa tai sulje valikko" aria-label="Avaa tai sulje valikko">
+            <button class="icon-button" id="sidebarToggle" title="Avaa tai sulje valikko" aria-label="Avaa tai sulje valikko" data-i18n-title="menuToggle" data-i18n-aria-label="menuToggle">
                 <span class="pokedex-glass-orb" aria-hidden="true"></span>
             </button>
 
-            <div class="logo-area">
-                <span class="sidebar-label">POKÉDEX</span>
-            </div>
         </div>
 
         <!-- SEARCH -->
         <div class="search-area">
-            <input
-                type="text"
-                id="searchInput"
-                placeholder="Nimi tai Pokédex-numero..."
-                autocomplete="off"
-            >
+            <div class="search-input-wrap">
+                <span class="search-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="m15.5 15.5 5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+                </span>
+                <input
+                    type="text"
+                    id="searchInput"
+                    aria-label="Hae Pokémonia"
+                    data-i18n-aria-label="searchPokemon"
+                    autocomplete="off"
+                >
+            </div>
             <div id="searchSuggestions" class="search-suggestions"></div>
         </div>
 
@@ -50,7 +53,7 @@
 
                 <button class="nav-main-button" id="pokedexMenuButton">
                     <span class="nav-icon pokedex-nav-icon" aria-hidden="true"><img src="assets/pokedex-menu.png" alt=""></span>
-                    <span class="sidebar-label">Pokédex</span>
+                    <span class="sidebar-label" data-i18n="pokedex">Pokédex</span>
                     <span class="nav-arrow">›</span>
                 </button>
 
@@ -63,7 +66,7 @@
 
                 <button class="nav-main-button" id="gamesMenuButton">
                     <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M9 4h14a4 4 0 0 1 4 4v20H5V8a4 4 0 0 1 4-4Z" fill="#d7dce1" stroke="#252a30" stroke-width="2"/><rect x="9" y="8" width="14" height="9" rx="1.5" fill="#54725d" stroke="#252a30" stroke-width="1.5"/><path d="M10 22h7M13.5 18.5v7" stroke="#252a30" stroke-width="2"/><circle cx="22" cy="21" r="1.7" fill="#cf3340"/><circle cx="24.5" cy="24" r="1.7" fill="#cf3340"/><circle cx="9" cy="27" r="1" fill="#252a30"/><circle cx="12" cy="27" r="1" fill="#252a30"/></svg></span>
-                    <span class="sidebar-label">Games</span>
+                    <span class="sidebar-label" data-i18n="games">Games</span>
                     <span class="nav-arrow">›</span>
                 </button>
 
@@ -73,22 +76,22 @@
 
             <!-- TYPES -->
             <button class="nav-main-button" id="typesButton">
-                <span class="nav-icon type-fire-icon" aria-label="Fire type"><svg viewBox="0 0 32 32"><path d="M17.8 2.7c1.2 5.2-2.3 6.8-1.1 10.1 1 .1 2.5-1.4 3.2-3.5 4.6 4 7.3 8.1 6.2 13A10.4 10.4 0 0 1 15.7 30C9.1 30 4 25.5 4 19.3c0-4.2 2.4-8.2 6.4-11.8-.4 4 1 5.7 2.5 6.2 1.2-3.8 1.4-7.4 4.9-11Z" fill="#e53a32" stroke="#9b2027" stroke-width="1.5"/><path d="M16.7 16.3c.6 2.2-1.4 3.2-.7 4.7.7-.2 1.3-.9 1.7-1.7 2.2 2.1 3 3.7 2.5 5.6-.5 2-2.2 3.2-4.3 3.2-2.6 0-4.3-1.8-4.3-4.1 0-2.5 2.1-4.7 5.1-7.7Z" fill="#ffd357"/></svg></span>
-                <span class="sidebar-label">Types</span>
+                <span class="nav-icon type-fire-icon" aria-label="Fire type" data-i18n-aria-label="typeFire"><svg viewBox="0 0 32 32"><path d="M17.8 2.7c1.2 5.2-2.3 6.8-1.1 10.1 1 .1 2.5-1.4 3.2-3.5 4.6 4 7.3 8.1 6.2 13A10.4 10.4 0 0 1 15.7 30C9.1 30 4 25.5 4 19.3c0-4.2 2.4-8.2 6.4-11.8-.4 4 1 5.7 2.5 6.2 1.2-3.8 1.4-7.4 4.9-11Z" fill="#e53a32" stroke="#9b2027" stroke-width="1.5"/><path d="M16.7 16.3c.6 2.2-1.4 3.2-.7 4.7.7-.2 1.3-.9 1.7-1.7 2.2 2.1 3 3.7 2.5 5.6-.5 2-2.2 3.2-4.3 3.2-2.6 0-4.3-1.8-4.3-4.1 0-2.5 2.1-4.7 5.1-7.7Z" fill="#ffd357"/></svg></span>
+                <span class="sidebar-label" data-i18n="types">Types</span>
             </button>
 
 
             <!-- PROFILE -->
             <button class="nav-main-button" id="profileButton">
                 <span class="nav-icon">👤</span>
-                <span class="sidebar-label">Profile</span>
+                <span class="sidebar-label" data-i18n="profile">Profile</span>
             </button>
 
 
             <!-- SETTINGS -->
             <button class="nav-main-button" id="settingsButton">
                 <span class="nav-icon">⚙️</span>
-                <span class="sidebar-label">Settings</span>
+                <span class="sidebar-label" data-i18n="settings">Settings</span>
             </button>
 
         </nav>
@@ -101,12 +104,12 @@
 
         <header class="topbar">
 
-            <button class="mobile-menu-button" id="mobileMenuButton" aria-label="Avaa tai sulje valikko" aria-expanded="false">
+            <button class="mobile-menu-button" id="mobileMenuButton" aria-label="Avaa tai sulje valikko" aria-expanded="false" data-i18n-aria-label="menuToggle">
                 <span class="pokedex-glass-orb" aria-hidden="true"></span>
             </button>
 
             <div>
-                <div class="breadcrumb" id="breadcrumb">
+                <div class="breadcrumb" id="breadcrumb" data-i18n="pokedex">
                     Pokédex
                 </div>
 
@@ -116,7 +119,7 @@
             </div>
 
             <div class="pokedex-header-menu">
-                <button class="pokedex-status-lights" id="pwaUpdateButton" type="button" aria-label="Hae sovelluksen päivitykset" title="Hae sovelluksen päivitykset" aria-busy="false">
+                <button class="pokedex-status-lights" id="pwaUpdateButton" type="button" aria-label="Hae sovelluksen päivitykset" title="Hae sovelluksen päivitykset" aria-busy="false" data-i18n-aria-label="checkUpdates" data-i18n-title="checkUpdates">
                     <span class="status-light red" aria-hidden="true"></span>
                     <span class="status-light yellow" aria-hidden="true"></span>
                     <span class="status-light green" aria-hidden="true"></span>
@@ -134,11 +137,11 @@
                 <div class="toolbar-actions">
 
                     <label class="sort-label">
-                        Järjestys
+                        <span data-i18n="sort">Järjestys</span>
 
                         <select id="dexSort">
-                            <option value="number">Pokédex-numero</option>
-                            <option value="name">Nimi</option>
+                            <option value="number" data-i18n="pokedexNumber">Pokédex-numero</option>
+                            <option value="name" data-i18n="name">Nimi</option>
                         </select>
                     </label>
 
@@ -148,11 +151,11 @@
 
             <div id="pokemonGrid" class="pokemon-grid"></div>
 
-            <div id="loading" class="loading">
+            <div id="loading" class="loading" data-i18n="loading">
                 Ladataan...
             </div>
 
-            <button id="loadMoreButton" class="load-more-button" hidden>
+            <button id="loadMoreButton" class="load-more-button" hidden data-i18n="loadMore">
                 Lataa lisää
             </button>
 
@@ -163,13 +166,13 @@
         <section id="pokemonView" class="view">
 
             <div class="pokemon-view-toolbar">
-                <button id="backButton" class="back-button">
+                <button id="backButton" class="back-button" data-i18n="back">
                     ← Takaisin
                 </button>
                 <div id="pokemonNavigation" class="pokemon-navigation" hidden>
-                    <button id="previousPokemonButton" type="button" aria-label="Previous Pokémon">‹ Previous</button>
+                    <button id="previousPokemonButton" type="button" aria-label="Previous Pokémon" data-i18n="previous">‹ Previous</button>
                     <span id="pokemonNavigationPosition"></span>
-                    <button id="nextPokemonButton" type="button" aria-label="Next Pokémon">Next ›</button>
+                    <button id="nextPokemonButton" type="button" aria-label="Next Pokémon" data-i18n="next">Next ›</button>
                 </div>
             </div>
 
@@ -183,8 +186,8 @@
 
             <div class="view-toolbar">
                 <div>
-                    <h2>Type Matchup</h2>
-                    <p>
+                    <h2 data-i18n="typeMatchup">Type Matchup</h2>
+                    <p data-i18n="typeMatchupHelp">
                         Tarkastele Pokémon-tyyppien hyökkäys- ja puolustusvaikutuksia.
                     </p>
                 </div>
@@ -193,13 +196,13 @@
             <div class="type-selectors">
 
                 <div class="type-selector-box">
-                    <span class="type-selector-label">Type 1</span>
-                    <div id="type1Choices" class="type-choice-grid" role="group" aria-label="Type 1"></div>
+                    <span class="type-selector-label" data-i18n="typeOne">Type 1</span>
+                    <div id="type1Choices" class="type-choice-grid" role="group" aria-label="Type 1" data-i18n-aria-label="typeOne"></div>
                 </div>
 
                 <div class="type-selector-box">
-                    <span class="type-selector-label">Type 2</span>
-                    <div id="type2Choices" class="type-choice-grid" role="group" aria-label="Type 2"></div>
+                    <span class="type-selector-label" data-i18n="typeTwo">Type 2</span>
+                    <div id="type2Choices" class="type-choice-grid" role="group" aria-label="Type 2" data-i18n-aria-label="typeTwo"></div>
                 </div>
 
             </div>
@@ -215,7 +218,7 @@
             <div class="game-header">
 
                 <div>
-                    <button id="gameBackButton" class="back-button">
+                    <button id="gameBackButton" class="back-button" data-i18n="back">
                         ← Takaisin
                     </button>
 
@@ -228,7 +231,7 @@
 
                     <div class="game-cover-frame">
                         <img id="gameCoverArt" alt="" hidden>
-                        <div id="gameCoverFallback" class="game-cover-fallback">Game cover</div>
+                        <div id="gameCoverFallback" class="game-cover-fallback" data-i18n="gameCover">Game cover</div>
                     </div>
 
                     <div
@@ -238,7 +241,7 @@
                     >
                         <div class="progress-ring-inner">
                             <strong id="gameProgressPercent">0%</strong>
-                            <span>kerätty</span>
+                            <span data-i18n="collected">kerätty</span>
                         </div>
                     </div>
 
@@ -247,10 +250,10 @@
                         /
                         <strong id="gameTotalCount">0</strong>
 
-                        <span id="gameProgressLabel">Regional</span>
+                        <span id="gameProgressLabel" data-i18n="regional">Regional</span>
                         <div class="game-dex-counts">
-                            <span>Regional <strong id="gameRegionalCount">0/0</strong></span>
-                            <span>National <strong id="gameNationalCount">0/0</strong></span>
+                            <span><span data-i18n="regional">Regional</span> <strong id="gameRegionalCount">0/0</strong></span>
+                            <span><span data-i18n="national">National</span> <strong id="gameNationalCount">0/0</strong></span>
                         </div>
                     </div>
 
@@ -261,11 +264,11 @@
 
             <div class="game-tabs">
 
-                <button class="game-tab active" data-game-dex="regional">
+                <button class="game-tab active" data-game-dex="regional" data-i18n="regionalPokedex">
                     Regional Pokédex
                 </button>
 
-                <button class="game-tab" data-game-dex="national">
+                <button class="game-tab" data-game-dex="national" data-i18n="nationalPokedex">
                     National Pokédex
                 </button>
 
@@ -276,15 +279,15 @@
 
                 <div class="game-filter-buttons">
 
-                    <button class="game-filter active" data-filter="all">
+                    <button class="game-filter active" data-filter="all" data-i18n="all">
                         All
                     </button>
 
-                    <button class="game-filter" data-filter="caught">
+                    <button class="game-filter" data-filter="caught" data-i18n="caught">
                         Caught
                     </button>
 
-                    <button class="game-filter" data-filter="missing">
+                    <button class="game-filter" data-filter="missing" data-i18n="missing">
                         Missing
                     </button>
 
@@ -292,14 +295,14 @@
 
 
                 <label class="sort-label">
-                    Järjestys
+                    <span data-i18n="sort">Järjestys</span>
 
                     <select id="gameSort">
-                        <option value="number">
+                        <option value="number" data-i18n="pokedexNumber">
                             Pokédex-numero
                         </option>
 
-                        <option value="name">
+                        <option value="name" data-i18n="name">
                             Nimi
                         </option>
                     </select>
@@ -309,7 +312,7 @@
 
 
             <div id="gamePokemonGrid" class="pokemon-grid"></div>
-            <button id="loadMoreGameButton" class="load-more-button" hidden>
+            <button id="loadMoreGameButton" class="load-more-button" hidden data-i18n="loadMore">
                 Lataa lisää
             </button>
 
@@ -322,8 +325,8 @@
             <div class="view-toolbar">
 
                 <div>
-                    <h2>Profile</h2>
-                    <p>
+                    <h2 data-i18n="profile">Profile</h2>
+                    <p data-i18n="profileDescription">
                         Nationalin yhteistilanne sekä jokaisen pelin alueellinen ja kansallinen laskuri.
                     </p>
                 </div>
@@ -340,50 +343,61 @@
 
             <div class="settings-panel">
 
-                <h2>Settings</h2>
+                <h2 data-i18n="settings">Settings</h2>
 
                 <div class="setting-row">
                     <div>
-                        <strong>Install Pokédex</strong>
-                        <p>On iPhone and iPad, use the browser Share menu and choose “Add to Home Screen”. Other supported browsers show an install option in their menu.</p>
+                        <strong data-i18n="language">Language</strong>
+                        <p data-i18n="languageDescription">Choose the language used throughout the Pokédex and for spoken descriptions.</p>
                     </div>
-                    <button id="installPwaButton" class="pwa-install-button" type="button" hidden>Install app</button>
+                    <select id="appLanguageSelect" aria-label="Language" data-i18n-aria-label="language">
+                        <option value="fi">Suomi</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+
+                <div class="setting-row">
+                    <div>
+                        <strong data-i18n="installPokedex">Install Pokédex</strong>
+                        <p data-i18n="installDescription">On iPhone and iPad, use the browser Share menu and choose “Add to Home Screen”. Other supported browsers show an install option in their menu.</p>
+                    </div>
+                    <button id="installPwaButton" class="pwa-install-button" type="button" hidden data-i18n="installApp">Install app</button>
                 </div>
 
                 <div class="setting-row voice-setting-row">
                     <div>
-                        <strong>Pokédex voice</strong>
-                        <p>Lower pitch values sound deeper. Pitch can be lowered to the browser-supported minimum.</p>
+                        <strong data-i18n="pokedexVoice">Pokédex voice</strong>
+                        <p data-i18n="voiceDescription">Lower pitch values sound deeper. Pitch can be lowered to the browser-supported minimum.</p>
                     </div>
                     <div class="voice-settings-controls">
                         <label class="voice-control" for="voicePitch">
-                            <span>Pitch <output id="voicePitchValue">1.0</output></span>
-                            <input id="voicePitch" type="range" min="0" max="2" step="0.05" value="1" aria-label="Voice pitch">
+                            <span><span data-i18n="pitch">Pitch</span> <output id="voicePitchValue">1.0</output></span>
+                            <input id="voicePitch" type="range" min="0" max="2" step="0.05" value="1" aria-label="Voice pitch" data-i18n-aria-label="pitch">
                         </label>
                         <label class="voice-control" for="voiceRate">
-                            <span>Reading speed <output id="voiceRateValue">1.0×</output></span>
-                            <input id="voiceRate" type="range" min="0.5" max="2" step="0.1" value="1" aria-label="Voice reading speed">
+                            <span><span data-i18n="readingSpeed">Reading speed</span> <output id="voiceRateValue">1.0×</output></span>
+                            <input id="voiceRate" type="range" min="0.5" max="2" step="0.1" value="1" aria-label="Voice reading speed" data-i18n-aria-label="readingSpeed">
                         </label>
                     </div>
                 </div>
 
                 <div class="setting-row">
                     <div>
-                        <strong>Tyhjennä yhden pelin tiedot</strong>
-                        <p>Poistaa valitun pelin caught-merkinnät.</p>
+                        <strong data-i18n="clearOneGame">Tyhjennä yhden pelin tiedot</strong>
+                        <p data-i18n="clearOneGameDescription">Poistaa valitun pelin caught-merkinnät.</p>
                     </div>
                     <div class="setting-controls">
-                        <select id="clearGameSelect" aria-label="Valitse peli"></select>
-                        <button id="clearGameCaughtButton" class="danger-button">Tyhjennä peli</button>
+                        <select id="clearGameSelect" aria-label="Valitse peli" data-i18n-aria-label="selectGame"></select>
+                        <button id="clearGameCaughtButton" class="danger-button" data-i18n="clearGame">Tyhjennä peli</button>
                     </div>
                 </div>
 
                 <div class="setting-row">
                     <div>
-                        <strong>Tyhjennä kaikki tiedot</strong>
-                        <p>Poistaa kaikkien pelien caught-merkinnät.</p>
+                        <strong data-i18n="clearAll">Tyhjennä kaikki tiedot</strong>
+                        <p data-i18n="clearAllDescription">Poistaa kaikkien pelien caught-merkinnät.</p>
                     </div>
-                    <button id="clearCaughtButton" class="danger-button">Tyhjennä kaikki</button>
+                    <button id="clearCaughtButton" class="danger-button" data-i18n="clearAllButton">Tyhjennä kaikki</button>
                 </div>
 
             </div>
