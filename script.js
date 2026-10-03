@@ -4,7 +4,7 @@ const STORAGE_KEY = "pokedexGameCaughtV3";
 const CAUGHT_BACKUP_KEY = "pokedexGameCaughtBackupV1";
 const VOICE_SETTINGS_KEY = "pokedexVoiceSettingsV1";
 const LANGUAGE_STORAGE_KEY = "pokedexLanguageV1";
-const DESCRIPTION_TRANSLATION_CACHE_KEY = "pokedexDescriptionTranslationsV1";
+const DESCRIPTION_TRANSLATION_CACHE_KEY = "pokedexDescriptionTranslationsV2";
 
 const UI_TEXT = {
     fi: {
@@ -23,7 +23,7 @@ const UI_TEXT = {
         overview: "Yleiskuvaus", species: "Pokédex-kuvaus", readPokedexEntry: "Lue Pokédex-kuvaus ääneen", listen: "🔊 Kuuntele", stop: "■ Pysäytä", category: "Laji", height: "Pituus", weight: "Paino", baseXp: "Peruskokemus", abilities: "Kyvyt",
         typeChart: "Tyyppikaavio", defense: "Puolustus", attack: "Hyökkäys", evolutions: "Evoluutiot", moves: "Liikkeet", forms: "Formit", locations: "Sijainnit", gamesTab: "Pelit",
         notAvailable: "Ei saatavilla", noSpeciesDescription: "Tästä Pokémonista ei ole Pokédex-kuvausta saatavilla.", speechUnsupported: "Tämä selain ei tue tekstin puheeksi lukemista.",
-        overviewVersion: "Versio", noOverviewForLanguage: "Tälle Pokémonille ei ole kuvausta saatavilla.", translating: "Käännetään kuvausta…", searchResults: "Hakutulokset", noSearchResults: "Hakua vastaavia Pokémoneja ei löytynyt.", allGenerations: "Kaikki sukupolvet", moveSort: "Järjestä", moveGeneration: "Sukupolvi", bp: "BP", acc: "Acc", pp: "PP", level: "Taso",
+        overviewVersion: "Versio", noOverviewForLanguage: "Tälle Pokémonille ei ole kuvausta saatavilla.", translating: "Käännetään kuvausta…", translationUnavailable: "Käännös ei onnistunut. Tarkista verkkoyhteys ja yritä myöhemmin uudelleen.", searchResults: "Hakutulokset", noSearchResults: "Hakua vastaavia Pokémoneja ei löytynyt.", allGenerations: "Kaikki sukupolvet", moveSort: "Järjestä", moveGeneration: "Sukupolvi", bp: "BP", acc: "Acc", pp: "PP", level: "Taso",
         defenseMatchup: "Puolustus", attackMatchup: "Hyökkäys", chooseType: "Valitse vähintään yksi tyyppi.", caughtStatus: "Napattu ✓", markCaught: "Merkitse napatuksi", gameListLoading: "Etsitään pelejä...", noAvailableGames: "Pokémonille ei löytynyt saatavilla olevia pelejä.",
         pokemon: "Pokémon", generation: "Sukupolvi", mobileSpecial: "Mobiili / erikoisversio", nationalSummaryTitle: "Koko kansallinen Pokédex", nationalSummaryDescription: "Saman Pokémonin merkintä riittää riippumatta siitä, missä pelissä se on napattu.", pokemonCount: "Pokémonia", gamesCount: "peliä", regionalCount: "Alueellinen", nationalCount: "Kansallinen", defaultForm: "Oletusmuoto", movesWord: "liikkeet", openGame: "Avaa peli",
         typeNames: { normal: "normaali", fire: "tuli", water: "vesi", electric: "sähkö", grass: "ruoho", ice: "jää", fighting: "taistelu", poison: "myrkky", ground: "maa", flying: "lento", psychic: "meedio", bug: "ötökkä", rock: "kivi", ghost: "aave", dragon: "lohikäärme", dark: "pimeys", steel: "teräs", fairy: "keiju" },
@@ -49,7 +49,7 @@ const UI_TEXT = {
         selectGame: "Select a game", clearGame: "Clear game", clearAll: "Clear all data", clearAllDescription: "Removes caught marks from all games.", clearAllButton: "Clear all",
         overview: "Overview", species: "Pokédex entry", readPokedexEntry: "Read Pokédex entry aloud", listen: "🔊 Listen", stop: "■ Stop", category: "Species", height: "Height", weight: "Weight", baseXp: "Base XP", abilities: "Abilities",
         typeChart: "Type Chart", defense: "Defense", attack: "Attack", evolutions: "Evolutions", moves: "Moves", forms: "Forms", locations: "Locations", gamesTab: "Games",
-        notAvailable: "Not available", noSpeciesDescription: "No species description is available for this Pokémon.", speechUnsupported: "Text-to-speech is not supported by this browser.",
+        notAvailable: "Not available", noSpeciesDescription: "No species description is available for this Pokémon.", translationUnavailable: "Translation failed. Check your connection and try again later.", speechUnsupported: "Text-to-speech is not supported by this browser.",
         overviewVersion: "Version", noOverviewForLanguage: "No description is available for this Pokémon.", translating: "Translating description…", searchResults: "Search results", noSearchResults: "No Pokémon matched your search.", moveSort: "Sort", moveGeneration: "Generation", allGenerations: "All generations", bp: "BP", acc: "Acc", pp: "PP", level: "Level",
         defenseMatchup: "Defense", attackMatchup: "Attack", chooseType: "Choose at least one type.", caughtStatus: "Caught ✓", markCaught: "Mark caught", gameListLoading: "Looking up games...", noAvailableGames: "No available games were found for this Pokémon.",
         pokemon: "Pokémon", generation: "Generation", mobileSpecial: "Mobile / Special", nationalSummaryTitle: "Entire National Pokédex", nationalSummaryDescription: "A Pokémon only needs to be marked once, regardless of which game it was caught in.", pokemonCount: "Pokémon", gamesCount: "games", regionalCount: "Regional", nationalCount: "National", defaultForm: "Default form", movesWord: "moves", openGame: "Open game",
@@ -1907,15 +1907,17 @@ async function openPokemon(
                                 <div class="species-heading">
                                     <h3>${t("species")}</h3>
                                     <div class="species-heading-actions">
-                                        <div class="overview-version-switcher" aria-label="${t("overviewVersion")}">
-                                            <button id="previousOverviewText" type="button" aria-label="${t("previous")}" disabled>‹</button>
-                                            <span id="overviewVersionLabel"></span>
-                                            <button id="nextOverviewText" type="button" aria-label="${t("next")}" disabled>›</button>
-                                        </div>
                                         <button id="readSpeciesButton" class="species-speak-button" type="button" aria-label="${t("readPokedexEntry")}" aria-pressed="false" disabled>${t("listen")}</button>
                                     </div>
                                 </div>
                                 <p id="speciesDescription">${t("loading")}</p>
+                                <div class="overview-entry-controls">
+                                    <div class="overview-version-switcher" aria-label="${t("overviewVersion")}">
+                                        <button id="previousOverviewText" type="button" aria-label="${t("previous")}" disabled>‹</button>
+                                        <span id="overviewVersionLabel"></span>
+                                        <button id="nextOverviewText" type="button" aria-label="${t("next")}" disabled>›</button>
+                                    </div>
+                                </div>
                             </section>
                             <section class="pokemon-summary-card">
                                 <div class="overview-facts">
@@ -2149,7 +2151,19 @@ function loadDescriptionTranslations() {
 
 
 const FINNISH_POKEMON_GENUS_OVERRIDES = {
+    seed: "Siemen Pokémon",
     "tiny turtle": "Pieni kilpikonna Pokémon",
+    worm: "Mato Pokémon",
+    beak: "Nokka Pokémon",
+    "poison moth": "Myrkky Koi Pokémon",
+    "scratch cat": "Raapiva Kissa Pokémon",
+    psi: "Psyykkinen Pokémon",
+    superpower: "Supervoima Pokémon",
+    flycatcher: "Kärpäsloukku Pokémon",
+    jellyfish: "Meduusa Pokémon",
+    dopey: "Hölmö Pokémon",
+    "new species": "Uusi Laji Pokémon",
+    genetic: "Geneettinen Pokémon",
     shellfish: "Simpukka Pokémon",
     butterfly: "Perhos Pokémon",
     "poison bee": "Myrkyllinen ampiainen Pokémon",
@@ -2182,6 +2196,9 @@ const FINNISH_GENUS_WORDS = {
     predator: "saalistaja", rascal: "veijari", heel: "pahis", fiery: "tulinen", lunar: "kuu",
     solar: "aurinko", island: "saari", guardian: "suojelija", sun: "aurinko", wing: "siipi",
     winged: "siivekäs", spirit: "henki", ghost: "aave", vengeful: "kostonhimoinen",
+    superpower: "supervoima", flycatcher: "kärpäsloukku", jellyfish: "meduusa", dopey: "hölmö",
+    psi: "psyykkinen", genetic: "geneettinen", scratch: "raapiva", new: "uusi", species: "laji",
+    beak: "nokka", worm: "mato", moth: "yöperhonen",
     moon: "kuu"
 };
 
@@ -2192,25 +2209,38 @@ function translatePokemonGenusToFinnish(genus) {
         .trim();
     const normalized = withoutPokemon.toLowerCase();
     if (FINNISH_POKEMON_GENUS_OVERRIDES[normalized]) {
-        return Promise.resolve(FINNISH_POKEMON_GENUS_OVERRIDES[normalized]);
+        return Promise.resolve(titleCaseFinnishPokemonCategory(FINNISH_POKEMON_GENUS_OVERRIDES[normalized]));
     }
 
     const words = normalized.split(/\s+/).filter(Boolean);
     if (words.length && words.every(word => FINNISH_GENUS_WORDS[word])) {
-        return Promise.resolve(`${words.map(word => FINNISH_GENUS_WORDS[word]).join(" ")} Pokémon`);
+        return Promise.resolve(titleCaseFinnishPokemonCategory(`${words.map(word => FINNISH_GENUS_WORDS[word]).join(" ")} Pokémon`));
     }
-    return translateEnglishTextToFinnish(genus);
+    return translateEnglishTextToFinnish(genus).then(translation =>
+        translation ? titleCaseFinnishPokemonCategory(translation) : null
+    );
 }
 
+function titleCaseFinnishPokemonCategory(value) {
+    return String(value || "").trim().split(/\s+/).map(word => {
+        if (/^pok(?:é|e)mon$/i.test(word)) return "Pokémon";
+        return word.charAt(0).toLocaleUpperCase("fi-FI") + word.slice(1).toLocaleLowerCase("fi-FI");
+    }).join(" ");
+}
 
-async function translateEnglishTextToFinnish(value) {
+async function translateEnglishTextToFinnish(value, options = {}) {
     const sourceText = String(value || "").replace(/[\n\f\r]+/g, " ").replace(/\s+/g, " ").trim();
     if (!sourceText) return null;
     const translations = loadDescriptionTranslations();
     if (translations[sourceText]) return translations[sourceText];
 
+    // Use one Finnish source term for both English words so the Bulbasaur line
+    // does not alternate between a plant bud and a light bulb in different entries.
+    const textForTranslation = options.unifyPlantBud
+        ? sourceText.replace(/\b(?:bulbs?|buds?)\b/gi, match => /s$/i.test(match) ? "plant buds" : "plant bud")
+        : sourceText;
     const chunks = [];
-    let remaining = sourceText;
+    let remaining = textForTranslation;
     const getByteLength = text => new TextEncoder().encode(text).length;
     while (getByteLength(remaining) > 430) {
         const candidate = remaining.slice(0, 400);
@@ -2223,24 +2253,36 @@ async function translateEnglishTextToFinnish(value) {
 
     const translatedChunks = [];
     for (const chunk of chunks) {
-        try {
-            const params = new URLSearchParams({ q: chunk, langpair: "en|fi" });
-            const response = await fetch(`https://api.mymemory.translated.net/get?${params}`);
-            if (!response.ok) return null;
-            const data = await response.json();
-            const translated = data.responseData?.translatedText?.trim();
-            if (!translated || Number(data.responseStatus) >= 400) return null;
-            translatedChunks.push(translated);
-        } catch {
-            return null;
+        let translated = "";
+        for (let attempt = 0; attempt < 2 && !translated; attempt += 1) {
+            try {
+                const params = new URLSearchParams({ q: chunk, langpair: "en|fi" });
+                const response = await fetch(`https://api.mymemory.translated.net/get?${params}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const candidate = data.responseData?.translatedText?.trim();
+                    if (candidate && Number(data.responseStatus) < 400
+                        && candidate.toLowerCase() !== chunk.toLowerCase()) {
+                        translated = candidate;
+                    }
+                }
+            } catch {
+                // Retry once for transient network errors before showing a localized failure.
+            }
+            if (!translated && attempt === 0) {
+                await new Promise(resolve => window.setTimeout(resolve, 350));
+            }
         }
+        if (!translated) return null;
+        translatedChunks.push(translated);
     }
 
     const translatedText = translatedChunks.join(" ").replace(/\s+/g, " ").trim();
     if (!translatedText || translatedText.toLowerCase() === sourceText.toLowerCase()) return null;
-    translations[sourceText] = translatedText;
+    const latestTranslations = loadDescriptionTranslations();
+    latestTranslations[sourceText] = translatedText;
     try {
-        localStorage.setItem(DESCRIPTION_TRANSLATION_CACHE_KEY, JSON.stringify(translations));
+        localStorage.setItem(DESCRIPTION_TRANSLATION_CACHE_KEY, JSON.stringify(latestTranslations));
     } catch {
         // The translation remains usable in this view if local storage is full or unavailable.
     }
@@ -2264,8 +2306,8 @@ async function updateSpeciesOverviewText() {
     const nextButton = document.getElementById("nextOverviewText");
     const sourceText = entry?.flavor_text?.replace(/[\n\f\r]+/g, " ").replace(/\s+/g, " ").trim() || "";
     const sourceLanguage = entry?.language?.name || language;
-    const needsTranslation = language === "fi" && sourceLanguage === "en";
-    const speechLanguage = needsTranslation ? "en" : sourceLanguage;
+    const needsTranslation = language === "fi" && Boolean(entry) && sourceLanguage !== "fi";
+    const speechLanguage = needsTranslation ? "fi" : sourceLanguage;
     if (genusElement) genusElement.textContent = (language === "fi" && !localGenus ? t("translating") : sourceGenus) || t("notAvailable");
     description.textContent = entry ? (needsTranslation ? t("translating") : sourceText) : t("noOverviewForLanguage");
     description.dataset.speechLang = speechLanguage;
@@ -2286,29 +2328,27 @@ async function updateSpeciesOverviewText() {
     if (previousButton) previousButton.disabled = !entry || state.overviewTextIndex <= 0;
     if (nextButton) nextButton.disabled = !entry || state.overviewTextIndex >= state.overviewEntries.length - 1;
 
-    if (!entry) return;
     const selectedIndex = state.overviewTextIndex;
     const translateGenus = language === "fi" && !localGenus && Boolean(englishGenus);
     const [translatedText, translatedGenus] = await Promise.all([
-        needsTranslation ? translateEnglishTextToFinnish(sourceText) : Promise.resolve(null),
+        needsTranslation ? translateEnglishTextToFinnish(sourceText, { unifyPlantBud: [1, 2, 3].includes(Number(species?.id)) }) : Promise.resolve(null),
         translateGenus ? translatePokemonGenusToFinnish(englishGenus) : Promise.resolve(null)
     ]);
     if (state.currentSpecies !== species || state.overviewTextIndex !== selectedIndex || appLanguage !== language) return;
 
     if (translatedText) {
         description.textContent = translatedText;
-        description.dataset.speechLang = "fi";
     } else if (needsTranslation) {
-        description.textContent = sourceText;
-        description.dataset.speechLang = "en";
+        description.textContent = t("translationUnavailable");
     }
     if (translatedGenus) {
         if (genusElement) genusElement.textContent = translatedGenus;
         description.dataset.speechGenus = translatedGenus;
     } else if (translateGenus && genusElement) {
-        genusElement.textContent = englishGenus || t("notAvailable");
+        genusElement.textContent = t("translationUnavailable");
+        description.dataset.speechGenus = "";
     }
-    if (readButton) readButton.disabled = !speechAvailable || !sourceText;
+    if (readButton) readButton.disabled = !speechAvailable || !entry || (needsTranslation && !translatedText);
 }
 
 
@@ -4257,6 +4297,7 @@ function setupEvents() {
             applyStaticTranslations();
             refreshSidebarLocalization();
             stopSpeciesSpeech();
+            if (state.currentSpecies) renderSpeciesDescription(state.currentSpecies);
             if (state.currentView === "settingsView") {
                 document.getElementById("pageTitle").textContent = t("settings");
                 document.getElementById("breadcrumb").textContent = t("settings");

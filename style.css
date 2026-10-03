@@ -1564,6 +1564,8 @@ select:focus {
 
 .profile-stats {
     display: grid;
+    align-items: start;
+    grid-auto-rows: min-content;
 
     grid-template-columns:
         repeat(
@@ -2208,6 +2210,7 @@ select:focus {
 
 .profile-generation-group {
     grid-column: auto;
+    align-self: start;
     min-width: 0;
     overflow: hidden;
     border: 1px solid var(--border);
@@ -2724,6 +2727,12 @@ select:focus {
     min-width: 0;
     color: var(--muted);
     font-size: 9px;
+}
+
+.overview-entry-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
 }
 
 .overview-version-switcher span {
