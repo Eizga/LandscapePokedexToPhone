@@ -4,7 +4,7 @@ const STORAGE_KEY = "pokedexGameCaughtV3";
 const CAUGHT_BACKUP_KEY = "pokedexGameCaughtBackupV1";
 const VOICE_SETTINGS_KEY = "pokedexVoiceSettingsV1";
 const LANGUAGE_STORAGE_KEY = "pokedexLanguageV1";
-const DESCRIPTION_TRANSLATION_CACHE_KEY = "pokedexDescriptionTranslationsV2";
+const DESCRIPTION_TRANSLATION_CACHE_KEY = "pokedexDescriptionTranslationsV3";
 
 const UI_TEXT = {
     fi: {
@@ -2164,6 +2164,7 @@ const FINNISH_POKEMON_GENUS_OVERRIDES = {
     dopey: "Hölmö Pokémon",
     "new species": "Uusi Laji Pokémon",
     genetic: "Geneettinen Pokémon",
+    "classy cat": "Ylhäinen Kissa Pokémon",
     shellfish: "Simpukka Pokémon",
     butterfly: "Perhos Pokémon",
     "poison bee": "Myrkyllinen ampiainen Pokémon",
@@ -2254,6 +2255,20 @@ async function translateEnglishTextToFinnish(value, options = {}) {
     const translatedChunks = [];
     for (const chunk of chunks) {
         let translated = "";
+        try {
+            const params = new URLSearchParams({ client: "gtx", sl: "en", tl: "fi", dt: "t", q: chunk });
+            const response = await fetch(`https://translate.googleapis.com/translate_a/single?${params}`);
+            if (response.ok) {
+                const data = await response.json();
+                const candidate = Array.isArray(data?.[0])
+                    ? data[0].map(part => part?.[0] || "").join("").trim()
+                    : "";
+                if (candidate && candidate.toLowerCase() !== chunk.toLowerCase()) translated = candidate;
+            }
+        } catch {
+            // Try the second provider if the browser cannot reach Google Translate.
+        }
+
         for (let attempt = 0; attempt < 2 && !translated; attempt += 1) {
             try {
                 const params = new URLSearchParams({ q: chunk, langpair: "en|fi" });
@@ -4458,6 +4473,28 @@ function setupEvents() {
 
     document.getElementById("nextPokemonButton")
         .addEventListener("click", () => navigatePokemon(1));
+
+    document.addEventListener("keydown", event => {
+        if (state.currentView !== "pokemonView" || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.repeat) return;
+        if (event.target instanceof Element && event.target.closest("input, textarea, select, [contenteditable='true']")) return;
+
+        const controls = document.getElementById("pokemonNavigation");
+        if (!controls || controls.hidden) return;
+
+        if (event.key === "ArrowLeft") {
+            const previous = document.getElementById("previousPokemonButton");
+            if (!previous?.disabled) {
+                event.preventDefault();
+                navigatePokemon(-1);
+            }
+        } else if (event.key === "ArrowRight") {
+            const next = document.getElementById("nextPokemonButton");
+            if (!next?.disabled) {
+                event.preventDefault();
+                navigatePokemon(1);
+            }
+        }
+    });
 
 
     document.getElementById(
