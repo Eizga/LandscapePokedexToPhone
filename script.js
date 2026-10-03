@@ -2735,12 +2735,12 @@ async function fetchCachedResource(cache, key, url) {
     }
 }
 
-async function getAllNamedResources(endpoint, pageSize = 100) {
-    const fetchPage = async offset => {
+async function getAllNamedResources(endpoint, pageSize = 10000) {
+    const fetchPage = async url => {
         let lastError;
         for (let attempt = 0; attempt < 3; attempt += 1) {
             try {
-                return await apiFetch(`${API}/${endpoint}/?limit=${pageSize}&offset=${offset}`);
+                return await apiFetch(url);
             } catch (error) {
                 lastError = error;
                 if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 350 * (attempt + 1)));
@@ -2750,24 +2750,22 @@ async function getAllNamedResources(endpoint, pageSize = 100) {
     };
 
     try {
-        const firstPage = await fetchPage(0);
-        const pageCount = Math.ceil((Number(firstPage.count) || (firstPage.results || []).length) / pageSize);
-        const pages = new Array(pageCount);
-        pages[0] = firstPage.results || [];
-        let nextPage = 1;
-        const workers = Array.from({ length: Math.min(2, pageCount - 1) }, async () => {
-            while (nextPage < pageCount) {
-                const pageIndex = nextPage++;
-                const page = await fetchPage(pageIndex * pageSize);
-                pages[pageIndex] = page.results || [];
-            }
-        });
-        await Promise.all(workers);
-        return pages.flat();
+        let page = await fetchPage(`${API}/${endpoint}/?limit=${pageSize}&offset=0`);
+        const resources = [];
+        let pageCount = 0;
+        while (page) {
+            resources.push(...(page.results || []));
+            if (!page.next) break;
+            pageCount += 1;
+            if (pageCount > 100) throw new Error(`Too many pages while loading ${endpoint}`);
+            page = await fetchPage(page.next);
+        }
+        return resources;
     } catch (error) {
-        if (pageSize > 50) {
+        const fallbackPageSize = pageSize > 1000 ? 1000 : pageSize > 100 ? 100 : null;
+        if (fallbackPageSize) {
             console.warn(`Retrying ${endpoint} with smaller API pages`, error);
-            return getAllNamedResources(endpoint, 50);
+            return getAllNamedResources(endpoint, fallbackPageSize);
         }
         throw error;
     }
@@ -2777,7 +2775,7 @@ async function getItemCatalogue() {
     if (!state.itemListCache) {
         state.itemListCache = Promise.all([
             getAllNamedResources("item"),
-            getAllNamedResources("berry", 100).catch(error => {
+            getAllNamedResources("berry", 1000).catch(error => {
                 console.warn("Berry catalogue could not be loaded", error);
                 return [];
             })
@@ -2872,6 +2870,12 @@ function renderItemList(reset = true) {
             renderItemList(true);
         });
         message.appendChild(retry);
+        if (error?.message) {
+            const reason = document.createElement("small");
+            reason.className = "resource-error-reason";
+            reason.textContent = error.message;
+            message.appendChild(reason);
+        }
         list.appendChild(message);
         more.hidden = true;
     });

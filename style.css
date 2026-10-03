@@ -1758,6 +1758,13 @@ select:focus {
     border-radius: 15px;
 }
 
+.resource-error-reason {
+    display: block;
+    margin-top: 8px;
+    font-size: 10px;
+    overflow-wrap: anywhere;
+}
+
 
 .error-state {
     padding: 30px;
