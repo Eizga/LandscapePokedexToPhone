@@ -72,6 +72,16 @@
                 <div class="submenu games-submenu" id="gamesSubmenu"></div>
             </div>
 
+            <button class="nav-main-button" id="itemsButton">
+                <span class="nav-icon" aria-hidden="true">🎒</span>
+                <span class="sidebar-label" data-i18n="items">Items</span>
+            </button>
+
+            <button class="nav-main-button" id="locationsButton">
+                <span class="nav-icon" aria-hidden="true">📍</span>
+                <span class="sidebar-label" data-i18n="locationMenu">Locations</span>
+            </button>
+
 
             <!-- TYPES -->
             <button class="nav-main-button" id="typesButton">
@@ -334,6 +344,51 @@
 
             <div id="profileStats" class="profile-stats"></div>
 
+        </section>
+
+
+        <!-- ITEMS -->
+        <section id="itemsView" class="view">
+            <div class="resource-view-toolbar">
+                <label class="resource-search">
+                    <span class="sr-only" data-i18n="searchItems">Search items</span>
+                    <input id="itemSearchInput" type="search" placeholder="Search items" data-i18n-placeholder="searchItems">
+                </label>
+                <div class="resource-filter-buttons" role="group" aria-label="Item filters">
+                    <button class="resource-filter active" type="button" data-item-filter="all" data-i18n="allItems">All</button>
+                    <button class="resource-filter" type="button" data-item-filter="berry" data-i18n="berries">Berries</button>
+                </div>
+            </div>
+            <div class="resource-explorer">
+                <section class="resource-list-panel" aria-label="Items">
+                    <div id="itemList" class="resource-result-list"></div>
+                    <button id="itemLoadMoreButton" class="load-more-button" type="button" data-i18n="itemPageMore" hidden>Show more items</button>
+                </section>
+                <article id="itemDetail" class="resource-detail-panel"><div class="empty-state" data-i18n="selectItem">Select an item.</div></article>
+            </div>
+        </section>
+
+
+        <!-- LOCATIONS -->
+        <section id="locationsView" class="view">
+            <div class="resource-view-toolbar location-view-toolbar">
+                <label class="location-game-select" for="locationGameFilter">
+                    <span data-i18n="locationGame">Game</span>
+                    <select id="locationGameFilter"></select>
+                </label>
+                <label class="resource-search">
+                    <span class="sr-only" data-i18n="searchLocations">Search places</span>
+                    <input id="locationSearchInput" type="search" placeholder="Search places" data-i18n-placeholder="searchLocations">
+                </label>
+                <small class="location-filter-note" data-i18n="locationGameFilterNote"></small>
+            </div>
+            <div class="resource-explorer">
+                <section class="resource-list-panel" aria-label="Locations">
+                    <div id="locationList" class="resource-result-list"></div>
+                    <button id="locationLoadMoreButton" class="load-more-button" type="button" data-i18n="locationPageMore" hidden>Show more places</button>
+                </section>
+                <article id="locationDetail" class="resource-detail-panel"><div class="empty-state" data-i18n="selectLocation">Select a location.</div></article>
+            </div>
         </section>
 
 

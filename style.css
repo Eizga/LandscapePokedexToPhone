@@ -1911,6 +1911,442 @@ select:focus {
 
 }
 
+/* Compact Pokédex additions: gender ratio, independent cry playback, item and location browsers. */
+.pokemon-cry-button {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 50%;
+    color: white;
+    background: rgba(31, 46, 61, .82);
+    box-shadow: 0 3px 12px rgba(0,0,0,.3);
+}
+
+.detail-image-area {
+    position: relative;
+}
+
+.pokemon-cry-button.playing {
+    border-color: #75cfff;
+    box-shadow: 0 0 14px rgba(70,190,255,.85);
+}
+
+.gender-fact {
+    grid-column: 1 / -1;
+}
+
+.gender-ratio {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 5px;
+}
+
+.gender-pie {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+    border: 2px solid rgba(255,255,255,.55);
+    border-radius: 50%;
+    box-shadow: 0 1px 5px rgba(0,0,0,.28);
+}
+
+#pokemonGenderRatio {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 12px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+#pokemonGenderRatio > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.gender-dot {
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+    border-radius: 50%;
+}
+
+.gender-dot.female { background: #ef83ac; }
+.gender-dot.male { background: #76bafa; }
+
+.move-learning-methods {
+    line-height: 1.35;
+}
+
+.resource-view-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    margin: 0 0 10px;
+}
+
+.resource-search {
+    flex: 1 1 190px;
+    min-width: 0;
+}
+
+.resource-search input,
+.location-game-select select {
+    width: 100%;
+    min-height: 36px;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    color: var(--text);
+    background: var(--panel-2);
+}
+
+.resource-filter-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.resource-filter,
+.compact-resource-button {
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    background: var(--panel-2);
+    font-size: 11px;
+}
+
+.resource-filter.active {
+    border-color: var(--accent);
+    color: white;
+    background: var(--accent);
+}
+
+.location-game-select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 190px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.location-filter-note {
+    flex: 1 1 250px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.resource-explorer {
+    display: grid;
+    grid-template-columns: minmax(190px, 25%) minmax(0, 1fr);
+    gap: 10px;
+    height: calc(100dvh - 155px);
+    min-height: 260px;
+}
+
+.resource-list-panel,
+.resource-detail-panel {
+    min-width: 0;
+    min-height: 0;
+    overflow: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--panel);
+    overscroll-behavior: contain;
+}
+
+.resource-list-panel {
+    padding: 6px;
+}
+
+.resource-detail-panel {
+    padding: 12px;
+}
+
+.resource-result-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+}
+
+.resource-result-button {
+    width: 100%;
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    color: var(--text);
+    background: transparent;
+    text-align: left;
+    font-size: 11px;
+}
+
+.resource-result-button img {
+    width: 25px;
+    height: 25px;
+    flex: 0 0 auto;
+    object-fit: contain;
+}
+
+.resource-result-button:hover,
+.resource-result-button.active {
+    border-color: rgba(227, 62, 69, .62);
+    background: rgba(210, 43, 56, .19);
+}
+
+.resource-list-panel > .load-more-button {
+    width: 100%;
+    margin: 6px 0 0;
+    padding: 7px;
+    font-size: 10px;
+}
+
+.resource-detail-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 58px;
+    margin-bottom: 10px;
+}
+
+.resource-detail-heading img {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+.resource-detail-heading h2,
+.resource-detail-panel > h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.resource-detail-section {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--panel-2);
+}
+
+.resource-detail-section h3,
+.resource-detail-panel > h3 {
+    margin: 0 0 6px;
+    color: #ff8589;
+    font-size: 13px;
+}
+
+.resource-detail-section p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.45;
+    white-space: pre-line;
+}
+
+.resource-fact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 6px;
+}
+
+.resource-fact-grid > div {
+    display: grid;
+    gap: 3px;
+    padding: 6px;
+    border-radius: 7px;
+    background: rgba(0,0,0,.12);
+}
+
+.resource-fact-grid small,
+.resource-held-card small,
+.resource-subtitle {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.resource-fact-grid strong {
+    font-size: 11px;
+}
+
+.resource-held-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 6px;
+}
+
+.resource-held-card {
+    min-width: 0;
+    padding: 7px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.resource-held-card > div:first-child {
+    display: grid;
+}
+
+.inline-resource-button {
+    width: fit-content;
+    padding: 0;
+    border: 0;
+    color: #8ec9ff;
+    background: transparent;
+    text-align: left;
+    font-size: 11px;
+}
+
+.held-item-locations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.location-open-button {
+    width: fit-content;
+    padding: 0;
+    border: 0;
+    color: #8ec9ff;
+    background: transparent;
+    font-weight: 700;
+    text-align: left;
+}
+
+.location-area-section {
+    margin-top: 10px;
+}
+
+.location-area-section h4 {
+    margin: 8px 0 5px;
+    color: var(--text);
+    font-size: 12px;
+}
+
+.location-encounter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 6px;
+}
+
+.location-encounter-card {
+    display: grid;
+    grid-template-columns: 55px minmax(0, 1fr);
+    align-items: center;
+    gap: 7px;
+    padding: 6px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--panel-2);
+}
+
+.location-pokemon-button {
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    padding: 0;
+    border: 0;
+    color: var(--text);
+    background: transparent;
+    font-size: 9px;
+}
+
+.location-pokemon-button img {
+    width: 46px;
+    height: 46px;
+    object-fit: contain;
+}
+
+.location-encounter-facts {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+    color: var(--muted);
+    font-size: 9px;
+}
+
+.location-encounter-facts strong {
+    color: var(--text);
+    font-size: 10px;
+}
+
+@media (max-width: 700px) {
+    .resource-view-toolbar {
+        gap: 5px;
+        margin-bottom: 6px;
+    }
+
+    .resource-search {
+        flex-basis: 130px;
+    }
+
+    .resource-search input,
+    .location-game-select select {
+        min-height: 32px;
+        padding: 5px 7px;
+        font-size: 11px;
+    }
+
+    .resource-filter {
+        padding: 5px 7px;
+        font-size: 9px;
+    }
+
+    .location-filter-note {
+        display: none;
+    }
+
+    .resource-explorer {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(90px, 25dvh) minmax(0, 1fr);
+        height: calc(100dvh - 145px);
+        min-height: 230px;
+    }
+
+    .resource-detail-panel {
+        padding: 8px;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 600px) {
+    .resource-explorer {
+        grid-template-columns: minmax(170px, 23%) minmax(0, 1fr);
+        height: calc(100dvh - 112px);
+        min-height: 180px;
+    }
+
+    .resource-view-toolbar {
+        margin-bottom: 5px;
+    }
+
+    .resource-detail-panel {
+        padding: 7px;
+    }
+
+    .resource-detail-section {
+        margin-top: 5px;
+        padding: 6px;
+    }
+
+    .location-encounter-grid {
+        grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+    }
+}
+
 .pokedex-status-lights {
     display: flex;
     align-items: center;

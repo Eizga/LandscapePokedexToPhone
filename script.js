@@ -8,7 +8,7 @@ const DESCRIPTION_TRANSLATION_CACHE_KEY = "pokedexDescriptionTranslationsV3";
 
 const UI_TEXT = {
     fi: {
-        pokedex: "Pokédex", games: "Pelit", types: "Tyyppikaavio", profile: "Profiili", settings: "Asetukset",
+        pokedex: "Pokédex", games: "Pelit", types: "Tyyppikaavio", profile: "Profiili", settings: "Asetukset", items: "Esineet", locationMenu: "Paikat",
         searchPokemon: "Hae Pokémonia", nationalPokedex: "Kansallinen Pokédex", regionalPokedex: "Alueellinen Pokédex",
         typeMatchup: "Tyyppikaavio", typeMatchupHelp: "Tarkastele Pokémon-tyyppien hyökkäys- ja puolustusvaikutuksia.",
         typeOne: "Tyyppi 1", typeTwo: "Tyyppi 2", none: "Ei mitään", sort: "Järjestys", pokedexNumber: "Pokédex-numero", name: "Nimi",
@@ -20,22 +20,23 @@ const UI_TEXT = {
         pokedexVoice: "Pokédexin puheääni", voiceDescription: "Matalampi sävelkorkeus kuulostaa syvemmältä. Säätö ulottuu selaimen tukemaan alarajaan.",
         pitch: "Sävelkorkeus", readingSpeed: "Lukunopeus", clearOneGame: "Tyhjennä yhden pelin tiedot", clearOneGameDescription: "Poistaa valitun pelin napattu-merkinnät.",
         selectGame: "Valitse peli", clearGame: "Tyhjennä peli", clearAll: "Tyhjennä kaikki tiedot", clearAllDescription: "Poistaa kaikkien pelien napattu-merkinnät.", clearAllButton: "Tyhjennä kaikki",
-        overview: "Yleiskuvaus", species: "Pokédex-kuvaus", readPokedexEntry: "Lue Pokédex-kuvaus ääneen", listen: "🔊 Kuuntele", stop: "■ Pysäytä", category: "Laji", height: "Pituus", weight: "Paino", baseXp: "Peruskokemus", abilities: "Kyvyt",
+        overview: "Yleiskuvaus", species: "Pokédex-kuvaus", readPokedexEntry: "Lue Pokédex-kuvaus ääneen", listen: "🔊 Kuuntele", stop: "■ Pysäytä", category: "Laji", height: "Pituus", weight: "Paino", baseXp: "Peruskokemus", abilities: "Kyvyt", genderRatio: "Sukupuolijakauma", female: "Naaras", male: "Uros", genderless: "Sukupuoleton", cry: "Kuuntele Pokémonin ääntely",
         typeChart: "Tyyppikaavio", defense: "Puolustus", attack: "Hyökkäys", evolutions: "Evoluutiot", moves: "Liikkeet", forms: "Formit", locations: "Sijainnit", gamesTab: "Pelit",
         notAvailable: "Ei saatavilla", noSpeciesDescription: "Tästä Pokémonista ei ole Pokédex-kuvausta saatavilla.", speechUnsupported: "Tämä selain ei tue tekstin puheeksi lukemista.",
-        overviewVersion: "Versio", noOverviewForLanguage: "Tälle Pokémonille ei ole kuvausta saatavilla.", translating: "Käännetään kuvausta…", translationUnavailable: "Käännös ei onnistunut. Tarkista verkkoyhteys ja yritä myöhemmin uudelleen.", searchResults: "Hakutulokset", noSearchResults: "Hakua vastaavia Pokémoneja ei löytynyt.", allGenerations: "Kaikki sukupolvet", moveSort: "Järjestä", moveGeneration: "Sukupolvi", bp: "BP", acc: "Acc", pp: "PP", level: "Taso",
+        overviewVersion: "Versio", noOverviewForLanguage: "Tälle Pokémonille ei ole kuvausta saatavilla.", translating: "Käännetään kuvausta…", translationUnavailable: "Käännös ei onnistunut. Tarkista verkkoyhteys ja yritä myöhemmin uudelleen.", searchResults: "Hakutulokset", noSearchResults: "Hakua vastaavia Pokémoneja ei löytynyt.", allGenerations: "Kaikki sukupolvet", generationMoves: "Näytä sukupolven liikkeet", moveSort: "Järjestä", moveGeneration: "Sukupolvi", bp: "BP", acc: "Acc", pp: "PP", level: "Taso", moveMethod: "Oppimistapa", allMethods: "Kaikki tavat", levelUp: "Tasonnousu", machine: "TM/HM", egg: "Munaliike", tutor: "Opettaja", otherMethod: "Muu tapa",
         defenseMatchup: "Puolustus", attackMatchup: "Hyökkäys", chooseType: "Valitse vähintään yksi tyyppi.", caughtStatus: "Napattu ✓", markCaught: "Merkitse napatuksi", gameListLoading: "Etsitään pelejä...", noAvailableGames: "Pokémonille ei löytynyt saatavilla olevia pelejä.",
         pokemon: "Pokémon", generation: "Sukupolvi", mobileSpecial: "Mobiili / erikoisversio", nationalSummaryTitle: "Koko kansallinen Pokédex", nationalSummaryDescription: "Saman Pokémonin merkintä riittää riippumatta siitä, missä pelissä se on napattu.", pokemonCount: "Pokémonia", gamesCount: "peliä", regionalCount: "Alueellinen", nationalCount: "Kansallinen", defaultForm: "Oletusmuoto", movesWord: "liikkeet", openGame: "Avaa peli",
         typeNames: { normal: "normaali", fire: "tuli", water: "vesi", electric: "sähkö", grass: "ruoho", ice: "jää", fighting: "taistelu", poison: "myrkky", ground: "maa", flying: "lento", psychic: "meedio", bug: "ötökkä", rock: "kivi", ghost: "aave", dragon: "lohikäärme", dark: "pimeys", steel: "teräs", fairy: "keiju" },
         whereToFind: "Mistä löytää", howToObtain: "Miten saada", sourcePokeApi: "Lähde: PokéAPI", encounterMethodUnspecified: "Kohtaamistapaa ei ole määritetty",
         menuToggle: "Avaa tai sulje valikko", checkUpdates: "Hae sovelluksen päivitykset", typeFire: "Tulityyppi", markInGame: "Merkitse napatuksi pelissä", unmarkInGame: "Poista napattu-merkintä pelistä",
         noGameDex: "Tässä näkymässä ei ole tällä hetkellä Pokémonia.", locationsLoading: "Ladataan sijainteja...", noLocationGames: "Pokédex-merkintää sisältäviä pelejä ei löytynyt.", noEncounterDetails: "Kohtaamis- tai saamistietoja ei löytynyt pelille {game}.",
+        searchItems: "Hae esineitä", allItems: "Kaikki", heldItems: "Pokémonien hallussa", berries: "Marjat", itemEffect: "Vaikutus", itemCategory: "Luokka", itemStats: "Perustiedot", itemGames: "PokéAPI-pelidata (sukupolvitasolla)", itemHeldBy: "Pokémonit, joilla esine voi olla", itemRarity: "Todennäköisyys", berryDetails: "Marjan tiedot", berrySize: "Koko", growthTime: "Kasvuaika", maxHarvest: "Enimmäissato", naturalGift: "Luontolahja", smoothness: "Sileys", soilDryness: "Maan kuivuminen", itemCost: "Hinta", flingPower: "Heittovoima", flingEffect: "Heittovaikutus", itemNoEffect: "Vaikutustietoa ei löytynyt.", itemNoHeldBy: "PokéAPI ei listaa Pokémonia, jolla tämä esine olisi hallussa.", itemWhereUnavailable: "PokéAPI ei anna esineelle suoria löytöpaikkoja. Yllä olevien Pokémonien kohtaamispaikoista näet, mistä voit pyydystää esinettä kantavan Pokémonin.", itemLoading: "Ladataan esinettä...", selectItem: "Valitse esine nähdäksesi sen tiedot.", resourceLoadFailed: "Tietoja ei voitu ladata. Tarkista verkkoyhteys ja yritä uudelleen.", noHeldLocations: "PokéAPI ei ilmoita tälle Pokémonille kohtaamispaikkaa kyseisissä peleissä.", locationGame: "Peli", allGames: "Kaikki pelit", searchLocations: "Hae paikkoja", locationEncounters: "Paikan Pokémonit", encounterChance: "Kohtaamistodennäköisyys", encounterLevel: "Taso", noLocationEncounters: "Tälle paikalle ei löytynyt valitun pelin kohtaamisia.", locationLoading: "Ladataan paikkaa...", locationGameFilterNote: "Valitun pelin paikat varmennetaan sijaintialueiden peliversiokohtaisista kohtaamistiedoista sivu kerrallaan.", selectLocation: "Valitse paikka nähdäksesi kohtaamistiedot.", locationScanCount: "Paikkoja", itemPageMore: "Näytä lisää esineitä", locationPageMore: "Näytä lisää paikkoja", wildHeldSource: "Luonnosta pyydystettäessä hallussa",
         evolutionLoadFailed: "Evoluutioketjua ei voitu ladata.", formsLoadFailed: "Muotoja ei voitu ladata.", caughtSaveFailed: "Napattu-merkintää ei voitu tallentaa tähän selaimeen.",
         clearAllConfirm: "Haluatko varmasti poistaa kaikki napattu-merkinnät?", caughtClearFailed: "Napattu-merkintöjä ei voitu tyhjentää tästä selaimesta.", clearGameConfirm: "Poistetaanko kaikki pelin {game} napattu-merkinnät?", gameCaughtClearFailed: "Pelin {game} napattu-merkintöjä ei voitu tyhjentää tästä selaimesta.",
         checkingUpdates: "Haetaan päivityksiä...", loadingMore: "Ladataan lisää...", updateLoadingPage: "Ladataan uusin sivu...", updateFound: "Uusi versio löytyi. Päivitetään sovellus...", updateDownloading: "Uusi versio latautuu. Sovellus avautuu päivityksen jälkeen...", updateFailed: "Päivitysten haku epäonnistui. Tarkista verkkoyhteys.", updateDone: "Päivitystarkistus valmis. Ladataan uusin sisältö...", updateDownloadFailed: "Päivityksen lataus epäonnistui. Yritä uudelleen."
     },
     en: {
-        pokedex: "Pokédex", games: "Games", types: "Type Chart", profile: "Profile", settings: "Settings",
+        pokedex: "Pokédex", games: "Games", types: "Type Chart", profile: "Profile", settings: "Settings", items: "Items", locationMenu: "Locations",
         searchPokemon: "Search Pokémon", nationalPokedex: "National Pokédex", regionalPokedex: "Regional Pokédex",
         typeMatchup: "Type Matchup", typeMatchupHelp: "Review the offensive and defensive effects of Pokémon types.",
         typeOne: "Type 1", typeTwo: "Type 2", none: "None", sort: "Sort", pokedexNumber: "Pokédex number", name: "Name",
@@ -47,16 +48,17 @@ const UI_TEXT = {
         pokedexVoice: "Pokédex voice", voiceDescription: "Lower pitch values sound deeper. Pitch can be lowered to the browser-supported minimum.",
         pitch: "Pitch", readingSpeed: "Reading speed", clearOneGame: "Clear one game's data", clearOneGameDescription: "Removes caught marks for the selected game.",
         selectGame: "Select a game", clearGame: "Clear game", clearAll: "Clear all data", clearAllDescription: "Removes caught marks from all games.", clearAllButton: "Clear all",
-        overview: "Overview", species: "Pokédex entry", readPokedexEntry: "Read Pokédex entry aloud", listen: "🔊 Listen", stop: "■ Stop", category: "Species", height: "Height", weight: "Weight", baseXp: "Base XP", abilities: "Abilities",
+        overview: "Overview", species: "Pokédex entry", readPokedexEntry: "Read Pokédex entry aloud", listen: "🔊 Listen", stop: "■ Stop", category: "Species", height: "Height", weight: "Weight", baseXp: "Base XP", abilities: "Abilities", genderRatio: "Gender ratio", female: "Female", male: "Male", genderless: "Genderless", cry: "Play Pokémon cry",
         typeChart: "Type Chart", defense: "Defense", attack: "Attack", evolutions: "Evolutions", moves: "Moves", forms: "Forms", locations: "Locations", gamesTab: "Games",
         notAvailable: "Not available", noSpeciesDescription: "No species description is available for this Pokémon.", translationUnavailable: "Translation failed. Check your connection and try again later.", speechUnsupported: "Text-to-speech is not supported by this browser.",
-        overviewVersion: "Version", noOverviewForLanguage: "No description is available for this Pokémon.", translating: "Translating description…", searchResults: "Search results", noSearchResults: "No Pokémon matched your search.", moveSort: "Sort", moveGeneration: "Generation", allGenerations: "All generations", bp: "BP", acc: "Acc", pp: "PP", level: "Level",
+        overviewVersion: "Version", noOverviewForLanguage: "No description is available for this Pokémon.", translating: "Translating description…", searchResults: "Search results", noSearchResults: "No Pokémon matched your search.", moveSort: "Sort", moveGeneration: "Generation", allGenerations: "All generations", generationMoves: "Show moves for this generation", bp: "BP", acc: "Acc", pp: "PP", level: "Level", moveMethod: "Learn method", allMethods: "All methods", levelUp: "Level up", machine: "TM/HM", egg: "Egg move", tutor: "Move tutor", otherMethod: "Other method",
         defenseMatchup: "Defense", attackMatchup: "Attack", chooseType: "Choose at least one type.", caughtStatus: "Caught ✓", markCaught: "Mark caught", gameListLoading: "Looking up games...", noAvailableGames: "No available games were found for this Pokémon.",
         pokemon: "Pokémon", generation: "Generation", mobileSpecial: "Mobile / Special", nationalSummaryTitle: "Entire National Pokédex", nationalSummaryDescription: "A Pokémon only needs to be marked once, regardless of which game it was caught in.", pokemonCount: "Pokémon", gamesCount: "games", regionalCount: "Regional", nationalCount: "National", defaultForm: "Default form", movesWord: "moves", openGame: "Open game",
         typeNames: { normal: "Normal", fire: "Fire", water: "Water", electric: "Electric", grass: "Grass", ice: "Ice", fighting: "Fighting", poison: "Poison", ground: "Ground", flying: "Flying", psychic: "Psychic", bug: "Bug", rock: "Rock", ghost: "Ghost", dragon: "Dragon", dark: "Dark", steel: "Steel", fairy: "Fairy" },
         whereToFind: "Where to find", howToObtain: "How to obtain", sourcePokeApi: "Source: PokéAPI", encounterMethodUnspecified: "Encounter method not specified",
         menuToggle: "Open or close menu", checkUpdates: "Check for app updates", typeFire: "Fire type", markInGame: "Mark caught in game", unmarkInGame: "Remove caught mark from game",
         noGameDex: "There are no Pokémon in this view.", locationsLoading: "Loading locations...", noLocationGames: "No games with a Pokédex entry were found.", noEncounterDetails: "No encounter or acquisition details were found for {game}.",
+        searchItems: "Search items", allItems: "All", heldItems: "Held by Pokémon", berries: "Berries", itemEffect: "Effect", itemCategory: "Category", itemStats: "Item facts", itemGames: "PokéAPI game index (generation-level)", itemHeldBy: "Pokémon that may hold this item", itemRarity: "Rarity", berryDetails: "Berry data", berrySize: "Size", growthTime: "Growth time", maxHarvest: "Maximum harvest", naturalGift: "Natural Gift", smoothness: "Smoothness", soilDryness: "Soil dryness", itemCost: "Cost", flingPower: "Fling power", flingEffect: "Fling effect", itemNoEffect: "No effect details were found.", itemNoHeldBy: "PokéAPI does not list any Pokémon as holding this item.", itemWhereUnavailable: "PokéAPI does not directly link items to find locations. The encounters of Pokémon above show where that Pokémon may be found holding it.", itemLoading: "Loading item...", selectItem: "Select an item to view its details.", resourceLoadFailed: "Could not load the data. Check your connection and try again.", noHeldLocations: "PokéAPI has no encounter locations for this Pokémon in those games.", locationGame: "Game", allGames: "All games", searchLocations: "Search places", locationEncounters: "Pokémon found here", encounterChance: "Encounter chance", encounterLevel: "Level", noLocationEncounters: "No encounters for the selected game were found at this place.", locationLoading: "Loading place...", locationGameFilterNote: "Places are verified against the selected game's version-specific encounters, one page at a time.", selectLocation: "Select a place to view encounter details.", locationScanCount: "Places", itemPageMore: "Show more items", locationPageMore: "Show more places", wildHeldSource: "Held when encountered in the wild",
         evolutionLoadFailed: "The evolution chain could not be loaded.", formsLoadFailed: "Forms could not be loaded.", caughtSaveFailed: "Could not save the caught mark in this browser.",
         clearAllConfirm: "Are you sure you want to remove all caught marks?", caughtClearFailed: "Caught marks could not be cleared in this browser.", clearGameConfirm: "Remove all caught marks for {game}?", gameCaughtClearFailed: "Caught marks for {game} could not be cleared in this browser.",
         checkingUpdates: "Checking for updates...", loadingMore: "Loading more...", updateLoadingPage: "Loading the latest page...", updateFound: "A new version was found. Updating the app...", updateDownloading: "The new version is downloading. The app will reopen when it is ready...", updateFailed: "Could not check for updates. Check your connection.", updateDone: "Update check complete. Loading the latest content...", updateDownloadFailed: "The update could not be downloaded. Try again."
@@ -87,6 +89,9 @@ function applyStaticTranslations() {
     });
     document.querySelectorAll("[data-i18n-title]").forEach(element => {
         element.title = t(element.dataset.i18nTitle);
+    });
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
+        element.placeholder = t(element.dataset.i18nPlaceholder);
     });
     const languageSelect = document.getElementById("appLanguageSelect");
     if (languageSelect) languageSelect.value = appLanguage;
@@ -397,9 +402,22 @@ const VERSION_GROUP_GENERATIONS = new Map([
 ].flatMap(([generation, groups]) => groups.map(group => [group, generation])));
 
 function getMoveGenerationLearnInfo(entry, generation = state.moveGeneration) {
+    return getMoveGenerationLearnInfos(entry, generation).at(-1);
+}
+
+function getMoveGenerationLearnInfos(entry, generation = state.moveGeneration) {
     const details = entry.version_group_details || [];
-    if (generation === "all") return details.at(-1);
-    return details.find(detail => VERSION_GROUP_GENERATIONS.get(detail.version_group?.name) === Number(generation));
+    if (generation === "all") return details.length ? [details.at(-1)] : [];
+    return details.filter(detail => VERSION_GROUP_GENERATIONS.get(detail.version_group?.name) === Number(generation));
+}
+
+function getMoveLearnMethodLabel(detail) {
+    const method = detail?.move_learn_method?.name || "";
+    if (method === "level-up") return `${t("levelUp")}${detail.level_learned_at ? ` · ${t("level")} ${detail.level_learned_at}` : ""}`;
+    if (method === "machine") return t("machine");
+    if (method === "egg") return t("egg");
+    if (method === "tutor") return t("tutor");
+    return method ? `${t("otherMethod")} · ${capitalize(method)}` : t("otherMethod");
 }
 
 function getPokemonMoveGenerations(pokemon) {
@@ -446,24 +464,6 @@ function getGameApiVersionNames(gameId) {
 function getEncounterVersionName(versionDetail) {
     return normalizeApiVersionName(versionDetail?.version?.name);
 }
-
-const POKEMONDB_GAME_LABELS = [
-    ["Let's Go Pikachu", "letsgopikachu"], ["Let's Go Eevee", "letsgoeevee"],
-    ["Brilliant Diamond", "brilliantdiamond"], ["Shining Pearl", "shiningpearl"],
-    ["Legends: Arceus", "legendsarceus"], ["Legends: Z-A", "legendsza"],
-    ["Alpha Sapphire", "alphasapphire"], ["Omega Ruby", "omegaruby"],
-    ["Ultra Sun", "ultrasun"], ["Ultra Moon", "ultramoon"],
-    ["Black 2", "black2"], ["White 2", "white2"],
-    ["HeartGold", "heartgold"], ["SoulSilver", "soulsilver"],
-    ["FireRed", "firered"], ["LeafGreen", "leafgreen"],
-    ["Red", "red"], ["Blue", "blue"], ["Yellow", "yellow"],
-    ["Gold", "gold"], ["Silver", "silver"], ["Crystal", "crystal"],
-    ["Ruby", "ruby"], ["Sapphire", "sapphire"], ["Emerald", "emerald"],
-    ["Diamond", "diamond"], ["Pearl", "pearl"], ["Platinum", "platinum"],
-    ["Black", "black"], ["White", "white"], ["X", "x"], ["Y", "y"],
-    ["Sun", "sun"], ["Moon", "moon"], ["Sword", "sword"], ["Shield", "shield"],
-    ["Scarlet", "scarlet"], ["Violet", "violet"]
-];
 
 // Covers are shipped with the app so the Games view does not depend on an
 // external image service being available at runtime.
@@ -544,8 +544,6 @@ const state = {
 
     encounterCache: new Map(),
 
-    pokemonDbLocationCache: new Map(),
-
     gameAvailabilityCache: new Map(),
 
     dexEntriesById: new Map(),
@@ -556,11 +554,55 @@ const state = {
 
     abilityCache: new Map(),
 
+    itemListCache: null,
+
+    itemDetailCache: new Map(),
+
+    berryListCache: null,
+
+    berryDetailCache: new Map(),
+
+    locationListCache: null,
+
+    locationDetailCache: new Map(),
+
+    locationAreaCache: new Map(),
+
+    locationAvailabilityCache: new Map(),
+
+    locationListRenderRequest: 0,
+
+    locationAreaPage: 0,
+
+    itemPage: 0,
+
+    selectedItem: null,
+
+    selectedLocation: null,
+
+    selectedLocationAreaUrl: null,
+
+    selectedLocationGame: "all",
+
+    itemFilter: "all",
+
+    itemSearch: "",
+
+    locationSearch: "",
+
+    itemRenderRequest: 0,
+
+    locationRenderRequest: 0,
+
+    cryAudio: null,
+
     movePage: 0,
 
     moveSort: "name",
 
     moveGeneration: "all",
+
+    moveMethod: "all",
 
     currentSpecies: null,
 
@@ -1000,6 +1042,7 @@ function getCardTypeStyle(pokemon) {
 function showView(viewId) {
 
     if (viewId !== "pokemonView") stopSpeciesSpeech();
+    if (viewId !== "pokemonView") stopPokemonCry();
 
     document.querySelectorAll(".view")
         .forEach(view => {
@@ -1021,6 +1064,56 @@ function showView(viewId) {
 
     state.currentView = viewId;
 
+}
+
+function stopPokemonCry() {
+    if (state.cryAudio) {
+        state.cryAudio.pause();
+        state.cryAudio.currentTime = 0;
+        state.cryAudio = null;
+    }
+}
+
+function playPokemonCry(pokemon) {
+    const button = document.getElementById("playPokemonCryButton");
+    const cryUrl = pokemon?.cries?.latest || pokemon?.cries?.legacy;
+    if (!cryUrl || !button) return;
+    stopPokemonCry();
+    const audio = new Audio(cryUrl);
+    state.cryAudio = audio;
+    button.classList.add("playing");
+    audio.addEventListener("ended", () => {
+        if (state.cryAudio === audio) state.cryAudio = null;
+        button.classList.remove("playing");
+    }, { once: true });
+    audio.addEventListener("error", () => {
+        if (state.cryAudio === audio) state.cryAudio = null;
+        button.classList.remove("playing");
+    }, { once: true });
+    void audio.play().catch(error => {
+        console.warn("Pokémon cry could not be played", error);
+        button.classList.remove("playing");
+        if (state.cryAudio === audio) state.cryAudio = null;
+    });
+}
+
+function renderGenderRatio(species) {
+    const chart = document.getElementById("pokemonGenderPie");
+    const legend = document.getElementById("pokemonGenderRatio");
+    if (!chart || !legend) return;
+    const rate = species.gender_rate;
+    if (rate === -1 || rate == null) {
+        chart.style.background = "conic-gradient(#788391 0 100%)";
+        chart.setAttribute("aria-label", t("genderless"));
+        legend.textContent = t("genderless");
+        return;
+    }
+    const female = Math.round((rate / 8) * 1000) / 10;
+    const male = 100 - female;
+    chart.style.background = `conic-gradient(#ef83ac 0 ${female}%, #76bafa ${female}% 100%)`;
+    const percentText = value => `${Number.isInteger(value) ? value : value.toFixed(1)}%`;
+    chart.setAttribute("aria-label", `${t("female")} ${percentText(female)}, ${t("male")} ${percentText(male)}`);
+    legend.innerHTML = `<span><i class="gender-dot female"></i>${t("female")} ${percentText(female)}</span><span><i class="gender-dot male"></i>${t("male")} ${percentText(male)}</span>`;
 }
 
 
@@ -1048,6 +1141,7 @@ async function openDex(dexId) {
     state.gameRequest += 1;
     state.pokemonRequest += 1;
     stopSpeciesSpeech();
+    stopPokemonCry();
 
     state.currentDex = dexId;
     state.currentGame = null;
@@ -1790,6 +1884,7 @@ async function openPokemon(
     state.moveRenderRequest += 1;
 
     stopSpeciesSpeech();
+    stopPokemonCry();
 
     const pokemon =
         await getPokemon(
@@ -1804,6 +1899,7 @@ async function openPokemon(
         pokemon;
     state.currentSpecies = species;
     state.moveGeneration = "all";
+    state.moveMethod = "all";
     state.overviewTextIndex = 0;
 
     state.currentGame = gameId
@@ -1860,6 +1956,8 @@ async function openPokemon(
                         }"
                         alt="${formatPokemonName(pokemon.name)}"
                     >
+
+                    ${pokemon.cries?.latest || pokemon.cries?.legacy ? `<button id="playPokemonCryButton" class="pokemon-cry-button" type="button" aria-label="${t("cry")}" title="${t("cry")}">🔊</button>` : ""}
 
                 </div>
 
@@ -1926,6 +2024,7 @@ async function openPokemon(
                                     <span><small>${t("weight")}</small><strong>${pokemon.weight / 10} kg</strong></span>
                                     <span><small>${t("baseXp")}</small><strong>${pokemon.base_experience ?? "-"}</strong></span>
                                     <span><small>${t("abilities")}</small><strong id="pokemonAbilities">${pokemon.abilities.map(a => capitalize(a.ability.name)).join(", ")}</strong></span>
+                                    <span class="gender-fact"><small>${t("genderRatio")}</small><span class="gender-ratio"><i id="pokemonGenderPie" class="gender-pie" role="img"></i><span id="pokemonGenderRatio"></span></span></span>
                                 </div>
                             </section>
                         </div>
@@ -1980,6 +2079,14 @@ async function openPokemon(
                                 <option value="all">${t("allGenerations")}</option>
                                 ${moveGenerations.map(generation => `<option value="${generation}">${formatGenerationName(`Generation ${generation}`)}</option>`).join("")}
                             </select>
+                            <label for="moveMethodFilter">${t("moveMethod")}</label>
+                            <select id="moveMethodFilter">
+                                <option value="all">${t("allMethods")}</option>
+                                <option value="level-up">${t("levelUp")}</option>
+                                <option value="machine">${t("machine")}</option>
+                                <option value="egg">${t("egg")}</option>
+                                <option value="tutor">${t("tutor")}</option>
+                            </select>
                         </div>
                         <div id="pokemonMovesList" class="pokemon-moves-grid"></div>
                         <button id="loadMoreMovesButton" class="load-more-button" hidden>${t("loadMore")}</button>
@@ -2013,6 +2120,8 @@ async function openPokemon(
     setupDetailTabs();
     state.moveSort = "name";
     document.getElementById("readSpeciesButton").addEventListener("click", toggleSpeciesSpeech);
+    document.getElementById("playPokemonCryButton")?.addEventListener("click", () => playPokemonCry(pokemon));
+    renderGenderRatio(species);
     document.getElementById("previousOverviewText").addEventListener("click", () => moveOverviewText(-1));
     document.getElementById("nextOverviewText").addEventListener("click", () => moveOverviewText(1));
     document.getElementById("moveSort").addEventListener("change", async event => {
@@ -2028,6 +2137,10 @@ async function openPokemon(
     });
     document.getElementById("moveGenerationFilter").addEventListener("change", event => {
         state.moveGeneration = event.target.value;
+        void renderPokemonMoves(pokemon);
+    });
+    document.getElementById("moveMethodFilter").addEventListener("change", event => {
+        state.moveMethod = event.target.value;
         void renderPokemonMoves(pokemon);
     });
     document.getElementById("loadMoreMovesButton").addEventListener("click", () => {
@@ -2611,6 +2724,606 @@ async function getPokemonEncounters(id) {
     }
 }
 
+async function fetchCachedResource(cache, key, url) {
+    if (!cache.has(key)) cache.set(key, apiFetch(url));
+    try {
+        return await cache.get(key);
+    } catch (error) {
+        cache.delete(key);
+        throw error;
+    }
+}
+
+async function getItemCatalogue() {
+    if (!state.itemListCache) {
+        state.itemListCache = Promise.all([
+            apiFetch(`${API}/item?limit=10000`),
+            apiFetch(`${API}/berry?limit=1000`)
+        ]).then(([items, berries]) => {
+            const berryByItem = new Map((berries.results || []).map(berry => [berry.item.name, berry]));
+            return (items.results || []).map(item => ({
+                ...item,
+                isBerry: berryByItem.has(item.name),
+                berryUrl: berryByItem.get(item.name)?.url || null
+            })).sort((a, b) => a.name.localeCompare(b.name));
+        }).catch(error => {
+            state.itemListCache = null;
+            throw error;
+        });
+    }
+    return state.itemListCache;
+}
+
+async function getItemData(entry) {
+    const item = await fetchCachedResource(state.itemDetailCache, entry.name, entry.url);
+    let berry = null;
+    if (entry.berryUrl) {
+        berry = await fetchCachedResource(state.berryDetailCache, entry.name, entry.berryUrl);
+    }
+    return { item, berry };
+}
+
+function makeResourceButton(label, className = "resource-result-button") {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = className;
+    button.textContent = label;
+    return button;
+}
+
+function renderItemList(reset = true) {
+    const list = document.getElementById("itemList");
+    const more = document.getElementById("itemLoadMoreButton");
+    if (!list || !more) return;
+    if (reset) {
+        state.itemPage = 0;
+        list.replaceChildren();
+        more.hidden = true;
+    } else {
+        state.itemPage += 1;
+    }
+    void getItemCatalogue().then(items => {
+        if (!list.isConnected) return;
+        const search = state.itemSearch.trim().toLowerCase().replaceAll(" ", "-");
+        const filtered = items.filter(item =>
+            (state.itemFilter !== "berry" || item.isBerry)
+            && (!search || item.name.includes(search))
+        );
+        if (reset) list.replaceChildren();
+        const size = 72;
+        const page = filtered.slice(state.itemPage * size, (state.itemPage + 1) * size);
+        page.forEach(entry => {
+            const button = makeResourceButton("");
+            button.classList.toggle("active", state.selectedItem?.name === entry.name);
+            const image = document.createElement("img");
+            image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${entry.name}.png`;
+            image.alt = "";
+            image.loading = "lazy";
+            image.onerror = () => image.remove();
+            const label = document.createElement("span");
+            label.textContent = capitalize(entry.name);
+            button.append(image, label);
+            button.addEventListener("click", () => {
+                state.selectedItem = entry;
+                list.querySelectorAll(".resource-result-button").forEach(row => row.classList.toggle("active", row === button));
+                void renderItemDetail(entry);
+            });
+            list.appendChild(button);
+        });
+        more.hidden = (state.itemPage + 1) * size >= filtered.length;
+        if (!more.hidden) observeInfiniteScrollButton(more);
+        if (!filtered.length) list.innerHTML = `<div class="empty-state">${t("noSearchResults")}</div>`;
+    }).catch(error => {
+        console.warn("Item catalogue load failed", error);
+        list.innerHTML = `<div class="empty-state">${t("resourceLoadFailed")}</div>`;
+        more.hidden = true;
+    });
+}
+
+function addResourceSection(parent, title, content) {
+    const section = document.createElement("section");
+    section.className = "resource-detail-section";
+    const heading = document.createElement("h3");
+    heading.textContent = title;
+    section.appendChild(heading);
+    if (content instanceof Node) section.appendChild(content);
+    else {
+        const paragraph = document.createElement("p");
+        paragraph.textContent = content;
+        section.appendChild(paragraph);
+    }
+    parent.appendChild(section);
+    return section;
+}
+
+function getItemEffect(item) {
+    const entries = item.effect_entries || [];
+    return entries.find(entry => entry.language?.name === appLanguage)?.short_effect
+        || entries.find(entry => entry.language?.name === "en")?.short_effect
+        || t("itemNoEffect");
+}
+
+function getItemFlavorText(item) {
+    const entries = item.flavor_text_entries || [];
+    return [...new Set(entries
+        .filter(entry => entry.language?.name === appLanguage || entry.language?.name === "en")
+        .sort((a, b) => (a.language.name === appLanguage ? -1 : 1))
+        .map(entry => entry.text.replace(/[\n\f]+/g, " ").replace(/\s+/g, " ").trim())
+        .filter(Boolean))].slice(0, 3);
+}
+
+function itemGenerationNames(item) {
+    return [...new Set((item.game_indices || []).map(entry => entry.generation?.name).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+        .map(name => {
+            const generation = generationNumberFromResourceName(name);
+            return generation ? formatGenerationName(`Generation ${generation}`) : capitalize(name);
+        });
+}
+
+function versionNamesForHeldItem(heldItem) {
+    return (heldItem.version_details || []).map(detail => ({
+        version: normalizeApiVersionName(detail.version?.name),
+        rarity: detail.rarity
+    })).filter(entry => entry.version);
+}
+
+async function renderItemDetail(entry) {
+    const requestId = ++state.itemRenderRequest;
+    const container = document.getElementById("itemDetail");
+    if (!container) return;
+    container.innerHTML = `<div class="empty-state">${t("itemLoading")}</div>`;
+    try {
+        const { item, berry } = await getItemData(entry);
+        if (requestId !== state.itemRenderRequest) return;
+        container.replaceChildren();
+        const heading = document.createElement("div");
+        heading.className = "resource-detail-heading";
+        const image = document.createElement("img");
+        image.src = item.sprites?.default || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${entry.name}.png`;
+        image.alt = localizedResourceName(item, capitalize(item.name));
+        image.onerror = () => image.remove();
+        const name = document.createElement("h2");
+        name.textContent = localizedResourceName(item, capitalize(item.name));
+        heading.append(image, name);
+        container.appendChild(heading);
+
+        const category = item.category ? localizedResourceName(item.category, capitalize(item.category.name)) : t("notAvailable");
+        const effect = document.createElement("p");
+        effect.textContent = getItemEffect(item);
+        addResourceSection(container, `${t("itemEffect")} · ${t("itemCategory")}: ${category}`, effect);
+
+        const itemFacts = document.createElement("div");
+        itemFacts.className = "resource-fact-grid";
+        [[t("itemCost"), item.cost], [t("flingPower"), item.fling_power ?? "—"],
+            [t("flingEffect"), item.fling_effect ? localizedResourceName(item.fling_effect, capitalize(item.fling_effect.name)) : "—"]]
+            .forEach(([label, value]) => {
+                const fact = document.createElement("div");
+                const term = document.createElement("small");
+                term.textContent = label;
+                const data = document.createElement("strong");
+                data.textContent = String(value ?? "—");
+                fact.append(term, data);
+                itemFacts.appendChild(fact);
+            });
+        addResourceSection(container, t("itemStats"), itemFacts);
+
+        const generations = itemGenerationNames(item);
+        const gamesText = generations.length ? generations.join(" · ") : t("notAvailable");
+        addResourceSection(container, t("itemGames"), gamesText);
+        const flavor = getItemFlavorText(item);
+        if (flavor.length) addResourceSection(container, t("overview"), flavor.join("\n\n"));
+        const attributes = (item.attributes || []).map(attribute => localizedResourceName(attribute, capitalize(attribute.name)));
+        if (attributes.length) addResourceSection(container, t("itemCategory"), attributes.join(" · "));
+
+        if (berry) {
+            const facts = document.createElement("div");
+            facts.className = "resource-fact-grid";
+            const berryFacts = [
+                [t("berrySize"), `${berry.size} mm`],
+                [t("growthTime"), berry.growth_time],
+                [t("maxHarvest"), berry.max_harvest],
+                [t("naturalGift"), `${localizedResourceName(berry.natural_gift_type, capitalize(berry.natural_gift_type?.name || ""))} · ${berry.natural_gift_power} BP`],
+                [t("smoothness"), `${berry.smoothness} · ${t("soilDryness")} ${berry.soil_dryness}`]
+            ];
+            (berry.flavors || []).forEach(flavorEntry => berryFacts.push([
+                localizedResourceName(flavorEntry.flavor, capitalize(flavorEntry.flavor.name)),
+                flavorEntry.potency
+            ]));
+            berryFacts.forEach(([label, value]) => {
+                const fact = document.createElement("div");
+                const term = document.createElement("small");
+                term.textContent = label;
+                const data = document.createElement("strong");
+                data.textContent = String(value);
+                fact.append(term, data);
+                facts.appendChild(fact);
+            });
+            addResourceSection(container, t("berryDetails"), facts);
+        }
+
+        const held = [...(item.held_by_pokemon || [])].sort((a, b) => a.pokemon.name.localeCompare(b.pokemon.name));
+        if (!held.length) {
+            addResourceSection(container, t("itemHeldBy"), t("itemNoHeldBy"));
+        } else {
+            const heldList = document.createElement("div");
+            heldList.className = "resource-held-list";
+            held.slice(0, 40).forEach(heldEntry => {
+                const card = document.createElement("div");
+                card.className = "resource-held-card";
+                const info = document.createElement("div");
+                const pokemonName = makeResourceButton(formatPokemonName(heldEntry.pokemon.name), "inline-resource-button");
+                const versions = versionNamesForHeldItem(heldEntry);
+                const versionText = document.createElement("small");
+                versionText.textContent = versions.map(entry => `${displayVersionName(entry.version)} · ${t("itemRarity")} ${entry.rarity}%`).join(", ") || t("notAvailable");
+                info.append(pokemonName, versionText);
+                pokemonName.addEventListener("click", () => openPokemonSpecies(getPokemonIdFromPokemonUrl(heldEntry.pokemon.url), null, "none"));
+                const locations = document.createElement("div");
+                locations.className = "held-item-locations";
+                const showLocations = makeResourceButton(t("wildHeldSource"), "compact-resource-button");
+                showLocations.addEventListener("click", async () => {
+                    showLocations.disabled = true;
+                    locations.textContent = t("locationsLoading");
+                    try {
+                        const encounters = await getPokemonEncounters(getPokemonIdFromPokemonUrl(heldEntry.pokemon.url));
+                        const matching = encounters.flatMap(encounter => (encounter.version_details || [])
+                            .filter(detail => versions.some(version => version.version === getEncounterVersionName(detail)))
+                            .map(detail => ({ encounter, detail })));
+                        locations.replaceChildren();
+                        if (!matching.length) locations.textContent = t("noHeldLocations");
+                        matching.forEach(({ encounter, detail }) => {
+                            const version = getEncounterVersionName(detail);
+                            const button = makeResourceButton(`${displayVersionName(version)} · ${formatEncounterLocation(encounter.location_area.name)}`, "inline-resource-button");
+                            button.addEventListener("click", () => openLocationAreaInView(encounter.location_area, version));
+                            locations.appendChild(button);
+                        });
+                    } catch (error) {
+                        console.warn("Held-item locations could not be loaded", error);
+                        locations.textContent = t("noHeldLocations");
+                    } finally {
+                        showLocations.disabled = false;
+                    }
+                });
+                card.append(info, showLocations, locations);
+                heldList.appendChild(card);
+            });
+            if (held.length > 40) {
+                const note = document.createElement("p");
+                note.textContent = `+ ${held.length - 40}`;
+                heldList.appendChild(note);
+            }
+            addResourceSection(container, t("itemHeldBy"), heldList);
+        }
+        addResourceSection(container, t("whereToFind"), t("itemWhereUnavailable"));
+    } catch (error) {
+        if (requestId !== state.itemRenderRequest) return;
+        console.warn("Item detail load failed", error);
+        container.innerHTML = `<div class="empty-state">${t("resourceLoadFailed")}</div>`;
+    }
+}
+
+function generationNumberFromResourceName(name) {
+    const roman = { i: 1, ii: 2, iii: 3, iv: 4, v: 5, vi: 6, vii: 7, viii: 8, ix: 9 };
+    const match = /generation-([ivx]+)/i.exec(String(name || ""));
+    return match ? roman[match[1].toLowerCase()] || null : null;
+}
+
+function generationNumberFromGame(game) {
+    const match = /Generation (I|II|III|IV|V|VI|VII|VIII|IX)/.exec(game?.generation || "");
+    return match ? generationNumberFromResourceName(`generation-${match[1].toLowerCase()}`) : null;
+}
+
+function findGameForVersion(versionName) {
+    const version = normalizeApiVersionName(versionName);
+    return GAMES.find(game => getGameApiVersionNames(game.id).has(version)) || null;
+}
+
+async function getLocationCatalogue() {
+    if (!state.locationListCache) {
+        state.locationListCache = apiFetch(`${API}/location?limit=2000`).catch(error => {
+            state.locationListCache = null;
+            throw error;
+        });
+    }
+    return state.locationListCache;
+}
+
+async function getLocationData(url) {
+    return fetchCachedResource(state.locationDetailCache, url, url);
+}
+
+async function getLocationAreaData(url) {
+    return fetchCachedResource(state.locationAreaCache, url, url);
+}
+
+async function locationHasGameEncounter(location, gameId) {
+    const key = `${gameId}|${location.url}`;
+    if (state.locationAvailabilityCache.has(key)) return state.locationAvailabilityCache.get(key);
+    const request = (async () => {
+        const fullLocation = await getLocationData(location.url);
+        for (const areaRef of fullLocation.areas || []) {
+            const area = await getLocationAreaData(areaRef.url);
+            if (getLocationEncounterRows(area, gameId).length) return true;
+        }
+        return false;
+    })();
+    state.locationAvailabilityCache.set(key, request);
+    try {
+        return await request;
+    } catch (error) {
+        if (state.locationAvailabilityCache.get(key) === request) state.locationAvailabilityCache.delete(key);
+        throw error;
+    }
+}
+
+async function mapWithConcurrency(items, limit, mapper) {
+    const results = new Array(items.length);
+    let cursor = 0;
+    const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+        while (cursor < items.length) {
+            const index = cursor++;
+            results[index] = await mapper(items[index], index);
+        }
+    });
+    await Promise.all(workers);
+    return results;
+}
+
+function locationGameCandidates(locations, gameId = state.selectedLocationGame) {
+    if (gameId === "all") return locations;
+    const game = GAMES.find(entry => entry.id === gameId);
+    const generation = generationNumberFromGame(game);
+    if (!game || !generation) return [];
+    return locations.filter(location => (location.game_indices || []).some(index =>
+        generationNumberFromResourceName(index.generation?.name) === generation
+    ));
+}
+
+async function renderLocationList(reset = true) {
+    const list = document.getElementById("locationList");
+    const more = document.getElementById("locationLoadMoreButton");
+    if (!list || !more) return;
+    const requestId = ++state.locationListRenderRequest;
+    if (reset) {
+        state.locationAreaPage = 0;
+        list.innerHTML = `<div class="empty-state">${t("locationsLoading")}</div>`;
+        more.hidden = true;
+    } else state.locationAreaPage += 1;
+    const pageIndex = state.locationAreaPage;
+    try {
+        const data = await getLocationCatalogue();
+        if (!list.isConnected || requestId !== state.locationListRenderRequest) return;
+        const search = state.locationSearch.trim().toLowerCase().replaceAll(" ", "-");
+        const selectedGame = state.selectedLocationGame;
+        const filtered = locationGameCandidates(data.results || [], selectedGame).filter(location => !search || location.name.includes(search));
+        const size = 72;
+        const candidates = filtered.slice(pageIndex * size, (pageIndex + 1) * size);
+        let page = candidates;
+        if (selectedGame !== "all") {
+            page = await mapWithConcurrency(candidates, 6, async location => {
+                try {
+                    return await locationHasGameEncounter(location, selectedGame);
+                } catch (error) {
+                    console.warn("Could not verify location for selected game", location.name, error);
+                    return false;
+                }
+            }).then(results => candidates.filter((_, index) => results[index]));
+        }
+        if (!list.isConnected || requestId !== state.locationListRenderRequest) return;
+        if (reset) list.replaceChildren();
+        if (page.length) list.querySelectorAll(".empty-state").forEach(empty => empty.remove());
+        page.forEach(location => {
+            const label = localizedResourceName(location, capitalize(location.name));
+            const button = makeResourceButton(label);
+            button.dataset.locationUrl = location.url;
+            button.classList.toggle("active", state.selectedLocation?.url === location.url);
+            button.addEventListener("click", () => {
+                state.selectedLocation = location;
+                state.selectedLocationAreaUrl = null;
+                list.querySelectorAll(".resource-result-button").forEach(row => row.classList.toggle("active", row === button));
+                void renderLocationDetail(location);
+            });
+            list.appendChild(button);
+        });
+        more.hidden = (pageIndex + 1) * size >= filtered.length;
+        if (!more.hidden) observeInfiniteScrollButton(more);
+        if (!page.length && !list.querySelector(".resource-result-button")) {
+            list.innerHTML = `<div class="empty-state">${t("noSearchResults")}</div>`;
+        }
+    } catch (error) {
+        console.warn("Location catalogue load failed", error);
+        list.innerHTML = `<div class="empty-state">${t("resourceLoadFailed")}</div>`;
+        more.hidden = true;
+    }
+}
+
+function getLocationEncounterRows(area, gameId) {
+    const versions = gameId && gameId !== "all" ? getGameApiVersionNames(gameId) : null;
+    const rows = [];
+    for (const encounter of area.pokemon_encounters || []) {
+        const pokemonId = getPokemonIdFromPokemonUrl(encounter.pokemon.url);
+        for (const versionDetail of encounter.version_details || []) {
+            const version = getEncounterVersionName(versionDetail);
+            if (versions && !versions.has(version)) continue;
+            for (const detail of versionDetail.encounter_details || []) {
+                rows.push({ pokemon: encounter.pokemon, pokemonId, version, detail });
+            }
+        }
+    }
+    return rows;
+}
+
+function renderLocationEncounterCard(row) {
+    const card = document.createElement("article");
+    card.className = "location-encounter-card";
+    const pokemonId = row.pokemonId;
+    const pokemonButton = document.createElement("button");
+    pokemonButton.type = "button";
+    pokemonButton.className = "location-pokemon-button";
+    const image = document.createElement("img");
+    image.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png`;
+    image.alt = "";
+    image.loading = "lazy";
+    const name = document.createElement("span");
+    name.textContent = formatPokemonName(row.pokemon.name);
+    pokemonButton.append(image, name);
+    pokemonButton.addEventListener("click", () => openPokemon(pokemonId, null, "none"));
+    const details = document.createElement("div");
+    details.className = "location-encounter-facts";
+    const method = document.createElement("strong");
+    method.textContent = getEncounterMethodLabel(row.detail.method?.name || "encounter");
+    const chance = document.createElement("span");
+    chance.textContent = `${t("encounterChance")}: ${row.detail.chance ?? "—"}%`;
+    const level = document.createElement("span");
+    level.textContent = `${t("encounterLevel")}: ${row.detail.min_level === row.detail.max_level ? row.detail.min_level : `${row.detail.min_level}–${row.detail.max_level}`}`;
+    const version = document.createElement("small");
+    version.textContent = displayVersionName(row.version);
+    details.append(method, chance, level, version);
+    card.append(pokemonButton, details);
+    return card;
+}
+
+async function renderLocationDetail(locationRef, areaRef = null) {
+    const container = document.getElementById("locationDetail");
+    if (!container || !locationRef?.url) return;
+    const requestId = ++state.locationRenderRequest;
+    container.innerHTML = `<div class="empty-state">${t("locationLoading")}</div>`;
+    try {
+        let location;
+        let selectedArea = null;
+        if (areaRef) {
+            selectedArea = await getLocationAreaData(areaRef.url);
+            location = await getLocationData(selectedArea.location.url);
+            state.selectedLocationAreaUrl = areaRef.url;
+        } else {
+            location = await getLocationData(locationRef.url);
+            if (state.selectedLocationAreaUrl) {
+                selectedArea = location.areas.find(area => area.url === state.selectedLocationAreaUrl) || null;
+            }
+        }
+        if (requestId !== state.locationRenderRequest) return;
+        state.selectedLocation = location;
+        container.replaceChildren();
+        const title = document.createElement("h2");
+        title.textContent = localizedResourceName(location, capitalize(location.name));
+        container.appendChild(title);
+        if (location.region) {
+            const region = document.createElement("p");
+            region.className = "resource-subtitle";
+            region.textContent = localizedResourceName(location.region, capitalize(location.region.name));
+            container.appendChild(region);
+        }
+        const selectedGame = state.selectedLocationGame;
+        const areas = selectedArea ? [selectedArea] : await Promise.all((location.areas || []).map(area => getLocationAreaData(area.url).catch(() => null)));
+        if (requestId !== state.locationRenderRequest) return;
+        let allRows = [];
+        const areaSections = [];
+        for (const area of areas.filter(Boolean)) {
+            const rows = getLocationEncounterRows(area, selectedGame);
+            if (rows.length) {
+                allRows.push(...rows);
+                areaSections.push({ area, rows });
+            }
+        }
+        const game = GAMES.find(entry => entry.id === selectedGame);
+        const gameName = game ? displayGameName(game) : t("allGames");
+        const heading = document.createElement("h3");
+        heading.textContent = `${t("locationEncounters")} · ${gameName}`;
+        container.appendChild(heading);
+        if (!allRows.length) {
+            const empty = document.createElement("div");
+            empty.className = "empty-state";
+            empty.textContent = selectedGame === "all" ? t("noLocationEncounters") : `${t("noLocationEncounters")} (${gameName})`;
+            container.appendChild(empty);
+            return;
+        }
+        areaSections.forEach(({ area, rows }) => {
+            const section = document.createElement("section");
+            section.className = "location-area-section";
+            const areaTitle = document.createElement("h4");
+            areaTitle.textContent = localizedResourceName(area, formatEncounterLocation(area.name));
+            const cards = document.createElement("div");
+            cards.className = "location-encounter-grid";
+            rows.forEach(row => cards.appendChild(renderLocationEncounterCard(row)));
+            section.append(areaTitle, cards);
+            container.appendChild(section);
+        });
+    } catch (error) {
+        if (requestId !== state.locationRenderRequest) return;
+        console.warn("Location detail load failed", error);
+        container.innerHTML = `<div class="empty-state">${t("resourceLoadFailed")}</div>`;
+    }
+}
+
+function initializeLocationGameSelect() {
+    const select = document.getElementById("locationGameFilter");
+    if (!select) return null;
+    if (select.options.length) {
+        select.options[0].textContent = t("allGames");
+        return select;
+    }
+    select.innerHTML = `<option value="all">${t("allGames")}</option>${GAMES.filter(game => game.id !== "pokemon-go").map(game => `<option value="${game.id}">${displayGameName(game)}</option>`).join("")}`;
+    return select;
+}
+
+async function openLocationAreaInView(areaRef, versionName = "", preferredGameId = null, includeAllAreas = false) {
+    const game = GAMES.find(item => item.id === preferredGameId) || findGameForVersion(versionName);
+    state.selectedLocationGame = game?.id || "all";
+    state.selectedLocation = null;
+    state.selectedLocationAreaUrl = includeAllAreas ? null : areaRef.url;
+    state.locationSearch = "";
+    document.getElementById("locationSearchInput").value = "";
+    const gameSelect = initializeLocationGameSelect();
+    if (gameSelect) gameSelect.value = state.selectedLocationGame;
+    setSidebarSelection("locationsButton");
+    showView("locationsView");
+    document.getElementById("pageTitle").textContent = t("locationMenu");
+    document.getElementById("breadcrumb").textContent = game ? displayGameName(game) : "";
+    const area = await getLocationAreaData(areaRef.url);
+    const parent = { url: area.location.url, name: area.location.name };
+    state.selectedLocation = parent;
+    void renderLocationList(true);
+    await renderLocationDetail(parent, includeAllAreas ? null : areaRef);
+}
+
+async function openLocationNamed(locationName, gameId = "all") {
+    const data = await getLocationCatalogue();
+    const normalized = String(locationName || "").toLowerCase().replace(/-area(?:-[a-z0-9-]+)?$/i, "");
+    const location = (data.results || []).find(item => item.name === normalized || item.name.startsWith(`${normalized}-`));
+    if (!location) return;
+    state.selectedLocationGame = gameId || "all";
+    state.selectedLocation = location;
+    state.selectedLocationAreaUrl = null;
+    state.locationSearch = "";
+    document.getElementById("locationSearchInput").value = "";
+    const select = initializeLocationGameSelect();
+    if (select) select.value = state.selectedLocationGame;
+    setSidebarSelection("locationsButton");
+    showView("locationsView");
+    document.getElementById("pageTitle").textContent = t("locationMenu");
+    document.getElementById("breadcrumb").textContent = "";
+    void renderLocationList(true);
+    await renderLocationDetail(location);
+}
+
+async function openItemsView() {
+    setSidebarSelection("itemsButton");
+    showView("itemsView");
+    document.getElementById("pageTitle").textContent = t("items");
+    document.getElementById("breadcrumb").textContent = "";
+    renderItemList(true);
+}
+
+async function openLocationsView() {
+    setSidebarSelection("locationsButton");
+    showView("locationsView");
+    document.getElementById("pageTitle").textContent = t("locationMenu");
+    document.getElementById("breadcrumb").textContent = "";
+    const gameSelect = initializeLocationGameSelect();
+    gameSelect.value = state.selectedLocationGame;
+    renderLocationList(true);
+}
+
 
 function renderEvolutionNode(node, isRoot = true) {
     const speciesId = getPokemonIdFromUrl(node.species.url);
@@ -2746,7 +3459,11 @@ async function renderPokemonMoves(pokemon, append = false, requestId = state.pok
     if (!container || !loadMore) return;
     const renderId = ++state.moveRenderRequest;
     if (!append) loadMore.hidden = true;
-    const moveEntries = pokemon.moves.filter(entry => getMoveGenerationLearnInfo(entry));
+    const matchesMethod = detail => state.moveMethod === "all"
+        || detail.move_learn_method?.name === state.moveMethod;
+    const moveEntries = pokemon.moves.filter(entry =>
+        getMoveGenerationLearnInfos(entry).some(matchesMethod)
+    );
     if (state.moveSort === "name") {
         moveEntries.sort((a, b) => a.move.name.localeCompare(b.move.name));
     } else {
@@ -2779,13 +3496,16 @@ async function renderPokemonMoves(pokemon, append = false, requestId = state.pok
             const move = await getMove(entry.move.name);
             const card = document.createElement("article");
             card.className = "pokemon-move-card";
-            const learnInfo = getMoveGenerationLearnInfo(entry);
-            const level = learnInfo?.level_learned_at;
+            const learnInfos = getMoveGenerationLearnInfos(entry).filter(matchesMethod);
+            const learningLabels = [...new Set(learnInfos.map(getMoveLearnMethodLabel))];
             card.innerHTML = `
                 <strong>${localizedResourceName(move, capitalize(move.name))}</strong>
                 <div><span>BP</span><b>${move.power ?? "—"}</b><span>Acc</span><b>${move.accuracy == null ? "—" : `${move.accuracy}%`}</b><span>PP</span><b>${move.pp ?? "—"}</b></div>
-                ${level ? `<small>${t("level")} ${level}</small>` : ""}
             `;
+            const methodLine = document.createElement("small");
+            methodLine.className = "move-learning-methods";
+            methodLine.textContent = learningLabels.join(" · ") || t("otherMethod");
+            card.appendChild(methodLine);
             return card;
         } catch (error) {
             console.warn("Move details load failed", entry.move.name, error);
@@ -2837,11 +3557,18 @@ function formatEncounterLocation(locationName) {
 
 
 function getEncounterMethodLabel(methodName) {
-    const labels = {
+    const labels = appLanguage === "fi" ? {
+        walk: "kävely", surf: "surffaus", "old-rod": "vanha onki", "good-rod": "hyvä onki",
+        "super-rod": "superonki", "rock-smash": "kivenmurskaus", headbutt: "päähänlyönti",
+        gift: "lahja", "gift-egg": "lahjamuna", "only-one": "kertakohtaaminen",
+        pokeflute: "Poké-huilu", honey: "hunaja", "sos-encounter": "SOS-kohtaaminen",
+        "dark-grass": "tumma ruoho", "waking-up": "herättäminen", "pokeradar": "Poké-tutka"
+    } : {
         walk: "Walking", surf: "Surfing", "old-rod": "Old Rod", "good-rod": "Good Rod",
         "super-rod": "Super Rod", "rock-smash": "Rock Smash", headbutt: "Headbutt",
         gift: "Gift", "gift-egg": "Gift egg", "only-one": "One-time encounter",
-        pokeflute: "Poké Flute", honey: "Honey", "sos-encounter": "SOS encounter"
+        pokeflute: "Poké Flute", honey: "Honey", "sos-encounter": "SOS encounter",
+        "dark-grass": "Dark grass", "waking-up": "Waking up", pokeradar: "Poké Radar"
     };
     return labels[methodName] || capitalize(methodName.replaceAll("-", " "));
 }
@@ -2862,254 +3589,66 @@ function formatEncounterDetails(versionDetails) {
 }
 
 
-function normalizePokemonDbText(value) {
-    return String(value || "")
-        .toLowerCase()
-        .replace(/pok[eé]mon/g, " ")
-        .replace(/&/g, " and ")
-        .replace(/[^a-z0-9]+/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-}
-
-
-function getPokemonDbGameIds(label) {
-    const normalized = ` ${normalizePokemonDbText(label)} `;
-    const matches = POKEMONDB_GAME_LABELS
-        .map(([name, id]) => [normalizePokemonDbText(name), id])
-        .sort((a, b) => b[0].length - a[0].length)
-        .filter(([name]) => normalized.includes(` ${name} `))
-        .map(([, id]) => id);
-    const ids = new Set(matches);
-    [
-        ["ultrasun", "sun"], ["ultramoon", "moon"],
-        ["black2", "black"], ["white2", "white"],
-        ["omegaruby", "ruby"], ["alphasapphire", "sapphire"],
-        ["brilliantdiamond", "diamond"], ["shiningpearl", "pearl"]
-    ].forEach(([specific, base]) => {
-        if (ids.has(specific)) ids.delete(base);
-    });
-    return [...ids];
-}
-
-
-function getPokemonDbNodeText(node) {
-    if (node.nodeType === Node.TEXT_NODE) return node.nodeValue || "";
-    if (node.nodeName === "BR") return " · ";
-    return [...node.childNodes].map(getPokemonDbNodeText).join(" ");
-}
-
-
-function parsePokemonDbLocations(html) {
-    const page = new DOMParser().parseFromString(html, "text/html");
-    const heading = [...page.querySelectorAll("h1, h2, h3")]
-        .find(element => /where to find/i.test(element.textContent || ""));
-    const locationsTable = heading && [...page.querySelectorAll("table")]
-        .find(table => (heading.compareDocumentPosition(table) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0);
-    if (!locationsTable) throw new Error("PokémonDB Where to find table was not found");
-
-    const byGame = new Map();
-    let spanningGames = [];
-    let spanningRows = 0;
-    [...locationsTable.querySelectorAll("tr")].forEach(row => {
-        const cells = [...row.children].filter(cell => ["TD", "TH"].includes(cell.tagName));
-        if (!cells.length) return;
-        const currentGameIds = getPokemonDbGameIds(getPokemonDbNodeText(cells[0]));
-        let gameIds = currentGameIds;
-        let infoCells = cells.slice(1);
-        if (currentGameIds.length) {
-            spanningGames = currentGameIds;
-            spanningRows = Math.max(0, Number(cells[0].rowSpan || 1) - 1);
-        } else if (spanningRows > 0) {
-            gameIds = spanningGames;
-            infoCells = cells;
-            spanningRows -= 1;
-        } else {
-            return;
-        }
-
-        const acquisition = infoCells
-            .map(getPokemonDbNodeText)
-            .map(text => text.replace(/\s+/g, " ").replace(/\s+,/g, ",").replace(/,\s*/g, ", ").trim())
-            .filter(Boolean)
-            .join(" · ");
-        if (!acquisition) return;
-        gameIds.forEach(gameId => {
-            const values = byGame.get(gameId) || [];
-            if (!values.includes(acquisition)) values.push(acquisition);
-            byGame.set(gameId, values);
-        });
-    });
-    return byGame;
-}
-
-
-let pokemonDbRequestQueue = Promise.resolve();
-let pokemonDbLastRequestTime = 0;
-
-function getPokemonDbPageUrl(speciesName) {
-    const normalizedName = String(speciesName || "").toLowerCase();
-    const knownSlugs = {
-        "nidoran-female": "nidoran-f",
-        "nidoran-male": "nidoran-m"
-    };
-    const slug = knownSlugs[normalizedName] || normalizedName
-        .replace(/♀/g, "-f")
-        .replace(/♂/g, "-m")
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "");
-    return `https://pokemondb.net/pokedex/${encodeURIComponent(slug)}`;
-}
-
-
-function getPokemonDbLocations(speciesId, speciesName) {
-    if (state.pokemonDbLocationCache.has(speciesId)) {
-        return state.pokemonDbLocationCache.get(speciesId);
-    }
-
-    const pageUrl = getPokemonDbPageUrl(speciesName);
-    const request = pokemonDbRequestQueue.then(async () => {
-        const delay = Math.max(0, 2200 - (Date.now() - pokemonDbLastRequestTime));
-        if (delay) await new Promise(resolve => setTimeout(resolve, delay));
-        pokemonDbLastRequestTime = Date.now();
-
-        try {
-            const response = await fetch(pageUrl);
-            if (response.ok) return { pageUrl, byGame: parsePokemonDbLocations(await response.text()) };
-        } catch (error) {
-            console.info("Direct PokémonDB read unavailable; trying the reader service.", error);
-        }
-
-        const readerResponse = await fetch(`https://r.jina.ai/${pageUrl}`, {
-            headers: { "X-Respond-With": "html" }
-        });
-        if (!readerResponse.ok) throw new Error(`PokémonDB reader returned ${readerResponse.status}`);
-        return { pageUrl, byGame: parsePokemonDbLocations(await readerResponse.text()) };
-    });
-    pokemonDbRequestQueue = request.catch(() => undefined);
-    const cachedRequest = request.catch(error => {
-        if (state.pokemonDbLocationCache.get(speciesId) === cachedRequest) {
-            state.pokemonDbLocationCache.delete(speciesId);
-        }
-        throw error;
-    });
-    state.pokemonDbLocationCache.set(speciesId, cachedRequest);
-    return cachedRequest;
-}
-
-
 async function renderPokemonLocations(speciesId, requestId = state.pokemonRequest) {
     const gameSelect = document.getElementById("pokemonLocationGameSelect");
     const container = document.getElementById("pokemonLocationsList");
     if (!gameSelect || !container) return;
 
     try {
-        const speciesName = state.currentPokemon?.species?.name || String(speciesId);
-        const [encounters, availableGames, pokemonDb] = await Promise.all([
+        const [encounters, availableGames] = await Promise.all([
             getPokemonEncounters(speciesId).catch(error => {
                 console.warn("Pokemon encounter data load failed", error);
                 return [];
             }),
-            getAvailableGamesForPokemon(speciesId),
-            getPokemonDbLocations(speciesId, speciesName).catch(error => {
-                console.warn("PokémonDB location data load failed", error);
-                return null;
-            })
+            getAvailableGamesForPokemon(speciesId)
         ]);
         if (requestId !== state.pokemonRequest || getPokemonIdFromUrl(state.currentPokemon?.species?.url || "") !== speciesId) return;
         container.dataset.loadedFor = String(speciesId);
         delete container.dataset.loadingFor;
-        const availableGameIds = new Set(availableGames.map(game => game.id));
-        const databaseEntriesByGame = pokemonDb?.byGame || new Map();
-        const encounteredVersions = new Set(encounters.flatMap(encounter =>
-            (encounter.version_details || []).map(getEncounterVersionName).filter(Boolean)
-        ));
-        const locationGames = GAMES.filter(game => {
-            if (game.id === "pokemon-go") return false;
-            const databaseEntries = databaseEntriesByGame.get(game.id) || [];
-            const explicitlyUnavailable = databaseEntries.some(entry => /not available in this game/i.test(entry));
-            const withinNationalDex = speciesId <= game.nationalLimit
-                || Boolean(game.nationalExtras?.includes(speciesId));
-            const hasEncounter = [...getGameApiVersionNames(game.id)]
-                .some(version => encounteredVersions.has(version));
-            if (explicitlyUnavailable && !hasEncounter) return false;
-            if (databaseEntries.some(entry => !/not available in this game/i.test(entry))) return true;
-            if (game.regionalOnlyNational) {
-                return availableGameIds.has(game.id) || hasEncounter;
-            }
-            return availableGameIds.has(game.id) || withinNationalDex || hasEncounter;
-        });
+        const locationGames = availableGames.filter(game => game.id !== "pokemon-go");
         if (!locationGames.length) {
             gameSelect.disabled = true;
             container.innerHTML = `<div class="empty-state">${t("noLocationGames")}</div>`;
             return;
         }
 
-        gameSelect.innerHTML = locationGames.map(game => `<option value="${game.id}">${game.name}</option>`).join("");
+        const previousGame = gameSelect.value;
+        gameSelect.innerHTML = locationGames.map(game => `<option value="${game.id}">${displayGameName(game)}</option>`).join("");
         gameSelect.disabled = false;
+        gameSelect.value = locationGames.some(game => game.id === previousGame) ? previousGame : locationGames[0].id;
 
-        const renderSelectedGame = async () => {
+        const renderSelectedGame = () => {
             const game = locationGames.find(item => item.id === gameSelect.value);
             if (!game) return;
             const versions = getGameApiVersionNames(game.id);
-            const locations = encounters.map(encounter => ({
+            const selectedLocations = encounters.map(encounter => ({
                 ...encounter,
                 versionDetails: (encounter.version_details || []).filter(item => versions.has(getEncounterVersionName(item)))
             })).filter(encounter => encounter.versionDetails.length);
-
             const byLocation = new Map();
-            locations.forEach(location => {
+            selectedLocations.forEach(location => {
                 const name = formatEncounterLocation(location.location_area.name);
                 const key = name.toLocaleLowerCase();
-                const existing = byLocation.get(key) || { name, versionDetails: [] };
+                const existing = byLocation.get(key) || { name, versionDetails: [], areaRefs: [] };
                 existing.versionDetails.push(...location.versionDetails);
+                existing.areaRefs.push(location.location_area);
                 byLocation.set(key, existing);
             });
 
-            const databaseDetails = (databaseEntriesByGame.get(game.id) || [])
-                .filter(entry => !/not available in this game/i.test(entry));
-            const databaseLocations = databaseDetails
-                .filter(entry => !/location data not yet available/i.test(entry));
-
-            if (databaseLocations.length) {
-                container.innerHTML = `<div class="pokemon-location-list" id="pokemonLocationResults"></div>`;
-                const results = document.getElementById("pokemonLocationResults");
-                databaseLocations.forEach(entry => {
-                    const card = document.createElement("article");
-                    card.className = "pokemon-location-card";
-                    const title = document.createElement("strong");
-                    title.textContent = /^(trade|migrate|transfer|breed|evolve|gift|starter)/i.test(entry)
-                        ? t("howToObtain")
-                        : t("whereToFind");
-                    const details = document.createElement("span");
-                    details.textContent = entry;
-                    card.append(title, details);
-                    results.appendChild(card);
-                });
-                return;
-            }
-
             if (!byLocation.size) {
-                if (databaseDetails.length) {
-                    const emptyState = document.createElement("div");
-                    emptyState.className = "empty-state";
-                    emptyState.textContent = databaseDetails.join(" · ");
-                    container.replaceChildren(emptyState);
-                } else if (!pokemonDb) {
-                    container.innerHTML = `<div class="empty-state">PokémonDB location data could not be loaded, and PokéAPI has no encounter record for ${game.name}.</div>`;
-                } else {
-                    container.innerHTML = `<div class="empty-state">${t("noEncounterDetails").replace("{game}", game.name)}</div>`;
-                }
+                container.innerHTML = `<div class="empty-state">${t("noEncounterDetails").replace("{game}", displayGameName(game))}</div>`;
                 return;
             }
-
             container.innerHTML = `<div class="pokemon-location-list" id="pokemonLocationResults"></div>`;
             const results = document.getElementById("pokemonLocationResults");
             [...byLocation.values()].forEach(location => {
                 const card = document.createElement("article");
                 card.className = "pokemon-location-card";
-                const title = document.createElement("strong");
+                const title = document.createElement("button");
+                title.type = "button";
+                title.className = "location-open-button";
                 title.textContent = location.name;
+                title.addEventListener("click", () => openLocationAreaInView(location.areaRefs[0], "", game.id, true));
                 const details = document.createElement("span");
                 const versionChances = new Map();
                 location.versionDetails.forEach(item => {
@@ -3121,17 +3660,13 @@ async function renderPokemonLocations(speciesId, requestId = state.pokemonReques
                         ? Math.max(previousChance ?? 0, chance)
                         : previousChance);
                 });
-                const versions = [...versionChances].map(([name, chance]) => {
-                    const label = name.startsWith("brilliant-diamond-")
-                        ? game.name
-                        : capitalize(name.replaceAll("-", " "));
-                    return chance === undefined ? label : `${label} · max chance ${chance}%`;
+                const versionLabels = [...versionChances].map(([name, chance]) => {
+                    const label = displayVersionName(name);
+                    return chance === undefined ? label : `${label} · max ${chance}%`;
                 });
                 const methods = formatEncounterDetails(location.versionDetails);
-                details.textContent = [...versions, ...methods].join(" · ") || t("encounterMethodUnspecified");
-                const source = document.createElement("small");
-                source.textContent = t("sourcePokeApi");
-                card.append(title, details, source);
+                details.textContent = [...versionLabels, ...methods].join(" · ") || t("encounterMethodUnspecified");
+                card.append(title, details);
                 results.appendChild(card);
             });
         };
@@ -3143,10 +3678,9 @@ async function renderPokemonLocations(speciesId, requestId = state.pokemonReques
         delete container.dataset.loadingFor;
         console.warn("Pokemon location load failed", error);
         gameSelect.disabled = true;
-        container.innerHTML = `<div class="empty-state">Location data could not be loaded.</div>`;
+        container.innerHTML = `<div class="empty-state">${t("locationsLoading")}</div>`;
     }
 }
-
 
 async function renderPokemonGames(
     speciesId,
@@ -3175,11 +3709,31 @@ async function renderPokemonGames(
                 ${generations.map(generation => `<option value="${generation}">${formatGenerationName(generation)}</option>`).join("")}
             </select>
         </label>
+        <button id="showGenerationMovesButton" class="compact-resource-button" type="button">${t("generationMoves")}</button>
         <div id="pokemonGameCatchButtons" class="game-list"></div>
     `;
 
     const buttonList = document.getElementById("pokemonGameCatchButtons");
     const generationFilter = document.getElementById("pokemonGamesGenerationFilter");
+    const showGenerationMovesButton = document.getElementById("showGenerationMovesButton");
+    showGenerationMovesButton.addEventListener("click", async () => {
+        const pokemon = state.currentPokemon;
+        if (!pokemon) return;
+        const selectedGeneration = generationFilter.value;
+        let generationNumber = selectedGeneration === "all"
+            ? "all"
+            : String(generationNumberFromGame({ generation: selectedGeneration }) || "all");
+        if (generationNumber !== "all" && !getPokemonMoveGenerations(pokemon).includes(Number(generationNumber))) return;
+        document.querySelector('.detail-tab[data-detail-tab="moves"]')?.click();
+        const moveGenerationSelect = document.getElementById("moveGenerationFilter");
+        const moveMethodSelect = document.getElementById("moveMethodFilter");
+        if (moveGenerationSelect) moveGenerationSelect.value = generationNumber;
+        if (moveMethodSelect) moveMethodSelect.value = "all";
+        state.moveGeneration = generationNumber;
+        state.moveMethod = "all";
+        if (state.moveSort !== "name") await loadAllMoveDetails(pokemon);
+        await renderPokemonMoves(pokemon);
+    });
     const renderButtons = () => {
         const selectedGeneration = generationFilter.value;
         buttonList.innerHTML = "";
@@ -3212,8 +3766,17 @@ async function renderPokemonGames(
                 buttonList.appendChild(button);
             });
     };
-    generationFilter.addEventListener("change", renderButtons);
+    const updateMoveButtonState = () => {
+        const generationNumber = generationNumberFromGame({ generation: generationFilter.value });
+        showGenerationMovesButton.disabled = generationFilter.value !== "all"
+            && (!generationNumber || !getPokemonMoveGenerations(state.currentPokemon).includes(generationNumber));
+    };
+    generationFilter.addEventListener("change", () => {
+        renderButtons();
+        updateMoveButtonState();
+    });
     renderButtons();
+    updateMoveButtonState();
 }
 
 
@@ -3869,6 +4432,14 @@ function setupSidebar() {
         }
     );
 
+    document.getElementById("itemsButton").addEventListener("click", () => {
+        void openItemsView();
+    });
+
+    document.getElementById("locationsButton").addEventListener("click", () => {
+        void openLocationsView();
+    });
+
 
     document.querySelectorAll(
         ".submenu-button"
@@ -4232,6 +4803,8 @@ function setupInfiniteScroll() {
             if (button.id === "loadMoreButton") loadMoreDex();
             if (button.id === "loadMoreGameButton") loadMoreGameDex();
             if (button.id === "loadMoreMovesButton") loadMoreMoves();
+            if (button.id === "itemLoadMoreButton") runLoadMore(button, () => renderItemList(false));
+            if (button.id === "locationLoadMoreButton") runLoadMore(button, () => renderLocationList(false));
         });
     }, {
         root: document.querySelector(".main-content"),
@@ -4241,6 +4814,8 @@ function setupInfiniteScroll() {
 
     observeInfiniteScrollButton(document.getElementById("loadMoreButton"));
     observeInfiniteScrollButton(document.getElementById("loadMoreGameButton"));
+    observeInfiniteScrollButton(document.getElementById("itemLoadMoreButton"));
+    observeInfiniteScrollButton(document.getElementById("locationLoadMoreButton"));
 }
 
 async function runLoadMore(button, loadPage) {
@@ -4291,9 +4866,39 @@ function loadMoreMoves() {
     return runLoadMore(button, () => renderPokemonMoves(pokemon, true));
 }
 
+function setupResourceBrowserEvents() {
+    const itemSearch = document.getElementById("itemSearchInput");
+    itemSearch?.addEventListener("input", event => {
+        state.itemSearch = event.target.value;
+        renderItemList(true);
+    });
+    document.querySelectorAll("[data-item-filter]").forEach(button => {
+        button.addEventListener("click", () => {
+            state.itemFilter = button.dataset.itemFilter;
+            document.querySelectorAll("[data-item-filter]").forEach(item => item.classList.toggle("active", item === button));
+            renderItemList(true);
+        });
+    });
+    document.getElementById("itemLoadMoreButton")?.addEventListener("click", event => runLoadMore(event.currentTarget, () => renderItemList(false)));
+
+    const gameSelect = initializeLocationGameSelect();
+    gameSelect?.addEventListener("change", () => {
+        state.selectedLocationGame = gameSelect.value;
+        void renderLocationList(true);
+        if (state.selectedLocation) void renderLocationDetail(state.selectedLocation);
+        else document.getElementById("locationDetail").innerHTML = `<div class="empty-state">${t("selectLocation")}</div>`;
+    });
+    document.getElementById("locationSearchInput")?.addEventListener("input", event => {
+        state.locationSearch = event.target.value;
+        void renderLocationList(true);
+    });
+    document.getElementById("locationLoadMoreButton")?.addEventListener("click", event => runLoadMore(event.currentTarget, () => renderLocationList(false)));
+}
+
 function setupEvents() {
 
     setupInfiniteScroll();
+    setupResourceBrowserEvents();
     setupPokedexVoiceSettings();
     setupPwaUpdateButton();
     setupPullToRefresh();
@@ -4316,6 +4921,17 @@ function setupEvents() {
             if (state.currentView === "settingsView") {
                 document.getElementById("pageTitle").textContent = t("settings");
                 document.getElementById("breadcrumb").textContent = t("settings");
+            }
+            if (state.currentView === "itemsView") {
+                document.getElementById("pageTitle").textContent = t("items");
+                renderItemList(true);
+                if (state.selectedItem) void renderItemDetail(state.selectedItem);
+            }
+            if (state.currentView === "locationsView") {
+                document.getElementById("pageTitle").textContent = t("locationMenu");
+                initializeLocationGameSelect();
+                void renderLocationList(true);
+                if (state.selectedLocation) void renderLocationDetail(state.selectedLocation);
             }
         });
     }
