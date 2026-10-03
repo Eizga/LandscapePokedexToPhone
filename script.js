@@ -31,6 +31,7 @@ const UI_TEXT = {
         menuToggle: "Avaa tai sulje valikko", checkUpdates: "Hae sovelluksen päivitykset", typeFire: "Tulityyppi", markInGame: "Merkitse napatuksi pelissä", unmarkInGame: "Poista napattu-merkintä pelistä",
         noGameDex: "Tässä näkymässä ei ole tällä hetkellä Pokémonia.", locationsLoading: "Ladataan sijainteja...", noLocationGames: "Pokédex-merkintää sisältäviä pelejä ei löytynyt.", noEncounterDetails: "PokéAPI ei ilmoita tälle Pokémonille villikohtaamispaikkaa pelissä {game}. Lahjat, vaihdot ja siirrot eivät aina sisälly kohtaamistietoihin.",
         searchItems: "Hae esineitä", allItems: "Kaikki", heldItems: "Pokémonien hallussa", berries: "Marjat", itemEffect: "Vaikutus", itemCategory: "Luokka", itemStats: "Perustiedot", itemGames: "PokéAPI-pelidata (sukupolvitasolla)", itemHeldBy: "Pokémonit, joilla esine voi olla", itemRarity: "Todennäköisyys", berryDetails: "Marjan tiedot", berrySize: "Koko", growthTime: "Kasvuaika", maxHarvest: "Enimmäissato", naturalGift: "Luontolahja", smoothness: "Sileys", soilDryness: "Maan kuivuminen", itemCost: "Hinta", flingPower: "Heittovoima", flingEffect: "Heittovaikutus", itemNoEffect: "Vaikutustietoa ei löytynyt.", itemNoHeldBy: "PokéAPI ei listaa Pokémonia, jolla tämä esine olisi hallussa.", itemWhereUnavailable: "PokéAPI ei anna esineelle suoria löytöpaikkoja. Yllä olevien Pokémonien kohtaamispaikoista näet, mistä voit pyydystää esinettä kantavan Pokémonin.", itemLoading: "Ladataan esinettä...", selectItem: "Valitse esine nähdäksesi sen tiedot.", resourceLoadFailed: "Tietoja ei voitu ladata. Tarkista verkkoyhteys ja yritä uudelleen.", retry: "Yritä uudelleen", noHeldLocations: "PokéAPI ei ilmoita tälle Pokémonille kohtaamispaikkaa kyseisissä peleissä.", locationGame: "Peli", allGames: "Kaikki pelit", searchLocations: "Hae paikkoja", locationEncounters: "Paikan Pokémonit", encounterChance: "Kohtaamistodennäköisyys", encounterLevel: "Taso", noLocationEncounters: "Tälle paikalle ei löytynyt valitun pelin kohtaamisia.", locationLoading: "Ladataan paikkaa...", locationGameFilterNote: "Pelisuodatin näyttää valitun pelin alueen paikat. Kohtaamistiedot rajataan valittuun peliin.", selectLocation: "Valitse paikka nähdäksesi kohtaamistiedot.", locationScanCount: "Paikkoja", itemPageMore: "Näytä lisää esineitä", locationPageMore: "Näytä lisää paikkoja", wildHeldSource: "Luonnosta pyydystettäessä hallussa",
+        pokeBalls: "Poképallot", keyItems: "Tärkeät esineet", medicineItems: "Lääkkeet", machineItems: "Tekniikkakoneet", battleItems: "Taisteluesineet", evolutionItems: "Evoluutioesineet", heldItemFolder: "Pidettävät esineet", otherItems: "Muut esineet",
         evolutionLoadFailed: "Evoluutioketjua ei voitu ladata.", formsLoadFailed: "Muotoja ei voitu ladata.", caughtSaveFailed: "Napattu-merkintää ei voitu tallentaa tähän selaimeen.",
         clearAllConfirm: "Haluatko varmasti poistaa kaikki napattu-merkinnät?", caughtClearFailed: "Napattu-merkintöjä ei voitu tyhjentää tästä selaimesta.", clearGameConfirm: "Poistetaanko kaikki pelin {game} napattu-merkinnät?", gameCaughtClearFailed: "Pelin {game} napattu-merkintöjä ei voitu tyhjentää tästä selaimesta.",
         checkingUpdates: "Haetaan päivityksiä...", loadingMore: "Ladataan lisää...", updateLoadingPage: "Ladataan uusin sivu...", updateFound: "Uusi versio löytyi. Päivitetään sovellus...", updateDownloading: "Uusi versio latautuu. Sovellus avautuu päivityksen jälkeen...", updateFailed: "Päivitysten haku epäonnistui. Tarkista verkkoyhteys.", updateDone: "Päivitystarkistus valmis. Ladataan uusin sisältö...", updateDownloadFailed: "Päivityksen lataus epäonnistui. Yritä uudelleen."
@@ -59,6 +60,7 @@ const UI_TEXT = {
         menuToggle: "Open or close menu", checkUpdates: "Check for app updates", typeFire: "Fire type", markInGame: "Mark caught in game", unmarkInGame: "Remove caught mark from game",
         noGameDex: "There are no Pokémon in this view.", locationsLoading: "Loading locations...", noLocationGames: "No games with a Pokédex entry were found.", noEncounterDetails: "PokéAPI has no wild encounter location for this Pokémon in {game}. Gifts, trades, and transfers may not be included in the encounter data.",
         searchItems: "Search items", allItems: "All", heldItems: "Held by Pokémon", berries: "Berries", itemEffect: "Effect", itemCategory: "Category", itemStats: "Item facts", itemGames: "PokéAPI game index (generation-level)", itemHeldBy: "Pokémon that may hold this item", itemRarity: "Rarity", berryDetails: "Berry data", berrySize: "Size", growthTime: "Growth time", maxHarvest: "Maximum harvest", naturalGift: "Natural Gift", smoothness: "Smoothness", soilDryness: "Soil dryness", itemCost: "Cost", flingPower: "Fling power", flingEffect: "Fling effect", itemNoEffect: "No effect details were found.", itemNoHeldBy: "PokéAPI does not list any Pokémon as holding this item.", itemWhereUnavailable: "PokéAPI does not directly link items to find locations. The encounters of Pokémon above show where that Pokémon may be found holding it.", itemLoading: "Loading item...", selectItem: "Select an item to view its details.", resourceLoadFailed: "Could not load the data. Check your connection and try again.", retry: "Retry", noHeldLocations: "PokéAPI has no encounter locations for this Pokémon in those games.", locationGame: "Game", allGames: "All games", searchLocations: "Search places", locationEncounters: "Pokémon found here", encounterChance: "Encounter chance", encounterLevel: "Level", noLocationEncounters: "No encounters for the selected game were found at this place.", locationLoading: "Loading place...", locationGameFilterNote: "The game filter shows places in that game's region. Encounter details are filtered to the selected game.", selectLocation: "Select a place to view encounter details.", locationScanCount: "Places", itemPageMore: "Show more items", locationPageMore: "Show more places", wildHeldSource: "Held when encountered in the wild",
+        pokeBalls: "Poké Balls", keyItems: "Key Items", medicineItems: "Medicine", machineItems: "Machines", battleItems: "Battle Items", evolutionItems: "Evolution Items", heldItemFolder: "Held Items", otherItems: "Other Items",
         evolutionLoadFailed: "The evolution chain could not be loaded.", formsLoadFailed: "Forms could not be loaded.", caughtSaveFailed: "Could not save the caught mark in this browser.",
         clearAllConfirm: "Are you sure you want to remove all caught marks?", caughtClearFailed: "Caught marks could not be cleared in this browser.", clearGameConfirm: "Remove all caught marks for {game}?", gameCaughtClearFailed: "Caught marks for {game} could not be cleared in this browser.",
         checkingUpdates: "Checking for updates...", loadingMore: "Loading more...", updateLoadingPage: "Loading the latest page...", updateFound: "A new version was found. Updating the app...", updateDownloading: "The new version is downloading. The app will reopen when it is ready...", updateFailed: "Could not check for updates. Check your connection.", updateDone: "Update check complete. Loading the latest content...", updateDownloadFailed: "The update could not be downloaded. Try again."
@@ -557,6 +559,10 @@ const state = {
     itemListCache: null,
 
     itemDetailCache: new Map(),
+
+    itemCategoryCache: new Map(),
+
+    itemCategoryIndexCache: null,
 
     berryListCache: null,
 
@@ -2735,6 +2741,61 @@ async function fetchCachedResource(cache, key, url) {
     }
 }
 
+async function mapWithConcurrency(items, limit, mapper) {
+    const results = new Array(items.length);
+    let cursor = 0;
+    const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+        while (cursor < items.length) {
+            const index = cursor++;
+            results[index] = await mapper(items[index], index);
+        }
+    });
+    await Promise.all(workers);
+    return results;
+}
+
+async function getItemCategoryIndex() {
+    if (!state.itemCategoryIndexCache) {
+        state.itemCategoryIndexCache = getAllNamedResources("item-category")
+            .then(categories => mapWithConcurrency(categories, 4, async category => {
+                try {
+                    return await fetchCachedResource(state.itemCategoryCache, category.name, category.url);
+                } catch (error) {
+                    console.warn("Item category could not be loaded", category.name, error);
+                    return null;
+                }
+            }))
+            .then(categoryDetails => {
+                const index = new Map();
+                categoryDetails.filter(Boolean).forEach(category => {
+                    const info = { name: category.name, pocket: category.pocket?.name || "" };
+                    (category.items || []).forEach(item => index.set(item.name, info));
+                });
+                return index;
+            })
+            .catch(error => {
+                console.warn("Item category index could not be loaded", error);
+                state.itemCategoryIndexCache = null;
+                return new Map();
+            });
+    }
+    return state.itemCategoryIndexCache;
+}
+
+function getItemFolder(item) {
+    const category = item.itemCategory || "";
+    const pocket = item.itemPocket || "";
+    if (item.isBerry) return "berries";
+    if (category === "key-items") return "key-items";
+    if (pocket === "pokeballs" || ["standard-balls", "apricorn-balls", "special-balls"].includes(category)) return "balls";
+    if (category === "evolution") return "evolution";
+    if (pocket === "machines" || category === "machines") return "machines";
+    if (category.includes("held") || pocket === "items" && category === "held-items") return "held";
+    if (pocket === "medicine" || ["healing", "revival", "status-cures", "pp-recovery", "vitamins", "in-a-pinch", "picky-healing"].includes(category)) return "medicine";
+    if (pocket === "battle" || ["battle-items", "stat-boosts", "type-enhancement"].includes(category)) return "battle";
+    return "other";
+}
+
 async function getAllNamedResources(endpoint, pageSize = 10000) {
     const fetchPage = async url => {
         let lastError;
@@ -2778,18 +2839,24 @@ async function getItemCatalogue() {
             getAllNamedResources("berry", 1000).catch(error => {
                 console.warn("Berry catalogue could not be loaded", error);
                 return [];
-            })
-        ]).then(([items, berries]) => {
-            const berryByItem = new Map(berries.map(berry => [berry.item.name, berry]));
+            }),
+            getItemCategoryIndex()
+        ]).then(([items, berries, categories]) => {
+            const berryByItem = new Map(berries.map(berry => [`${berry.name}-berry`, berry]));
             return items.map(item => {
                 const berry = berryByItem.get(item.name);
                 const inferredBerryName = item.name.endsWith("-berry") ? item.name.slice(0, -6) : "";
+                const itemCategory = categories.get(item.name);
                 const isBerry = Boolean(berry || inferredBerryName);
-                return {
+                const entry = {
                     ...item,
                     isBerry,
-                    berryUrl: berry?.url || (inferredBerryName ? `${API}/berry/${inferredBerryName}/` : null)
+                    berryUrl: berry?.url || (inferredBerryName ? `${API}/berry/${inferredBerryName}/` : null),
+                    itemCategory: itemCategory?.name || "",
+                    itemPocket: itemCategory?.pocket || ""
                 };
+                entry.folder = getItemFolder(entry);
+                return entry;
             }).sort((a, b) => a.name.localeCompare(b.name));
         }).catch(error => {
             state.itemListCache = null;
@@ -2831,7 +2898,7 @@ function renderItemList(reset = true) {
         if (!list.isConnected) return;
         const search = state.itemSearch.trim().toLowerCase().replaceAll(" ", "-");
         const filtered = items.filter(item =>
-            (state.itemFilter !== "berry" || item.isBerry)
+            (state.itemFilter === "all" || item.folder === state.itemFilter)
             && (!search || item.name.includes(search))
         );
         if (reset) list.replaceChildren();
@@ -2867,6 +2934,7 @@ function renderItemList(reset = true) {
         const retry = makeResourceButton(t("retry"), "inline-resource-button");
         retry.addEventListener("click", () => {
             state.itemListCache = null;
+            state.itemCategoryIndexCache = null;
             renderItemList(true);
         });
         message.appendChild(retry);

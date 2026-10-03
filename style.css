@@ -2017,6 +2017,7 @@ select:focus {
 
 .resource-filter-buttons {
     display: flex;
+    flex-wrap: wrap;
     gap: 5px;
 }
 
