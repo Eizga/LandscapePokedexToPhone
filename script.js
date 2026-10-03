@@ -23,14 +23,14 @@ const UI_TEXT = {
         overview: "Yleiskuvaus", species: "Pokédex-kuvaus", readPokedexEntry: "Lue Pokédex-kuvaus ääneen", listen: "🔊 Kuuntele", stop: "■ Pysäytä", category: "Laji", height: "Pituus", weight: "Paino", baseXp: "Peruskokemus", abilities: "Kyvyt", genderRatio: "Sukupuolijakauma", female: "Naaras", male: "Uros", genderless: "Sukupuoleton", cry: "Kuuntele Pokémonin ääntely",
         typeChart: "Tyyppikaavio", defense: "Puolustus", attack: "Hyökkäys", evolutions: "Evoluutiot", moves: "Liikkeet", forms: "Formit", locations: "Sijainnit", gamesTab: "Pelit",
         notAvailable: "Ei saatavilla", noSpeciesDescription: "Tästä Pokémonista ei ole Pokédex-kuvausta saatavilla.", speechUnsupported: "Tämä selain ei tue tekstin puheeksi lukemista.",
-        overviewVersion: "Versio", noOverviewForLanguage: "Tälle Pokémonille ei ole kuvausta saatavilla.", translating: "Käännetään kuvausta…", translationUnavailable: "Käännös ei onnistunut. Tarkista verkkoyhteys ja yritä myöhemmin uudelleen.", searchResults: "Hakutulokset", noSearchResults: "Hakua vastaavia Pokémoneja ei löytynyt.", allGenerations: "Kaikki sukupolvet", generationMoves: "Näytä sukupolven liikkeet", moveSort: "Järjestä", moveGeneration: "Sukupolvi", bp: "BP", acc: "Acc", pp: "PP", level: "Taso", moveMethod: "Oppimistapa", allMethods: "Kaikki tavat", levelUp: "Tasonnousu", machine: "TM/HM", egg: "Munaliike", tutor: "Opettaja", otherMethod: "Muu tapa",
+        overviewVersion: "Versio", noOverviewForLanguage: "Tälle Pokémonille ei ole kuvausta saatavilla.", translating: "Käännetään kuvausta…", translationUnavailable: "Käännös ei onnistunut. Tarkista verkkoyhteys ja yritä myöhemmin uudelleen.", searchResults: "Hakutulokset", noSearchResults: "Hakua vastaavia Pokémoneja ei löytynyt.", noLocationSearchResults: "Hakua vastaavia paikkoja ei löytynyt.", allGenerations: "Kaikki sukupolvet", moveSort: "Järjestä", moveGeneration: "Sukupolvi", bp: "BP", acc: "Acc", pp: "PP", level: "Taso", moveMethod: "Oppimistapa", allMethods: "Kaikki tavat", levelUp: "Tasonnousu", machine: "TM/HM", egg: "Munaliike", tutor: "Opettaja", otherMethod: "Muu tapa",
         defenseMatchup: "Puolustus", attackMatchup: "Hyökkäys", chooseType: "Valitse vähintään yksi tyyppi.", caughtStatus: "Napattu ✓", markCaught: "Merkitse napatuksi", gameListLoading: "Etsitään pelejä...", noAvailableGames: "Pokémonille ei löytynyt saatavilla olevia pelejä.",
         pokemon: "Pokémon", generation: "Sukupolvi", mobileSpecial: "Mobiili / erikoisversio", nationalSummaryTitle: "Koko kansallinen Pokédex", nationalSummaryDescription: "Saman Pokémonin merkintä riittää riippumatta siitä, missä pelissä se on napattu.", pokemonCount: "Pokémonia", gamesCount: "peliä", regionalCount: "Alueellinen", nationalCount: "Kansallinen", defaultForm: "Oletusmuoto", movesWord: "liikkeet", openGame: "Avaa peli",
         typeNames: { normal: "normaali", fire: "tuli", water: "vesi", electric: "sähkö", grass: "ruoho", ice: "jää", fighting: "taistelu", poison: "myrkky", ground: "maa", flying: "lento", psychic: "meedio", bug: "ötökkä", rock: "kivi", ghost: "aave", dragon: "lohikäärme", dark: "pimeys", steel: "teräs", fairy: "keiju" },
         whereToFind: "Mistä löytää", howToObtain: "Miten saada", sourcePokeApi: "Lähde: PokéAPI", encounterMethodUnspecified: "Kohtaamistapaa ei ole määritetty",
         menuToggle: "Avaa tai sulje valikko", checkUpdates: "Hae sovelluksen päivitykset", typeFire: "Tulityyppi", markInGame: "Merkitse napatuksi pelissä", unmarkInGame: "Poista napattu-merkintä pelistä",
         noGameDex: "Tässä näkymässä ei ole tällä hetkellä Pokémonia.", locationsLoading: "Ladataan sijainteja...", noLocationGames: "Pokédex-merkintää sisältäviä pelejä ei löytynyt.", noEncounterDetails: "Kohtaamis- tai saamistietoja ei löytynyt pelille {game}.",
-        searchItems: "Hae esineitä", allItems: "Kaikki", heldItems: "Pokémonien hallussa", berries: "Marjat", itemEffect: "Vaikutus", itemCategory: "Luokka", itemStats: "Perustiedot", itemGames: "PokéAPI-pelidata (sukupolvitasolla)", itemHeldBy: "Pokémonit, joilla esine voi olla", itemRarity: "Todennäköisyys", berryDetails: "Marjan tiedot", berrySize: "Koko", growthTime: "Kasvuaika", maxHarvest: "Enimmäissato", naturalGift: "Luontolahja", smoothness: "Sileys", soilDryness: "Maan kuivuminen", itemCost: "Hinta", flingPower: "Heittovoima", flingEffect: "Heittovaikutus", itemNoEffect: "Vaikutustietoa ei löytynyt.", itemNoHeldBy: "PokéAPI ei listaa Pokémonia, jolla tämä esine olisi hallussa.", itemWhereUnavailable: "PokéAPI ei anna esineelle suoria löytöpaikkoja. Yllä olevien Pokémonien kohtaamispaikoista näet, mistä voit pyydystää esinettä kantavan Pokémonin.", itemLoading: "Ladataan esinettä...", selectItem: "Valitse esine nähdäksesi sen tiedot.", resourceLoadFailed: "Tietoja ei voitu ladata. Tarkista verkkoyhteys ja yritä uudelleen.", noHeldLocations: "PokéAPI ei ilmoita tälle Pokémonille kohtaamispaikkaa kyseisissä peleissä.", locationGame: "Peli", allGames: "Kaikki pelit", searchLocations: "Hae paikkoja", locationEncounters: "Paikan Pokémonit", encounterChance: "Kohtaamistodennäköisyys", encounterLevel: "Taso", noLocationEncounters: "Tälle paikalle ei löytynyt valitun pelin kohtaamisia.", locationLoading: "Ladataan paikkaa...", locationGameFilterNote: "Valitun pelin paikat varmennetaan sijaintialueiden peliversiokohtaisista kohtaamistiedoista sivu kerrallaan.", selectLocation: "Valitse paikka nähdäksesi kohtaamistiedot.", locationScanCount: "Paikkoja", itemPageMore: "Näytä lisää esineitä", locationPageMore: "Näytä lisää paikkoja", wildHeldSource: "Luonnosta pyydystettäessä hallussa",
+        searchItems: "Hae esineitä", allItems: "Kaikki", heldItems: "Pokémonien hallussa", berries: "Marjat", itemEffect: "Vaikutus", itemCategory: "Luokka", itemStats: "Perustiedot", itemGames: "PokéAPI-pelidata (sukupolvitasolla)", itemHeldBy: "Pokémonit, joilla esine voi olla", itemRarity: "Todennäköisyys", berryDetails: "Marjan tiedot", berrySize: "Koko", growthTime: "Kasvuaika", maxHarvest: "Enimmäissato", naturalGift: "Luontolahja", smoothness: "Sileys", soilDryness: "Maan kuivuminen", itemCost: "Hinta", flingPower: "Heittovoima", flingEffect: "Heittovaikutus", itemNoEffect: "Vaikutustietoa ei löytynyt.", itemNoHeldBy: "PokéAPI ei listaa Pokémonia, jolla tämä esine olisi hallussa.", itemWhereUnavailable: "PokéAPI ei anna esineelle suoria löytöpaikkoja. Yllä olevien Pokémonien kohtaamispaikoista näet, mistä voit pyydystää esinettä kantavan Pokémonin.", itemLoading: "Ladataan esinettä...", selectItem: "Valitse esine nähdäksesi sen tiedot.", resourceLoadFailed: "Tietoja ei voitu ladata. Tarkista verkkoyhteys ja yritä uudelleen.", noHeldLocations: "PokéAPI ei ilmoita tälle Pokémonille kohtaamispaikkaa kyseisissä peleissä.", locationGame: "Peli", allGames: "Kaikki pelit", searchLocations: "Hae paikkoja", locationEncounters: "Paikan Pokémonit", encounterChance: "Kohtaamistodennäköisyys", encounterLevel: "Taso", noLocationEncounters: "Tälle paikalle ei löytynyt valitun pelin kohtaamisia.", locationLoading: "Ladataan paikkaa...", locationGameFilterNote: "Pelisuodatin näyttää kyseisen sukupolven paikat. Paikkatiedot näyttävät vain valitun pelin kohtaamiset.", selectLocation: "Valitse paikka nähdäksesi kohtaamistiedot.", locationScanCount: "Paikkoja", itemPageMore: "Näytä lisää esineitä", locationPageMore: "Näytä lisää paikkoja", wildHeldSource: "Luonnosta pyydystettäessä hallussa",
         evolutionLoadFailed: "Evoluutioketjua ei voitu ladata.", formsLoadFailed: "Muotoja ei voitu ladata.", caughtSaveFailed: "Napattu-merkintää ei voitu tallentaa tähän selaimeen.",
         clearAllConfirm: "Haluatko varmasti poistaa kaikki napattu-merkinnät?", caughtClearFailed: "Napattu-merkintöjä ei voitu tyhjentää tästä selaimesta.", clearGameConfirm: "Poistetaanko kaikki pelin {game} napattu-merkinnät?", gameCaughtClearFailed: "Pelin {game} napattu-merkintöjä ei voitu tyhjentää tästä selaimesta.",
         checkingUpdates: "Haetaan päivityksiä...", loadingMore: "Ladataan lisää...", updateLoadingPage: "Ladataan uusin sivu...", updateFound: "Uusi versio löytyi. Päivitetään sovellus...", updateDownloading: "Uusi versio latautuu. Sovellus avautuu päivityksen jälkeen...", updateFailed: "Päivitysten haku epäonnistui. Tarkista verkkoyhteys.", updateDone: "Päivitystarkistus valmis. Ladataan uusin sisältö...", updateDownloadFailed: "Päivityksen lataus epäonnistui. Yritä uudelleen."
@@ -51,14 +51,14 @@ const UI_TEXT = {
         overview: "Overview", species: "Pokédex entry", readPokedexEntry: "Read Pokédex entry aloud", listen: "🔊 Listen", stop: "■ Stop", category: "Species", height: "Height", weight: "Weight", baseXp: "Base XP", abilities: "Abilities", genderRatio: "Gender ratio", female: "Female", male: "Male", genderless: "Genderless", cry: "Play Pokémon cry",
         typeChart: "Type Chart", defense: "Defense", attack: "Attack", evolutions: "Evolutions", moves: "Moves", forms: "Forms", locations: "Locations", gamesTab: "Games",
         notAvailable: "Not available", noSpeciesDescription: "No species description is available for this Pokémon.", translationUnavailable: "Translation failed. Check your connection and try again later.", speechUnsupported: "Text-to-speech is not supported by this browser.",
-        overviewVersion: "Version", noOverviewForLanguage: "No description is available for this Pokémon.", translating: "Translating description…", searchResults: "Search results", noSearchResults: "No Pokémon matched your search.", moveSort: "Sort", moveGeneration: "Generation", allGenerations: "All generations", generationMoves: "Show moves for this generation", bp: "BP", acc: "Acc", pp: "PP", level: "Level", moveMethod: "Learn method", allMethods: "All methods", levelUp: "Level up", machine: "TM/HM", egg: "Egg move", tutor: "Move tutor", otherMethod: "Other method",
+        overviewVersion: "Version", noOverviewForLanguage: "No description is available for this Pokémon.", translating: "Translating description…", searchResults: "Search results", noSearchResults: "No Pokémon matched your search.", noLocationSearchResults: "No locations matched your search.", moveSort: "Sort", moveGeneration: "Generation", allGenerations: "All generations", bp: "BP", acc: "Acc", pp: "PP", level: "Level", moveMethod: "Learn method", allMethods: "All methods", levelUp: "Level up", machine: "TM/HM", egg: "Egg move", tutor: "Move tutor", otherMethod: "Other method",
         defenseMatchup: "Defense", attackMatchup: "Attack", chooseType: "Choose at least one type.", caughtStatus: "Caught ✓", markCaught: "Mark caught", gameListLoading: "Looking up games...", noAvailableGames: "No available games were found for this Pokémon.",
         pokemon: "Pokémon", generation: "Generation", mobileSpecial: "Mobile / Special", nationalSummaryTitle: "Entire National Pokédex", nationalSummaryDescription: "A Pokémon only needs to be marked once, regardless of which game it was caught in.", pokemonCount: "Pokémon", gamesCount: "games", regionalCount: "Regional", nationalCount: "National", defaultForm: "Default form", movesWord: "moves", openGame: "Open game",
         typeNames: { normal: "Normal", fire: "Fire", water: "Water", electric: "Electric", grass: "Grass", ice: "Ice", fighting: "Fighting", poison: "Poison", ground: "Ground", flying: "Flying", psychic: "Psychic", bug: "Bug", rock: "Rock", ghost: "Ghost", dragon: "Dragon", dark: "Dark", steel: "Steel", fairy: "Fairy" },
         whereToFind: "Where to find", howToObtain: "How to obtain", sourcePokeApi: "Source: PokéAPI", encounterMethodUnspecified: "Encounter method not specified",
         menuToggle: "Open or close menu", checkUpdates: "Check for app updates", typeFire: "Fire type", markInGame: "Mark caught in game", unmarkInGame: "Remove caught mark from game",
         noGameDex: "There are no Pokémon in this view.", locationsLoading: "Loading locations...", noLocationGames: "No games with a Pokédex entry were found.", noEncounterDetails: "No encounter or acquisition details were found for {game}.",
-        searchItems: "Search items", allItems: "All", heldItems: "Held by Pokémon", berries: "Berries", itemEffect: "Effect", itemCategory: "Category", itemStats: "Item facts", itemGames: "PokéAPI game index (generation-level)", itemHeldBy: "Pokémon that may hold this item", itemRarity: "Rarity", berryDetails: "Berry data", berrySize: "Size", growthTime: "Growth time", maxHarvest: "Maximum harvest", naturalGift: "Natural Gift", smoothness: "Smoothness", soilDryness: "Soil dryness", itemCost: "Cost", flingPower: "Fling power", flingEffect: "Fling effect", itemNoEffect: "No effect details were found.", itemNoHeldBy: "PokéAPI does not list any Pokémon as holding this item.", itemWhereUnavailable: "PokéAPI does not directly link items to find locations. The encounters of Pokémon above show where that Pokémon may be found holding it.", itemLoading: "Loading item...", selectItem: "Select an item to view its details.", resourceLoadFailed: "Could not load the data. Check your connection and try again.", noHeldLocations: "PokéAPI has no encounter locations for this Pokémon in those games.", locationGame: "Game", allGames: "All games", searchLocations: "Search places", locationEncounters: "Pokémon found here", encounterChance: "Encounter chance", encounterLevel: "Level", noLocationEncounters: "No encounters for the selected game were found at this place.", locationLoading: "Loading place...", locationGameFilterNote: "Places are verified against the selected game's version-specific encounters, one page at a time.", selectLocation: "Select a place to view encounter details.", locationScanCount: "Places", itemPageMore: "Show more items", locationPageMore: "Show more places", wildHeldSource: "Held when encountered in the wild",
+        searchItems: "Search items", allItems: "All", heldItems: "Held by Pokémon", berries: "Berries", itemEffect: "Effect", itemCategory: "Category", itemStats: "Item facts", itemGames: "PokéAPI game index (generation-level)", itemHeldBy: "Pokémon that may hold this item", itemRarity: "Rarity", berryDetails: "Berry data", berrySize: "Size", growthTime: "Growth time", maxHarvest: "Maximum harvest", naturalGift: "Natural Gift", smoothness: "Smoothness", soilDryness: "Soil dryness", itemCost: "Cost", flingPower: "Fling power", flingEffect: "Fling effect", itemNoEffect: "No effect details were found.", itemNoHeldBy: "PokéAPI does not list any Pokémon as holding this item.", itemWhereUnavailable: "PokéAPI does not directly link items to find locations. The encounters of Pokémon above show where that Pokémon may be found holding it.", itemLoading: "Loading item...", selectItem: "Select an item to view its details.", resourceLoadFailed: "Could not load the data. Check your connection and try again.", noHeldLocations: "PokéAPI has no encounter locations for this Pokémon in those games.", locationGame: "Game", allGames: "All games", searchLocations: "Search places", locationEncounters: "Pokémon found here", encounterChance: "Encounter chance", encounterLevel: "Level", noLocationEncounters: "No encounters for the selected game were found at this place.", locationLoading: "Loading place...", locationGameFilterNote: "The game filter shows places in that generation. Place details only show encounters for the selected game.", selectLocation: "Select a place to view encounter details.", locationScanCount: "Places", itemPageMore: "Show more items", locationPageMore: "Show more places", wildHeldSource: "Held when encountered in the wild",
         evolutionLoadFailed: "The evolution chain could not be loaded.", formsLoadFailed: "Forms could not be loaded.", caughtSaveFailed: "Could not save the caught mark in this browser.",
         clearAllConfirm: "Are you sure you want to remove all caught marks?", caughtClearFailed: "Caught marks could not be cleared in this browser.", clearGameConfirm: "Remove all caught marks for {game}?", gameCaughtClearFailed: "Caught marks for {game} could not be cleared in this browser.",
         checkingUpdates: "Checking for updates...", loadingMore: "Loading more...", updateLoadingPage: "Loading the latest page...", updateFound: "A new version was found. Updating the app...", updateDownloading: "The new version is downloading. The app will reopen when it is ready...", updateFailed: "Could not check for updates. Check your connection.", updateDone: "Update check complete. Loading the latest content...", updateDownloadFailed: "The update could not be downloaded. Try again."
@@ -567,8 +567,6 @@ const state = {
     locationDetailCache: new Map(),
 
     locationAreaCache: new Map(),
-
-    locationAvailabilityCache: new Map(),
 
     locationListRenderRequest: 0,
 
@@ -2071,6 +2069,7 @@ async function openPokemon(
                             <label for="moveSort">${t("moveSort")}</label>
                             <select id="moveSort">
                                 <option value="name">${t("name")}</option>
+                                <option value="level">${t("level")}</option>
                                 <option value="acc">${t("acc")}</option>
                                 <option value="bp">${t("bp")}</option>
                             </select>
@@ -2128,7 +2127,7 @@ async function openPokemon(
         const selectedSort = event.target.value;
         state.moveSort = selectedSort;
         const movesContainer = document.getElementById("pokemonMovesList");
-        if (selectedSort !== "name") {
+        if (selectedSort === "acc" || selectedSort === "bp") {
             movesContainer.innerHTML = `<div class="empty-state">${appLanguage === "fi" ? "Ladataan liikkeiden tietoja..." : "Loading move details..."}</div>`;
             await loadAllMoveDetails(pokemon);
         }
@@ -2734,14 +2733,31 @@ async function fetchCachedResource(cache, key, url) {
     }
 }
 
+async function getAllNamedResources(endpoint, pageSize = 1000) {
+    const resources = [];
+    let offset = 0;
+    let total = Infinity;
+    while (offset < total) {
+        const page = await apiFetch(`${API}/${endpoint}?limit=${pageSize}&offset=${offset}`);
+        resources.push(...(page.results || []));
+        total = Number(page.count) || resources.length;
+        if (!page.next) break;
+        offset += pageSize;
+    }
+    return resources;
+}
+
 async function getItemCatalogue() {
     if (!state.itemListCache) {
         state.itemListCache = Promise.all([
-            apiFetch(`${API}/item?limit=10000`),
-            apiFetch(`${API}/berry?limit=1000`)
+            getAllNamedResources("item"),
+            getAllNamedResources("berry", 100).catch(error => {
+                console.warn("Berry catalogue could not be loaded", error);
+                return [];
+            })
         ]).then(([items, berries]) => {
-            const berryByItem = new Map((berries.results || []).map(berry => [berry.item.name, berry]));
-            return (items.results || []).map(item => ({
+            const berryByItem = new Map(berries.map(berry => [berry.item.name, berry]));
+            return items.map(item => ({
                 ...item,
                 isBerry: berryByItem.has(item.name),
                 berryUrl: berryByItem.get(item.name)?.url || null
@@ -2994,7 +3010,6 @@ async function renderItemDetail(entry) {
             }
             addResourceSection(container, t("itemHeldBy"), heldList);
         }
-        addResourceSection(container, t("whereToFind"), t("itemWhereUnavailable"));
     } catch (error) {
         if (requestId !== state.itemRenderRequest) return;
         console.warn("Item detail load failed", error);
@@ -3036,39 +3051,6 @@ async function getLocationAreaData(url) {
     return fetchCachedResource(state.locationAreaCache, url, url);
 }
 
-async function locationHasGameEncounter(location, gameId) {
-    const key = `${gameId}|${location.url}`;
-    if (state.locationAvailabilityCache.has(key)) return state.locationAvailabilityCache.get(key);
-    const request = (async () => {
-        const fullLocation = await getLocationData(location.url);
-        for (const areaRef of fullLocation.areas || []) {
-            const area = await getLocationAreaData(areaRef.url);
-            if (getLocationEncounterRows(area, gameId).length) return true;
-        }
-        return false;
-    })();
-    state.locationAvailabilityCache.set(key, request);
-    try {
-        return await request;
-    } catch (error) {
-        if (state.locationAvailabilityCache.get(key) === request) state.locationAvailabilityCache.delete(key);
-        throw error;
-    }
-}
-
-async function mapWithConcurrency(items, limit, mapper) {
-    const results = new Array(items.length);
-    let cursor = 0;
-    const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
-        while (cursor < items.length) {
-            const index = cursor++;
-            results[index] = await mapper(items[index], index);
-        }
-    });
-    await Promise.all(workers);
-    return results;
-}
-
 function locationGameCandidates(locations, gameId = state.selectedLocationGame) {
     if (gameId === "all") return locations;
     const game = GAMES.find(entry => entry.id === gameId);
@@ -3077,6 +3059,15 @@ function locationGameCandidates(locations, gameId = state.selectedLocationGame) 
     return locations.filter(location => (location.game_indices || []).some(index =>
         generationNumberFromResourceName(index.generation?.name) === generation
     ));
+}
+
+function normalizeResourceSearch(value) {
+    return String(value || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
 }
 
 async function renderLocationList(reset = true) {
@@ -3093,22 +3084,16 @@ async function renderLocationList(reset = true) {
     try {
         const data = await getLocationCatalogue();
         if (!list.isConnected || requestId !== state.locationListRenderRequest) return;
-        const search = state.locationSearch.trim().toLowerCase().replaceAll(" ", "-");
+        const search = normalizeResourceSearch(state.locationSearch);
         const selectedGame = state.selectedLocationGame;
-        const filtered = locationGameCandidates(data.results || [], selectedGame).filter(location => !search || location.name.includes(search));
+        const filtered = locationGameCandidates(data.results || [], selectedGame).filter(location => {
+            if (!search) return true;
+            const names = [location.name, localizedResourceName(location, location.name)]
+                .map(normalizeResourceSearch);
+            return names.some(name => name.includes(search));
+        });
         const size = 72;
-        const candidates = filtered.slice(pageIndex * size, (pageIndex + 1) * size);
-        let page = candidates;
-        if (selectedGame !== "all") {
-            page = await mapWithConcurrency(candidates, 6, async location => {
-                try {
-                    return await locationHasGameEncounter(location, selectedGame);
-                } catch (error) {
-                    console.warn("Could not verify location for selected game", location.name, error);
-                    return false;
-                }
-            }).then(results => candidates.filter((_, index) => results[index]));
-        }
+        const page = filtered.slice(pageIndex * size, (pageIndex + 1) * size);
         if (!list.isConnected || requestId !== state.locationListRenderRequest) return;
         if (reset) list.replaceChildren();
         if (page.length) list.querySelectorAll(".empty-state").forEach(empty => empty.remove());
@@ -3128,7 +3113,7 @@ async function renderLocationList(reset = true) {
         more.hidden = (pageIndex + 1) * size >= filtered.length;
         if (!more.hidden) observeInfiniteScrollButton(more);
         if (!page.length && !list.querySelector(".resource-result-button")) {
-            list.innerHTML = `<div class="empty-state">${t("noSearchResults")}</div>`;
+            list.innerHTML = `<div class="empty-state">${t("noLocationSearchResults")}</div>`;
         }
     } catch (error) {
         console.warn("Location catalogue load failed", error);
@@ -3139,18 +3124,49 @@ async function renderLocationList(reset = true) {
 
 function getLocationEncounterRows(area, gameId) {
     const versions = gameId && gameId !== "all" ? getGameApiVersionNames(gameId) : null;
-    const rows = [];
+    const rowsByPokemon = new Map();
     for (const encounter of area.pokemon_encounters || []) {
         const pokemonId = getPokemonIdFromPokemonUrl(encounter.pokemon.url);
         for (const versionDetail of encounter.version_details || []) {
             const version = getEncounterVersionName(versionDetail);
             if (versions && !versions.has(version)) continue;
-            for (const detail of versionDetail.encounter_details || []) {
-                rows.push({ pokemon: encounter.pokemon, pokemonId, version, detail });
+            let row = rowsByPokemon.get(pokemonId);
+            if (!row) {
+                row = { pokemon: encounter.pokemon, pokemonId, versions: new Map() };
+                rowsByPokemon.set(pokemonId, row);
             }
+            const details = versionDetail.encounter_details || [];
+            const apiChance = versionDetail.max_chance == null ? Number.NaN : Number(versionDetail.max_chance);
+            const fallbackChanceByScenario = new Map();
+            details.forEach(detail => {
+                const method = detail.method?.name || "encounter";
+                const conditions = (detail.condition_values || []).map(condition => condition.name).sort().join(",");
+                const scenario = `${method}|${conditions}`;
+                const chance = Number(detail.chance);
+                if (Number.isFinite(chance)) {
+                    fallbackChanceByScenario.set(scenario, Math.max(fallbackChanceByScenario.get(scenario) || 0, chance));
+                }
+            });
+            const fallbackChance = Math.min(100, [...fallbackChanceByScenario.values()].reduce((sum, chance) => sum + chance, 0));
+            const chance = Number.isFinite(apiChance) ? apiChance : (fallbackChanceByScenario.size ? fallbackChance : null);
+            let versionRow = row.versions.get(version);
+            if (!versionRow) {
+                versionRow = { version, chance, methods: new Set() };
+                row.versions.set(version, versionRow);
+            } else if (chance != null) {
+                versionRow.chance = versionRow.chance == null ? chance : Math.max(versionRow.chance, chance);
+            }
+            details.forEach(detail => versionRow.methods.add(detail.method?.name || "encounter"));
+            if (!details.length) versionRow.methods.add("encounter");
         }
     }
-    return rows;
+    return [...rowsByPokemon.values()].map(row => ({
+        ...row,
+        versions: [...row.versions.values()].map(version => ({
+            ...version,
+            methods: [...version.methods]
+        }))
+    }));
 }
 
 function renderLocationEncounterCard(row) {
@@ -3171,14 +3187,15 @@ function renderLocationEncounterCard(row) {
     const details = document.createElement("div");
     details.className = "location-encounter-facts";
     const method = document.createElement("strong");
-    method.textContent = getEncounterMethodLabel(row.detail.method?.name || "encounter");
+    const methods = [...new Set(row.versions.flatMap(version => version.methods))];
+    method.textContent = methods.map(getEncounterMethodLabel).join(" · ") || getEncounterMethodLabel("encounter");
     const chance = document.createElement("span");
-    chance.textContent = `${t("encounterChance")}: ${row.detail.chance ?? "—"}%`;
-    const level = document.createElement("span");
-    level.textContent = `${t("encounterLevel")}: ${row.detail.min_level === row.detail.max_level ? row.detail.min_level : `${row.detail.min_level}–${row.detail.max_level}`}`;
-    const version = document.createElement("small");
-    version.textContent = displayVersionName(row.version);
-    details.append(method, chance, level, version);
+    chance.textContent = t("encounterChance");
+    const probabilities = document.createElement("small");
+    probabilities.textContent = row.versions
+        .map(version => `${displayVersionName(version.version)} ${version.chance == null ? "—" : `${version.chance}%`}`)
+        .join(" · ");
+    details.append(method, chance, probabilities);
     card.append(pokemonButton, details);
     return card;
 }
@@ -3466,6 +3483,22 @@ async function renderPokemonMoves(pokemon, append = false, requestId = state.pok
     );
     if (state.moveSort === "name") {
         moveEntries.sort((a, b) => a.move.name.localeCompare(b.move.name));
+    } else if (state.moveSort === "level") {
+        const getLevel = entry => {
+            const levels = getMoveGenerationLearnInfos(entry)
+                .filter(detail => detail.move_learn_method?.name === "level-up")
+                .map(detail => Number(detail.level_learned_at))
+                .filter(level => Number.isFinite(level) && level > 0);
+            return levels.length ? Math.min(...levels) : null;
+        };
+        moveEntries.sort((a, b) => {
+            const aLevel = getLevel(a);
+            const bLevel = getLevel(b);
+            if (aLevel == null && bLevel == null) return a.move.name.localeCompare(b.move.name);
+            if (aLevel == null) return 1;
+            if (bLevel == null) return -1;
+            return aLevel - bLevel || a.move.name.localeCompare(b.move.name);
+        });
     } else {
         const statKey = state.moveSort === "bp" ? "power" : "accuracy";
         moveEntries.sort((a, b) => {
@@ -3709,31 +3742,11 @@ async function renderPokemonGames(
                 ${generations.map(generation => `<option value="${generation}">${formatGenerationName(generation)}</option>`).join("")}
             </select>
         </label>
-        <button id="showGenerationMovesButton" class="compact-resource-button" type="button">${t("generationMoves")}</button>
         <div id="pokemonGameCatchButtons" class="game-list"></div>
     `;
 
     const buttonList = document.getElementById("pokemonGameCatchButtons");
     const generationFilter = document.getElementById("pokemonGamesGenerationFilter");
-    const showGenerationMovesButton = document.getElementById("showGenerationMovesButton");
-    showGenerationMovesButton.addEventListener("click", async () => {
-        const pokemon = state.currentPokemon;
-        if (!pokemon) return;
-        const selectedGeneration = generationFilter.value;
-        let generationNumber = selectedGeneration === "all"
-            ? "all"
-            : String(generationNumberFromGame({ generation: selectedGeneration }) || "all");
-        if (generationNumber !== "all" && !getPokemonMoveGenerations(pokemon).includes(Number(generationNumber))) return;
-        document.querySelector('.detail-tab[data-detail-tab="moves"]')?.click();
-        const moveGenerationSelect = document.getElementById("moveGenerationFilter");
-        const moveMethodSelect = document.getElementById("moveMethodFilter");
-        if (moveGenerationSelect) moveGenerationSelect.value = generationNumber;
-        if (moveMethodSelect) moveMethodSelect.value = "all";
-        state.moveGeneration = generationNumber;
-        state.moveMethod = "all";
-        if (state.moveSort !== "name") await loadAllMoveDetails(pokemon);
-        await renderPokemonMoves(pokemon);
-    });
     const renderButtons = () => {
         const selectedGeneration = generationFilter.value;
         buttonList.innerHTML = "";
@@ -3766,17 +3779,10 @@ async function renderPokemonGames(
                 buttonList.appendChild(button);
             });
     };
-    const updateMoveButtonState = () => {
-        const generationNumber = generationNumberFromGame({ generation: generationFilter.value });
-        showGenerationMovesButton.disabled = generationFilter.value !== "all"
-            && (!generationNumber || !getPokemonMoveGenerations(state.currentPokemon).includes(generationNumber));
-    };
     generationFilter.addEventListener("change", () => {
         renderButtons();
-        updateMoveButtonState();
     });
     renderButtons();
-    updateMoveButtonState();
 }
 
 
