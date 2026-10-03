@@ -1235,8 +1235,8 @@ select:focus {
 
 .game-cover-frame {
     position: relative;
-    width: 58px;
-    height: 78px;
+    width: 84px;
+    height: 120px;
     flex: 0 0 auto;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, .28);
@@ -1253,7 +1253,8 @@ select:focus {
 
 .game-cover-frame img {
     display: block;
-    object-fit: cover;
+    padding: 3px;
+    object-fit: contain;
 }
 
 .game-cover-frame img[hidden],
@@ -1960,13 +1961,6 @@ select:focus {
     }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .pokedex-status-lights.animating .status-light {
-        animation-duration: .01ms;
-        animation-iteration-count: 1;
-    }
-}
-
 .sr-only {
     position: absolute;
     width: 1px;
@@ -2213,7 +2207,7 @@ select:focus {
 }
 
 .profile-generation-group {
-    grid-column: 1 / -1;
+    grid-column: auto;
     min-width: 0;
     overflow: hidden;
     border: 1px solid var(--border);
@@ -2371,6 +2365,225 @@ select:focus {
         grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
         max-height: 230px;
         gap: 4px;
+    }
+}
+
+@media (max-width: 700px) and (orientation: portrait) {
+    .view {
+        padding: 12px;
+    }
+
+    .settings-panel {
+        max-width: none;
+        padding: 14px;
+    }
+
+    .setting-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+        align-items: center;
+        gap: 8px 12px;
+        padding: 12px 0;
+    }
+
+    .setting-row > div:first-child {
+        min-width: 0;
+    }
+
+    .setting-row strong {
+        font-size: 13px;
+    }
+
+    .setting-row p {
+        font-size: 11px;
+        line-height: 1.35;
+    }
+
+    .setting-row > select {
+        width: 100%;
+        min-width: 0;
+        max-width: 170px;
+    }
+
+    .voice-setting-row {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .voice-settings-controls {
+        width: 100%;
+        min-width: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .setting-controls {
+        min-width: 0;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .setting-controls select {
+        flex: 1 1 130px;
+        min-width: 0;
+    }
+
+    .danger-button {
+        white-space: nowrap;
+    }
+
+    .detail-hero {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .detail-image-area {
+        min-height: 0;
+        height: clamp(145px, 24vh, 220px);
+    }
+
+    .detail-image {
+        width: 100%;
+        height: 100%;
+    }
+
+    .detail-info h2 {
+        margin-bottom: 4px;
+        font-size: 27px;
+    }
+
+    .detail-number {
+        margin-bottom: 7px;
+    }
+
+    .detail-tabs {
+        flex-wrap: nowrap;
+        gap: 5px;
+        margin: 10px 0;
+        padding: 0 0 6px;
+        overflow-x: auto;
+        scrollbar-width: thin;
+    }
+
+    .detail-tab {
+        flex: 0 0 auto;
+        padding: 7px 9px;
+        font-size: 11px;
+    }
+
+    .pokemon-summary-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+    }
+
+    .species-heading {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .species-heading-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .overview-version-switcher span {
+        max-width: 150px;
+    }
+
+    .evolution-tree {
+        justify-content: flex-start;
+        gap: 4px;
+        padding: 4px 2px 10px;
+    }
+
+    .evolution-path-node,
+    .evolution-branch {
+        gap: 4px;
+    }
+
+    .evolution-transition {
+        width: 54px;
+        max-width: 54px;
+    }
+
+    .evolution-transition > span {
+        font-size: 18px;
+    }
+
+    .evolution-transition small {
+        font-size: 8px;
+    }
+
+    .evolution-pokemon {
+        width: 82px;
+        gap: 4px;
+        padding: 4px;
+        border-radius: 9px;
+    }
+
+    .evolution-pokemon img {
+        width: 44px;
+        height: 44px;
+    }
+
+    .evolution-pokemon span {
+        font-size: 10px;
+    }
+
+    .game-cover-frame {
+        width: 64px;
+        height: 92px;
+    }
+
+    .profile-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .profile-national-card {
+        grid-column: 1 / -1;
+    }
+
+    .profile-generation-cards {
+        grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+        gap: 6px;
+        padding: 7px;
+    }
+
+    .profile-generation-cards .profile-card {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 700px) and (orientation: portrait) {
+    .detail-hero .detail-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+
+    .detail-hero .detail-tab {
+        flex: 0 0 auto;
+    }
+
+    .detail-hero .pokemon-summary-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .detail-hero .species-heading {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .detail-hero .species-heading-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .detail-hero .overview-version-switcher span {
+        max-width: 150px;
+    }
+
+    .detail-hero .evolution-pokemon span {
+        font-size: 10px;
     }
 }
 
@@ -3153,8 +3366,8 @@ select:focus {
     }
 
     .game-cover-frame {
-        width: 34px;
-        height: 48px;
+        width: 58px;
+        height: 82px;
         border-radius: 4px;
     }
 
