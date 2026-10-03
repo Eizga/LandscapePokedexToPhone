@@ -29,8 +29,8 @@ const UI_TEXT = {
         typeNames: { normal: "normaali", fire: "tuli", water: "vesi", electric: "sähkö", grass: "ruoho", ice: "jää", fighting: "taistelu", poison: "myrkky", ground: "maa", flying: "lento", psychic: "meedio", bug: "ötökkä", rock: "kivi", ghost: "aave", dragon: "lohikäärme", dark: "pimeys", steel: "teräs", fairy: "keiju" },
         whereToFind: "Mistä löytää", howToObtain: "Miten saada", sourcePokeApi: "Lähde: PokéAPI", encounterMethodUnspecified: "Kohtaamistapaa ei ole määritetty",
         menuToggle: "Avaa tai sulje valikko", checkUpdates: "Hae sovelluksen päivitykset", typeFire: "Tulityyppi", markInGame: "Merkitse napatuksi pelissä", unmarkInGame: "Poista napattu-merkintä pelistä",
-        noGameDex: "Tässä näkymässä ei ole tällä hetkellä Pokémonia.", locationsLoading: "Ladataan sijainteja...", noLocationGames: "Pokédex-merkintää sisältäviä pelejä ei löytynyt.", noEncounterDetails: "Kohtaamis- tai saamistietoja ei löytynyt pelille {game}.",
-        searchItems: "Hae esineitä", allItems: "Kaikki", heldItems: "Pokémonien hallussa", berries: "Marjat", itemEffect: "Vaikutus", itemCategory: "Luokka", itemStats: "Perustiedot", itemGames: "PokéAPI-pelidata (sukupolvitasolla)", itemHeldBy: "Pokémonit, joilla esine voi olla", itemRarity: "Todennäköisyys", berryDetails: "Marjan tiedot", berrySize: "Koko", growthTime: "Kasvuaika", maxHarvest: "Enimmäissato", naturalGift: "Luontolahja", smoothness: "Sileys", soilDryness: "Maan kuivuminen", itemCost: "Hinta", flingPower: "Heittovoima", flingEffect: "Heittovaikutus", itemNoEffect: "Vaikutustietoa ei löytynyt.", itemNoHeldBy: "PokéAPI ei listaa Pokémonia, jolla tämä esine olisi hallussa.", itemWhereUnavailable: "PokéAPI ei anna esineelle suoria löytöpaikkoja. Yllä olevien Pokémonien kohtaamispaikoista näet, mistä voit pyydystää esinettä kantavan Pokémonin.", itemLoading: "Ladataan esinettä...", selectItem: "Valitse esine nähdäksesi sen tiedot.", resourceLoadFailed: "Tietoja ei voitu ladata. Tarkista verkkoyhteys ja yritä uudelleen.", noHeldLocations: "PokéAPI ei ilmoita tälle Pokémonille kohtaamispaikkaa kyseisissä peleissä.", locationGame: "Peli", allGames: "Kaikki pelit", searchLocations: "Hae paikkoja", locationEncounters: "Paikan Pokémonit", encounterChance: "Kohtaamistodennäköisyys", encounterLevel: "Taso", noLocationEncounters: "Tälle paikalle ei löytynyt valitun pelin kohtaamisia.", locationLoading: "Ladataan paikkaa...", locationGameFilterNote: "Pelisuodatin näyttää kyseisen sukupolven paikat. Paikkatiedot näyttävät vain valitun pelin kohtaamiset.", selectLocation: "Valitse paikka nähdäksesi kohtaamistiedot.", locationScanCount: "Paikkoja", itemPageMore: "Näytä lisää esineitä", locationPageMore: "Näytä lisää paikkoja", wildHeldSource: "Luonnosta pyydystettäessä hallussa",
+        noGameDex: "Tässä näkymässä ei ole tällä hetkellä Pokémonia.", locationsLoading: "Ladataan sijainteja...", noLocationGames: "Pokédex-merkintää sisältäviä pelejä ei löytynyt.", noEncounterDetails: "PokéAPI ei ilmoita tälle Pokémonille villikohtaamispaikkaa pelissä {game}. Lahjat, vaihdot ja siirrot eivät aina sisälly kohtaamistietoihin.",
+        searchItems: "Hae esineitä", allItems: "Kaikki", heldItems: "Pokémonien hallussa", berries: "Marjat", itemEffect: "Vaikutus", itemCategory: "Luokka", itemStats: "Perustiedot", itemGames: "PokéAPI-pelidata (sukupolvitasolla)", itemHeldBy: "Pokémonit, joilla esine voi olla", itemRarity: "Todennäköisyys", berryDetails: "Marjan tiedot", berrySize: "Koko", growthTime: "Kasvuaika", maxHarvest: "Enimmäissato", naturalGift: "Luontolahja", smoothness: "Sileys", soilDryness: "Maan kuivuminen", itemCost: "Hinta", flingPower: "Heittovoima", flingEffect: "Heittovaikutus", itemNoEffect: "Vaikutustietoa ei löytynyt.", itemNoHeldBy: "PokéAPI ei listaa Pokémonia, jolla tämä esine olisi hallussa.", itemWhereUnavailable: "PokéAPI ei anna esineelle suoria löytöpaikkoja. Yllä olevien Pokémonien kohtaamispaikoista näet, mistä voit pyydystää esinettä kantavan Pokémonin.", itemLoading: "Ladataan esinettä...", selectItem: "Valitse esine nähdäksesi sen tiedot.", resourceLoadFailed: "Tietoja ei voitu ladata. Tarkista verkkoyhteys ja yritä uudelleen.", retry: "Yritä uudelleen", noHeldLocations: "PokéAPI ei ilmoita tälle Pokémonille kohtaamispaikkaa kyseisissä peleissä.", locationGame: "Peli", allGames: "Kaikki pelit", searchLocations: "Hae paikkoja", locationEncounters: "Paikan Pokémonit", encounterChance: "Kohtaamistodennäköisyys", encounterLevel: "Taso", noLocationEncounters: "Tälle paikalle ei löytynyt valitun pelin kohtaamisia.", locationLoading: "Ladataan paikkaa...", locationGameFilterNote: "Pelisuodatin näyttää valitun pelin alueen paikat. Kohtaamistiedot rajataan valittuun peliin.", selectLocation: "Valitse paikka nähdäksesi kohtaamistiedot.", locationScanCount: "Paikkoja", itemPageMore: "Näytä lisää esineitä", locationPageMore: "Näytä lisää paikkoja", wildHeldSource: "Luonnosta pyydystettäessä hallussa",
         evolutionLoadFailed: "Evoluutioketjua ei voitu ladata.", formsLoadFailed: "Muotoja ei voitu ladata.", caughtSaveFailed: "Napattu-merkintää ei voitu tallentaa tähän selaimeen.",
         clearAllConfirm: "Haluatko varmasti poistaa kaikki napattu-merkinnät?", caughtClearFailed: "Napattu-merkintöjä ei voitu tyhjentää tästä selaimesta.", clearGameConfirm: "Poistetaanko kaikki pelin {game} napattu-merkinnät?", gameCaughtClearFailed: "Pelin {game} napattu-merkintöjä ei voitu tyhjentää tästä selaimesta.",
         checkingUpdates: "Haetaan päivityksiä...", loadingMore: "Ladataan lisää...", updateLoadingPage: "Ladataan uusin sivu...", updateFound: "Uusi versio löytyi. Päivitetään sovellus...", updateDownloading: "Uusi versio latautuu. Sovellus avautuu päivityksen jälkeen...", updateFailed: "Päivitysten haku epäonnistui. Tarkista verkkoyhteys.", updateDone: "Päivitystarkistus valmis. Ladataan uusin sisältö...", updateDownloadFailed: "Päivityksen lataus epäonnistui. Yritä uudelleen."
@@ -57,8 +57,8 @@ const UI_TEXT = {
         typeNames: { normal: "Normal", fire: "Fire", water: "Water", electric: "Electric", grass: "Grass", ice: "Ice", fighting: "Fighting", poison: "Poison", ground: "Ground", flying: "Flying", psychic: "Psychic", bug: "Bug", rock: "Rock", ghost: "Ghost", dragon: "Dragon", dark: "Dark", steel: "Steel", fairy: "Fairy" },
         whereToFind: "Where to find", howToObtain: "How to obtain", sourcePokeApi: "Source: PokéAPI", encounterMethodUnspecified: "Encounter method not specified",
         menuToggle: "Open or close menu", checkUpdates: "Check for app updates", typeFire: "Fire type", markInGame: "Mark caught in game", unmarkInGame: "Remove caught mark from game",
-        noGameDex: "There are no Pokémon in this view.", locationsLoading: "Loading locations...", noLocationGames: "No games with a Pokédex entry were found.", noEncounterDetails: "No encounter or acquisition details were found for {game}.",
-        searchItems: "Search items", allItems: "All", heldItems: "Held by Pokémon", berries: "Berries", itemEffect: "Effect", itemCategory: "Category", itemStats: "Item facts", itemGames: "PokéAPI game index (generation-level)", itemHeldBy: "Pokémon that may hold this item", itemRarity: "Rarity", berryDetails: "Berry data", berrySize: "Size", growthTime: "Growth time", maxHarvest: "Maximum harvest", naturalGift: "Natural Gift", smoothness: "Smoothness", soilDryness: "Soil dryness", itemCost: "Cost", flingPower: "Fling power", flingEffect: "Fling effect", itemNoEffect: "No effect details were found.", itemNoHeldBy: "PokéAPI does not list any Pokémon as holding this item.", itemWhereUnavailable: "PokéAPI does not directly link items to find locations. The encounters of Pokémon above show where that Pokémon may be found holding it.", itemLoading: "Loading item...", selectItem: "Select an item to view its details.", resourceLoadFailed: "Could not load the data. Check your connection and try again.", noHeldLocations: "PokéAPI has no encounter locations for this Pokémon in those games.", locationGame: "Game", allGames: "All games", searchLocations: "Search places", locationEncounters: "Pokémon found here", encounterChance: "Encounter chance", encounterLevel: "Level", noLocationEncounters: "No encounters for the selected game were found at this place.", locationLoading: "Loading place...", locationGameFilterNote: "The game filter shows places in that generation. Place details only show encounters for the selected game.", selectLocation: "Select a place to view encounter details.", locationScanCount: "Places", itemPageMore: "Show more items", locationPageMore: "Show more places", wildHeldSource: "Held when encountered in the wild",
+        noGameDex: "There are no Pokémon in this view.", locationsLoading: "Loading locations...", noLocationGames: "No games with a Pokédex entry were found.", noEncounterDetails: "PokéAPI has no wild encounter location for this Pokémon in {game}. Gifts, trades, and transfers may not be included in the encounter data.",
+        searchItems: "Search items", allItems: "All", heldItems: "Held by Pokémon", berries: "Berries", itemEffect: "Effect", itemCategory: "Category", itemStats: "Item facts", itemGames: "PokéAPI game index (generation-level)", itemHeldBy: "Pokémon that may hold this item", itemRarity: "Rarity", berryDetails: "Berry data", berrySize: "Size", growthTime: "Growth time", maxHarvest: "Maximum harvest", naturalGift: "Natural Gift", smoothness: "Smoothness", soilDryness: "Soil dryness", itemCost: "Cost", flingPower: "Fling power", flingEffect: "Fling effect", itemNoEffect: "No effect details were found.", itemNoHeldBy: "PokéAPI does not list any Pokémon as holding this item.", itemWhereUnavailable: "PokéAPI does not directly link items to find locations. The encounters of Pokémon above show where that Pokémon may be found holding it.", itemLoading: "Loading item...", selectItem: "Select an item to view its details.", resourceLoadFailed: "Could not load the data. Check your connection and try again.", retry: "Retry", noHeldLocations: "PokéAPI has no encounter locations for this Pokémon in those games.", locationGame: "Game", allGames: "All games", searchLocations: "Search places", locationEncounters: "Pokémon found here", encounterChance: "Encounter chance", encounterLevel: "Level", noLocationEncounters: "No encounters for the selected game were found at this place.", locationLoading: "Loading place...", locationGameFilterNote: "The game filter shows places in that game's region. Encounter details are filtered to the selected game.", selectLocation: "Select a place to view encounter details.", locationScanCount: "Places", itemPageMore: "Show more items", locationPageMore: "Show more places", wildHeldSource: "Held when encountered in the wild",
         evolutionLoadFailed: "The evolution chain could not be loaded.", formsLoadFailed: "Forms could not be loaded.", caughtSaveFailed: "Could not save the caught mark in this browser.",
         clearAllConfirm: "Are you sure you want to remove all caught marks?", caughtClearFailed: "Caught marks could not be cleared in this browser.", clearGameConfirm: "Remove all caught marks for {game}?", gameCaughtClearFailed: "Caught marks for {game} could not be cleared in this browser.",
         checkingUpdates: "Checking for updates...", loadingMore: "Loading more...", updateLoadingPage: "Loading the latest page...", updateFound: "A new version was found. Updating the app...", updateDownloading: "The new version is downloading. The app will reopen when it is ready...", updateFailed: "Could not check for updates. Check your connection.", updateDone: "Update check complete. Loading the latest content...", updateDownloadFailed: "The update could not be downloaded. Try again."
@@ -565,6 +565,8 @@ const state = {
     locationListCache: null,
 
     locationDetailCache: new Map(),
+
+    locationRegionCache: new Map(),
 
     locationAreaCache: new Map(),
 
@@ -2733,18 +2735,42 @@ async function fetchCachedResource(cache, key, url) {
     }
 }
 
-async function getAllNamedResources(endpoint, pageSize = 1000) {
-    const resources = [];
-    let offset = 0;
-    let total = Infinity;
-    while (offset < total) {
-        const page = await apiFetch(`${API}/${endpoint}?limit=${pageSize}&offset=${offset}`);
-        resources.push(...(page.results || []));
-        total = Number(page.count) || resources.length;
-        if (!page.next) break;
-        offset += pageSize;
+async function getAllNamedResources(endpoint, pageSize = 100) {
+    const fetchPage = async offset => {
+        let lastError;
+        for (let attempt = 0; attempt < 3; attempt += 1) {
+            try {
+                return await apiFetch(`${API}/${endpoint}/?limit=${pageSize}&offset=${offset}`);
+            } catch (error) {
+                lastError = error;
+                if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 350 * (attempt + 1)));
+            }
+        }
+        throw lastError;
+    };
+
+    try {
+        const firstPage = await fetchPage(0);
+        const pageCount = Math.ceil((Number(firstPage.count) || (firstPage.results || []).length) / pageSize);
+        const pages = new Array(pageCount);
+        pages[0] = firstPage.results || [];
+        let nextPage = 1;
+        const workers = Array.from({ length: Math.min(2, pageCount - 1) }, async () => {
+            while (nextPage < pageCount) {
+                const pageIndex = nextPage++;
+                const page = await fetchPage(pageIndex * pageSize);
+                pages[pageIndex] = page.results || [];
+            }
+        });
+        await Promise.all(workers);
+        return pages.flat();
+    } catch (error) {
+        if (pageSize > 50) {
+            console.warn(`Retrying ${endpoint} with smaller API pages`, error);
+            return getAllNamedResources(endpoint, 50);
+        }
+        throw error;
     }
-    return resources;
 }
 
 async function getItemCatalogue() {
@@ -2757,11 +2783,16 @@ async function getItemCatalogue() {
             })
         ]).then(([items, berries]) => {
             const berryByItem = new Map(berries.map(berry => [berry.item.name, berry]));
-            return items.map(item => ({
-                ...item,
-                isBerry: berryByItem.has(item.name),
-                berryUrl: berryByItem.get(item.name)?.url || null
-            })).sort((a, b) => a.name.localeCompare(b.name));
+            return items.map(item => {
+                const berry = berryByItem.get(item.name);
+                const inferredBerryName = item.name.endsWith("-berry") ? item.name.slice(0, -6) : "";
+                const isBerry = Boolean(berry || inferredBerryName);
+                return {
+                    ...item,
+                    isBerry,
+                    berryUrl: berry?.url || (inferredBerryName ? `${API}/berry/${inferredBerryName}/` : null)
+                };
+            }).sort((a, b) => a.name.localeCompare(b.name));
         }).catch(error => {
             state.itemListCache = null;
             throw error;
@@ -2831,7 +2862,17 @@ function renderItemList(reset = true) {
         if (!filtered.length) list.innerHTML = `<div class="empty-state">${t("noSearchResults")}</div>`;
     }).catch(error => {
         console.warn("Item catalogue load failed", error);
-        list.innerHTML = `<div class="empty-state">${t("resourceLoadFailed")}</div>`;
+        list.replaceChildren();
+        const message = document.createElement("div");
+        message.className = "empty-state";
+        message.append(document.createTextNode(`${t("resourceLoadFailed")} `));
+        const retry = makeResourceButton(t("retry"), "inline-resource-button");
+        retry.addEventListener("click", () => {
+            state.itemListCache = null;
+            renderItemList(true);
+        });
+        message.appendChild(retry);
+        list.appendChild(message);
         more.hidden = true;
     });
 }
@@ -3047,18 +3088,42 @@ async function getLocationData(url) {
     return fetchCachedResource(state.locationDetailCache, url, url);
 }
 
+async function getLocationRegion(name) {
+    return fetchCachedResource(state.locationRegionCache, name, `${API}/region/${name}/`);
+}
+
 async function getLocationAreaData(url) {
     return fetchCachedResource(state.locationAreaCache, url, url);
 }
 
-function locationGameCandidates(locations, gameId = state.selectedLocationGame) {
+const DEX_LOCATION_REGIONS = {
+    kanto: ["kanto"], johto: ["johto"], hoenn: ["hoenn"],
+    sinnoh: ["sinnoh"], "sinnoh-platinum": ["sinnoh"],
+    unova: ["unova"], "unova-original": ["unova"], kalos: ["kalos"],
+    alola: ["alola"], "alola-original": ["alola"],
+    galar: ["galar"], "isle-of-armor": ["galar"], "crown-tundra": ["galar"],
+    hisui: ["sinnoh"], paldea: ["paldea"], kitakami: ["paldea"], blueberry: ["paldea"],
+    "lumiose-city": ["kalos"], hyperspace: ["kalos"]
+};
+
+async function locationGameCandidates(locations, gameId = state.selectedLocationGame) {
     if (gameId === "all") return locations;
     const game = GAMES.find(entry => entry.id === gameId);
-    const generation = generationNumberFromGame(game);
-    if (!game || !generation) return [];
-    return locations.filter(location => (location.game_indices || []).some(index =>
-        generationNumberFromResourceName(index.generation?.name) === generation
+    if (!game) return [];
+    const regions = new Set((game.dexes || []).flatMap(dex => DEX_LOCATION_REGIONS[dex] || []));
+    if (["gold", "silver", "crystal", "heartgold", "soulsilver"].includes(gameId)) regions.add("kanto");
+    if (!regions.size) return locations;
+
+    const regionData = await Promise.all([...regions].map(name =>
+        getLocationRegion(name).catch(error => {
+            console.warn("Location region could not be loaded", name, error);
+            return null;
+        })
     ));
+    const locationNames = new Set(regionData.flatMap(region => (region?.locations || []).map(location => location.name)));
+    if (!locationNames.size) return locations;
+
+    return locations.filter(location => locationNames.has(location.name));
 }
 
 function normalizeResourceSearch(value) {
@@ -3086,7 +3151,9 @@ async function renderLocationList(reset = true) {
         if (!list.isConnected || requestId !== state.locationListRenderRequest) return;
         const search = normalizeResourceSearch(state.locationSearch);
         const selectedGame = state.selectedLocationGame;
-        const filtered = locationGameCandidates(data.results || [], selectedGame).filter(location => {
+        const gameLocations = await locationGameCandidates(data.results || [], selectedGame);
+        if (!list.isConnected || requestId !== state.locationListRenderRequest) return;
+        const filtered = gameLocations.filter(location => {
             if (!search) return true;
             const names = [location.name, localizedResourceName(location, location.name)]
                 .map(normalizeResourceSearch);
@@ -4742,62 +4809,6 @@ function setupPwaUpdateButton() {
     });
 }
 
-function setupPullToRefresh() {
-    const scroller = document.querySelector(".main-content");
-    if (!scroller || !("ontouchstart" in window)) return;
-
-    const refreshThreshold = 72;
-    let startX = 0;
-    let startY = 0;
-    let pullDistance = 0;
-    let trackingPull = false;
-
-    scroller.addEventListener("touchstart", event => {
-        if (event.touches.length !== 1 || scroller.scrollTop > 0) {
-            trackingPull = false;
-            return;
-        }
-
-        if (event.target.closest(".topbar, .sidebar")) {
-            trackingPull = false;
-            return;
-        }
-
-        startX = event.touches[0].clientX;
-        startY = event.touches[0].clientY;
-        pullDistance = 0;
-        trackingPull = true;
-    }, { passive: true });
-
-    scroller.addEventListener("touchmove", event => {
-        if (!trackingPull || event.touches.length !== 1) return;
-
-        const deltaX = event.touches[0].clientX - startX;
-        const deltaY = event.touches[0].clientY - startY;
-        if (deltaY <= 0 || Math.abs(deltaX) > deltaY) {
-            trackingPull = false;
-            return;
-        }
-
-        pullDistance = deltaY;
-        if (pullDistance > 8 && event.cancelable) event.preventDefault();
-    }, { passive: false });
-
-    scroller.addEventListener("touchend", () => {
-        if (trackingPull && pullDistance >= refreshThreshold) {
-            void checkForPwaUpdate();
-        }
-
-        trackingPull = false;
-        pullDistance = 0;
-    }, { passive: true });
-
-    scroller.addEventListener("touchcancel", () => {
-        trackingPull = false;
-        pullDistance = 0;
-    }, { passive: true });
-}
-
 function setupInfiniteScroll() {
     if (!("IntersectionObserver" in window)) return;
 
@@ -4907,7 +4918,6 @@ function setupEvents() {
     setupResourceBrowserEvents();
     setupPokedexVoiceSettings();
     setupPwaUpdateButton();
-    setupPullToRefresh();
 
     const languageSelect = document.getElementById("appLanguageSelect");
     if (languageSelect) {
