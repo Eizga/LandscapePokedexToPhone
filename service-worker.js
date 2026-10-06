@@ -1,4 +1,4 @@
-const SHELL_CACHE = "pokedex-web-shell-v9";
+const SHELL_CACHE = "pokedex-web-shell-v10";
 const API_CACHE = "pokedex-web-api-v1";
 const IMAGE_CACHE = "pokedex-web-images-v1";
 const MAX_CACHED_SPRITES = 120;

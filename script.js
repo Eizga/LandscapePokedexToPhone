@@ -4,6 +4,7 @@ const STORAGE_KEY = "pokedexGameCaughtV3";
 const CAUGHT_BACKUP_KEY = "pokedexGameCaughtBackupV1";
 const VOICE_SETTINGS_KEY = "pokedexVoiceSettingsV1";
 const LANGUAGE_STORAGE_KEY = "pokedexLanguageV1";
+const SIMPLE_MODE_STORAGE_KEY = "pokedexSimpleModeV1";
 
 const UI_TEXT = {
     fi: {
@@ -16,6 +17,7 @@ const UI_TEXT = {
         gameCover: "Pelin kansikuva", collected: "kerätty", regional: "Alueellinen", national: "Kansallinen",
         all: "Kaikki", caught: "Napattu", missing: "Puuttuvat", profileDescription: "Kansallinen yhteistilanne sekä jokaisen pelin alueellinen ja kansallinen laskuri.",
         language: "Kieli", languageDescription: "Valitse Pokédexissä ja ääneen luetuissa kuvauksissa käytettävä kieli.",
+        simpleMode: "Pelkistetty tila", simpleModeDescription: "Näytä vain National Pokédex ja asetukset. Pokémonin yleiskuvaus ja evoluutiot näytetään samalla sivulla, ja puhe käynnistyy kortin avautuessa.",
         pokedexVoice: "Pokédexin puheääni", voiceDescription: "Matalampi sävelkorkeus kuulostaa syvemmältä. Säätö ulottuu selaimen tukemaan alarajaan.",
         pitch: "Sävelkorkeus", readingSpeed: "Lukunopeus", clearOneGame: "Tyhjennä yhden pelin tiedot", clearOneGameDescription: "Poistaa valitun pelin napattu-merkinnät.",
         selectGame: "Valitse peli", clearGame: "Tyhjennä peli", clearAll: "Tyhjennä kaikki tiedot", clearAllDescription: "Poistaa kaikkien pelien napattu-merkinnät.", clearAllButton: "Tyhjennä kaikki",
@@ -45,6 +47,7 @@ const UI_TEXT = {
         gameCover: "Game cover", collected: "caught", regional: "Regional", national: "National",
         all: "All", caught: "Caught", missing: "Missing", profileDescription: "National progress and regional and national counts for each game.",
         language: "Language", languageDescription: "Choose the language used throughout the Pokédex and for spoken descriptions.",
+        simpleMode: "Simplified mode", simpleModeDescription: "Show only the National Pokédex and Settings. Pokémon overview and evolutions appear on one page, and speech starts when a Pokémon card opens.",
         pokedexVoice: "Pokédex voice", voiceDescription: "Lower pitch values sound deeper. Pitch can be lowered to the browser-supported minimum.",
         pitch: "Pitch", readingSpeed: "Reading speed", clearOneGame: "Clear one game's data", clearOneGameDescription: "Removes caught marks for the selected game.",
         selectGame: "Select a game", clearGame: "Clear game", clearAll: "Clear all data", clearAllDescription: "Removes caught marks from all games.", clearAllButton: "Clear all",
@@ -71,6 +74,14 @@ function getStoredLanguage() {
         return localStorage.getItem(LANGUAGE_STORAGE_KEY) === "fi" ? "fi" : "en";
     } catch {
         return "en";
+    }
+}
+
+function getStoredSimpleMode() {
+    try {
+        return localStorage.getItem(SIMPLE_MODE_STORAGE_KEY) === "true";
+    } catch {
+        return false;
     }
 }
 
@@ -492,6 +503,8 @@ const GAME_COVER_ART = Object.fromEntries(
 ========================================================= */
 
 const state = {
+
+    simpleMode: getStoredSimpleMode(),
 
     currentView: "dex",
 
@@ -1965,10 +1978,11 @@ async function openPokemon(
             .join("");
 
     const moveGenerations = getPokemonMoveGenerations(pokemon);
+    const simpleMode = state.simpleMode;
 
     detail.innerHTML = `
 
-        <div class="detail-container">
+        <div class="detail-container${simpleMode ? " simple-mode" : ""}">
 
             <div class="detail-hero">
 
@@ -2002,7 +2016,7 @@ async function openPokemon(
                         ${types}
                     </div>
 
-                    <div class="detail-tabs">
+                    ${simpleMode ? "" : `<div class="detail-tabs">
                         <button class="detail-tab active" data-detail-tab="overview">${t("overview")}</button>
                         <button class="detail-tab" data-detail-tab="type-chart">${t("typeChart")}</button>
                         <button class="detail-tab" data-detail-tab="evolution">${t("evolutions")}</button>
@@ -2023,9 +2037,10 @@ async function openPokemon(
                         <button class="detail-tab" data-detail-tab="forms">${t("forms")}</button>
                         <button class="detail-tab" data-detail-tab="locations">${t("locations")}</button>
 
-                    </div>
+                    </div>`}
 
                     <div class="detail-tab-content active" data-detail-content="overview">
+                        ${simpleMode ? `<h3 class="simple-overview-title">${t("overview")}</h3>` : ""}
                         <div class="pokemon-summary-grid">
                             <section class="pokemon-summary-card">
                                 <div class="species-heading">
@@ -2049,7 +2064,7 @@ async function openPokemon(
                         </div>
                     </div>
 
-                    <div class="detail-tab-content" data-detail-content="type-chart">
+                    ${simpleMode ? "" : `<div class="detail-tab-content" data-detail-content="type-chart">
                         <div class="pokemon-chart-grid">
                             <section class="matchup-section">
                                 <h3>${t("defense")}</h3>
@@ -2060,14 +2075,14 @@ async function openPokemon(
                                 <div id="pokemonAttacks" class="pokemon-matchups"></div>
                             </section>
                         </div>
-                    </div>
+                    </div>`}
 
-                    <div class="detail-tab-content" data-detail-content="evolution">
+                    ${simpleMode ? "" : `<div class="detail-tab-content" data-detail-content="evolution">
                         <div id="evolutionChain" class="evolution-tree">${appLanguage === "fi" ? "Ladataan evoluutioketjua..." : "Loading evolution chain..."}</div>
-                    </div>
+                    </div>`}
 
 
-                    <div
+                    ${simpleMode ? "" : `<div
                         class="detail-tab-content"
                         data-detail-content="games"
                     >
@@ -2079,10 +2094,10 @@ async function openPokemon(
                             ${t("loading")}
                         </div>
 
-                    </div>
+                    </div>`}
 
 
-                    <div
+                    ${simpleMode ? "" : `<div
                         class="detail-tab-content"
                         data-detail-content="moves"
                     >
@@ -2110,13 +2125,13 @@ async function openPokemon(
                         </div>
                         <div id="pokemonMovesList" class="pokemon-moves-grid"></div>
                         <button id="loadMoreMovesButton" class="load-more-button" hidden>${t("loadMore")}</button>
-                    </div>
+                    </div>`}
 
-                    <div class="detail-tab-content" data-detail-content="forms">
+                    ${simpleMode ? "" : `<div class="detail-tab-content" data-detail-content="forms">
                         <div id="pokemonFormsList" class="pokemon-forms-grid">${t("loading")}</div>
-                    </div>
+                    </div>`}
 
-                    <div class="detail-tab-content" data-detail-content="locations">
+                    ${simpleMode ? "" : `<div class="detail-tab-content" data-detail-content="locations">
                         <div class="location-toolbar">
                             <label for="pokemonLocationGameSelect">${t("gamesTab")}</label>
                             <select id="pokemonLocationGameSelect" disabled>
@@ -2126,11 +2141,13 @@ async function openPokemon(
                         <div id="pokemonLocationsList" class="pokemon-locations">
                             <div class="empty-state">${t("loading")}</div>
                         </div>
-                    </div>
+                    </div>`}
 
                 </div>
 
             </div>
+
+            ${simpleMode ? `<section class="simple-evolutions pokemon-summary-card"><h3>${t("evolutions")}</h3><div id="evolutionChain" class="evolution-tree">${appLanguage === "fi" ? "Ladataan evoluutioketjua..." : "Loading evolution chain..."}</div></section>` : ""}
 
         </div>
 
@@ -2139,10 +2156,10 @@ async function openPokemon(
 
     setupDetailTabs();
     state.moveSort = "name";
-    document.getElementById("readSpeciesButton").addEventListener("click", toggleSpeciesSpeech);
+    document.getElementById("readSpeciesButton")?.addEventListener("click", toggleSpeciesSpeech);
     document.getElementById("playPokemonCryButton")?.addEventListener("click", () => playPokemonCry(pokemon));
     renderGenderRatio(species);
-    document.getElementById("moveSort").addEventListener("change", async event => {
+    document.getElementById("moveSort")?.addEventListener("change", async event => {
         const selectedSort = event.target.value;
         state.moveSort = selectedSort;
         const movesContainer = document.getElementById("pokemonMovesList");
@@ -2153,28 +2170,33 @@ async function openPokemon(
         if (state.currentPokemon?.id !== pokemon.id || state.moveSort !== selectedSort) return;
         await renderPokemonMoves(pokemon);
     });
-    document.getElementById("moveGenerationFilter").addEventListener("change", event => {
+    document.getElementById("moveGenerationFilter")?.addEventListener("change", event => {
         state.moveGeneration = event.target.value;
         void renderPokemonMoves(pokemon);
     });
-    document.getElementById("moveMethodFilter").addEventListener("change", event => {
+    document.getElementById("moveMethodFilter")?.addEventListener("change", event => {
         state.moveMethod = event.target.value;
         void renderPokemonMoves(pokemon);
     });
-    document.getElementById("loadMoreMovesButton").addEventListener("click", () => {
+    document.getElementById("loadMoreMovesButton")?.addEventListener("click", () => {
         loadMoreMoves();
     });
-    observeInfiniteScrollButton(document.getElementById("loadMoreMovesButton"));
+    if (!simpleMode) observeInfiniteScrollButton(document.getElementById("loadMoreMovesButton"));
 
-    renderPokemonMatchups(pokemon);
-    await Promise.all([
+    const detailTasks = [
         renderSpeciesDescription(species),
         renderPokemonAbilities(pokemon, requestId),
-        renderEvolutionChain(species, requestId),
-        renderPokemonGames(species.id, requestId),
-        renderPokemonForms(species, requestId),
-        renderPokemonMoves(pokemon, false, requestId)
-    ]);
+        renderEvolutionChain(species, requestId)
+    ];
+    if (!simpleMode) {
+        renderPokemonMatchups(pokemon);
+        detailTasks.push(
+            renderPokemonGames(species.id, requestId),
+            renderPokemonForms(species, requestId),
+            renderPokemonMoves(pokemon, false, requestId)
+        );
+    }
+    await Promise.all(detailTasks);
 
 }
 
@@ -2272,6 +2294,18 @@ async function renderSpeciesDescription(species) {
         version: null
     }] : [];
     updateSpeciesOverviewText();
+
+    if (state.simpleMode) {
+        const pokemonId = state.currentPokemon?.id;
+        window.setTimeout(() => {
+            if (state.simpleMode
+                && state.currentView === "pokemonView"
+                && state.currentPokemon?.id === pokemonId
+                && state.currentSpecies === species) {
+                toggleSpeciesSpeech();
+            }
+        }, 0);
+    }
 }
 
 
@@ -4335,6 +4369,11 @@ function setupSidebar() {
         "click",
         () => {
 
+            if (state.simpleMode) {
+                openDex("national");
+                return;
+            }
+
             const section =
                 document
                     .getElementById(
@@ -4777,10 +4816,29 @@ function setupResourceBrowserEvents() {
     document.getElementById("locationLoadMoreButton")?.addEventListener("click", event => runLoadMore(event.currentTarget, () => renderLocationList(false)));
 }
 
+function setupSimpleModeSetting() {
+    const toggle = document.getElementById("simpleModeToggle");
+    const app = document.querySelector(".app");
+    if (!toggle || !app) return;
+
+    toggle.checked = state.simpleMode;
+    app.classList.toggle("simple-mode-enabled", state.simpleMode);
+    toggle.addEventListener("change", () => {
+        state.simpleMode = toggle.checked;
+        app.classList.toggle("simple-mode-enabled", state.simpleMode);
+        try {
+            localStorage.setItem(SIMPLE_MODE_STORAGE_KEY, String(state.simpleMode));
+        } catch (error) {
+            console.warn("Could not save simplified mode preference", error);
+        }
+    });
+}
+
 function setupEvents() {
 
     setupInfiniteScroll();
     setupResourceBrowserEvents();
+    setupSimpleModeSetting();
     setupPokedexVoiceSettings();
     setupPwaUpdateButton();
 
@@ -5106,6 +5164,7 @@ function setupEvents() {
 async function init() {
 
     applyStaticTranslations();
+    document.querySelector(".app")?.classList.toggle("simple-mode-enabled", state.simpleMode);
 
     registerPwaServiceWorker();
     setupSidebar();
