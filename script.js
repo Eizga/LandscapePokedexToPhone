@@ -4,7 +4,6 @@ const STORAGE_KEY = "pokedexGameCaughtV3";
 const CAUGHT_BACKUP_KEY = "pokedexGameCaughtBackupV1";
 const VOICE_SETTINGS_KEY = "pokedexVoiceSettingsV1";
 const LANGUAGE_STORAGE_KEY = "pokedexLanguageV1";
-const DESCRIPTION_TRANSLATION_CACHE_KEY = "pokedexDescriptionTranslationsV3";
 
 const UI_TEXT = {
     fi: {
@@ -614,7 +613,9 @@ const state = {
 
     overviewEntries: [],
 
-    overviewTextIndex: 0,
+    pokemonTextMasterPromise: null,
+
+    currentSpeciesTextMaster: null,
 
     searchIndex: null,
 
@@ -744,6 +745,27 @@ async function apiFetch(url) {
 
     return response.json();
 
+}
+
+
+async function getPokemonTextMaster() {
+    if (!state.pokemonTextMasterPromise) {
+        const url = new URL("./data/pokemon-text-master.json", document.baseURI);
+        state.pokemonTextMasterPromise = fetch(url)
+            .then(response => {
+                if (!response.ok) throw new Error(`Pokémon text data error ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                if (!data?.pokemon || data.count < 1025) throw new Error("Pokémon text data is incomplete");
+                return data.pokemon;
+            })
+            .catch(error => {
+                state.pokemonTextMasterPromise = null;
+                throw error;
+            });
+    }
+    return state.pokemonTextMasterPromise;
 }
 
 
@@ -1906,8 +1928,6 @@ async function openPokemon(
     state.currentSpecies = species;
     state.moveGeneration = "all";
     state.moveMethod = "all";
-    state.overviewTextIndex = 0;
-
     state.currentGame = gameId
         ? GAMES.find(game => game.id === gameId) || null
         : null;
@@ -2015,13 +2035,6 @@ async function openPokemon(
                                     </div>
                                 </div>
                                 <p id="speciesDescription">${t("loading")}</p>
-                                <div class="overview-entry-controls">
-                                    <div class="overview-version-switcher" aria-label="${t("overviewVersion")}">
-                                        <button id="previousOverviewText" type="button" aria-label="${t("previous")}" disabled>‹</button>
-                                        <span id="overviewVersionLabel"></span>
-                                        <button id="nextOverviewText" type="button" aria-label="${t("next")}" disabled>›</button>
-                                    </div>
-                                </div>
                             </section>
                             <section class="pokemon-summary-card">
                                 <div class="overview-facts">
@@ -2129,8 +2142,6 @@ async function openPokemon(
     document.getElementById("readSpeciesButton").addEventListener("click", toggleSpeciesSpeech);
     document.getElementById("playPokemonCryButton")?.addEventListener("click", () => playPokemonCry(pokemon));
     renderGenderRatio(species);
-    document.getElementById("previousOverviewText").addEventListener("click", () => moveOverviewText(-1));
-    document.getElementById("nextOverviewText").addEventListener("click", () => moveOverviewText(1));
     document.getElementById("moveSort").addEventListener("change", async event => {
         const selectedSort = event.target.value;
         state.moveSort = selectedSort;
@@ -2231,259 +2242,65 @@ function setupDetailTabs() {
    POKEMON GAMES
 ========================================================= */
 
-function renderSpeciesDescription(species) {
+async function renderSpeciesDescription(species) {
     state.currentSpecies = species;
-    const allEntries = species.flavor_text_entries || [];
-    const localizedEntries = allEntries
-        .filter(item => item.language?.name === appLanguage)
-        .reduce((entries, item) => {
-            const version = item.version?.name || "unknown";
-            if (!entries.some(entry => entry.version?.name === version)) entries.push(item);
-            return entries;
-        }, []);
-    const englishEntries = allEntries
-        .filter(item => item.language?.name === "en")
-        .reduce((entries, item) => {
-            const version = item.version?.name || "unknown";
-            if (!entries.some(entry => entry.version?.name === version)) entries.push(item);
-            return entries;
-        }, []);
-    state.overviewEntries = localizedEntries.length ? localizedEntries : englishEntries;
-    state.overviewTextIndex = Math.max(0, state.overviewEntries.length - 1);
-    updateSpeciesOverviewText();
-}
-
-function moveOverviewText(offset) {
-    const nextIndex = state.overviewTextIndex + offset;
-    if (nextIndex < 0 || nextIndex >= state.overviewEntries.length) return;
-    stopSpeciesSpeech();
-    state.overviewTextIndex = nextIndex;
-    updateSpeciesOverviewText();
-}
-
-function loadDescriptionTranslations() {
-    try {
-        return JSON.parse(localStorage.getItem(DESCRIPTION_TRANSLATION_CACHE_KEY) || "{}");
-    } catch {
-        return {};
-    }
-}
-
-
-const FINNISH_POKEMON_GENUS_OVERRIDES = {
-    seed: "Siemen Pokémon",
-    "tiny turtle": "Pieni kilpikonna Pokémon",
-    worm: "Mato Pokémon",
-    beak: "Nokka Pokémon",
-    "poison moth": "Myrkky Koi Pokémon",
-    "scratch cat": "Raapiva Kissa Pokémon",
-    psi: "Psyykkinen Pokémon",
-    superpower: "Supervoima Pokémon",
-    flycatcher: "Kärpäsloukku Pokémon",
-    jellyfish: "Meduusa Pokémon",
-    dopey: "Hölmö Pokémon",
-    "new species": "Uusi Laji Pokémon",
-    genetic: "Geneettinen Pokémon",
-    "classy cat": "Ylhäinen Kissa Pokémon",
-    shellfish: "Simpukka Pokémon",
-    butterfly: "Perhos Pokémon",
-    "poison bee": "Myrkyllinen ampiainen Pokémon",
-    "fire cat": "Tuli kissa Pokémon",
-    heel: "Pahis Pokémon"
-};
-
-const FINNISH_GENUS_WORDS = {
-    ant: "muurahainen", armor: "panssari", ball: "pallo", balloon: "ilmapallo", barrier: "suoja",
-    bat: "lepakko", bear: "karhu", bee: "ampiainen", beetle: "kovakuoriainen", big: "suuri",
-    bird: "lintu", blimp: "ilmalaiva", blossom: "kukka", bug: "ötökkä", butterfly: "perhos",
-    cat: "kissa", cave: "luola", chime: "kello", claw: "kynsi", coal: "hiili", cobra: "kobra",
-    coconut: "kookos", cocoon: "kotelo", color: "väri", comet: "komeetta", cotton: "puuvilla",
-    duck: "ankka", eel: "ankerias", electric: "sähkö", emotion: "tunne", egg: "muna",
-    fairy: "keiju", fire: "tuli", fish: "kala", flame: "liekki", flower: "kukka", fox: "kettu",
-    frost: "pakkanen", gas: "kaasu", goldfish: "kultakala", grass: "ruoho", hairy: "karvainen",
-    hand: "käsi", horse: "hevonen", insect: "hyönteis", iron: "rauta", joy: "ilo", key: "avain",
-    legendary: "legendaarinen", lizard: "lisko", little: "pieni", long: "pitkä", louse: "täi",
-    magnet: "magneetti", mantis: "sirkka", mythical: "myyttinen", mole: "myyrä", monkey: "apina",
-    mountain: "vuori", mouse: "hiiri", mud: "muta", mushroom: "sieni", mysterious: "mysteeri",
-    neck: "kaula", night: "yö", parasite: "loinen", pin: "piikki", pigeon: "kyyhkynen",
-    pig: "possu", poison: "myrkyllinen", puppy: "pentu", rabbit: "kani", rat: "rotta",
-    rare: "harvinainen", rock: "kivi", sea: "meri", seed: "siemen", shield: "kilpi", shellfish: "simpukka",
-    shape: "muoto", sludge: "lieju", snake: "käärme", snow: "lumi", snowman: "lumiukko",
-    song: "laulu", sound: "ääni", sparrow: "varpunen", spider: "hämähäkki", sprout: "taimi",
-    star: "tähti", steel: "teräs", seedling: "taimi", sword: "miekka", tadpole: "nuijapää",
-    tiny: "pieni", turtle: "kilpikonna", virtual: "virtuaalinen", water: "vesi", weather: "sää",
-    weed: "rikkaruoho", white: "valkoinen", wild: "villi", wind: "tuuli", wish: "toive",
-    wolf: "susi", dragon: "lohikäärme", darkness: "pimeys", drill: "pora", scorpion: "skorpioni",
-    predator: "saalistaja", rascal: "veijari", heel: "pahis", fiery: "tulinen", lunar: "kuu",
-    solar: "aurinko", island: "saari", guardian: "suojelija", sun: "aurinko", wing: "siipi",
-    winged: "siivekäs", spirit: "henki", ghost: "aave", vengeful: "kostonhimoinen",
-    superpower: "supervoima", flycatcher: "kärpäsloukku", jellyfish: "meduusa", dopey: "hölmö",
-    psi: "psyykkinen", genetic: "geneettinen", scratch: "raapiva", new: "uusi", species: "laji",
-    beak: "nokka", worm: "mato", moth: "yöperhonen",
-    moon: "kuu"
-};
-
-
-function translatePokemonGenusToFinnish(genus) {
-    const withoutPokemon = String(genus || "")
-        .replace(/\s+pok(?:é|e)mon$/i, "")
-        .trim();
-    const normalized = withoutPokemon.toLowerCase();
-    if (FINNISH_POKEMON_GENUS_OVERRIDES[normalized]) {
-        return Promise.resolve(titleCaseFinnishPokemonCategory(FINNISH_POKEMON_GENUS_OVERRIDES[normalized]));
-    }
-
-    const words = normalized.split(/\s+/).filter(Boolean);
-    if (words.length && words.every(word => FINNISH_GENUS_WORDS[word])) {
-        return Promise.resolve(titleCaseFinnishPokemonCategory(`${words.map(word => FINNISH_GENUS_WORDS[word]).join(" ")} Pokémon`));
-    }
-    return translateEnglishTextToFinnish(genus).then(translation =>
-        translation ? titleCaseFinnishPokemonCategory(translation) : null
-    );
-}
-
-function titleCaseFinnishPokemonCategory(value) {
-    return String(value || "").trim().split(/\s+/).map(word => {
-        if (/^pok(?:é|e)mon$/i.test(word)) return "Pokémon";
-        return word.charAt(0).toLocaleUpperCase("fi-FI") + word.slice(1).toLocaleLowerCase("fi-FI");
-    }).join(" ");
-}
-
-async function translateEnglishTextToFinnish(value, options = {}) {
-    const sourceText = String(value || "").replace(/[\n\f\r]+/g, " ").replace(/\s+/g, " ").trim();
-    if (!sourceText) return null;
-    const translations = loadDescriptionTranslations();
-    if (translations[sourceText]) return translations[sourceText];
-
-    // Use one Finnish source term for both English words so the Bulbasaur line
-    // does not alternate between a plant bud and a light bulb in different entries.
-    const textForTranslation = options.unifyPlantBud
-        ? sourceText.replace(/\b(?:bulbs?|buds?)\b/gi, match => /s$/i.test(match) ? "plant buds" : "plant bud")
-        : sourceText;
-    const chunks = [];
-    let remaining = textForTranslation;
-    const getByteLength = text => new TextEncoder().encode(text).length;
-    while (getByteLength(remaining) > 430) {
-        const candidate = remaining.slice(0, 400);
-        const splitAt = candidate.lastIndexOf(" ");
-        const boundary = splitAt > 0 ? splitAt : 400;
-        chunks.push(remaining.slice(0, boundary).trim());
-        remaining = remaining.slice(boundary).trim();
-    }
-    if (remaining) chunks.push(remaining);
-
-    const translatedChunks = [];
-    for (const chunk of chunks) {
-        let translated = "";
-        try {
-            const params = new URLSearchParams({ client: "gtx", sl: "en", tl: "fi", dt: "t", q: chunk });
-            const response = await fetch(`https://translate.googleapis.com/translate_a/single?${params}`);
-            if (response.ok) {
-                const data = await response.json();
-                const candidate = Array.isArray(data?.[0])
-                    ? data[0].map(part => part?.[0] || "").join("").trim()
-                    : "";
-                if (candidate && candidate.toLowerCase() !== chunk.toLowerCase()) translated = candidate;
-            }
-        } catch {
-            // Try the second provider if the browser cannot reach Google Translate.
-        }
-
-        for (let attempt = 0; attempt < 2 && !translated; attempt += 1) {
-            try {
-                const params = new URLSearchParams({ q: chunk, langpair: "en|fi" });
-                const response = await fetch(`https://api.mymemory.translated.net/get?${params}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    const candidate = data.responseData?.translatedText?.trim();
-                    if (candidate && Number(data.responseStatus) < 400
-                        && candidate.toLowerCase() !== chunk.toLowerCase()) {
-                        translated = candidate;
-                    }
-                }
-            } catch {
-                // Retry once for transient network errors before showing a localized failure.
-            }
-            if (!translated && attempt === 0) {
-                await new Promise(resolve => window.setTimeout(resolve, 350));
-            }
-        }
-        if (!translated) return null;
-        translatedChunks.push(translated);
-    }
-
-    const translatedText = translatedChunks.join(" ").replace(/\s+/g, " ").trim();
-    if (!translatedText || translatedText.toLowerCase() === sourceText.toLowerCase()) return null;
-    const latestTranslations = loadDescriptionTranslations();
-    latestTranslations[sourceText] = translatedText;
-    try {
-        localStorage.setItem(DESCRIPTION_TRANSLATION_CACHE_KEY, JSON.stringify(latestTranslations));
-    } catch {
-        // The translation remains usable in this view if local storage is full or unavailable.
-    }
-    return translatedText;
-}
-
-
-async function updateSpeciesOverviewText() {
     const description = document.getElementById("speciesDescription");
-    if (!description) return;
-    const entry = state.overviewEntries[state.overviewTextIndex];
-    const species = state.currentSpecies;
-    const language = appLanguage;
-    const localGenus = species?.genera?.find(item => item.language?.name === language)?.genus || "";
-    const englishGenus = species?.genera?.find(item => item.language?.name === "en")?.genus || "";
-    const sourceGenus = localGenus || englishGenus;
     const genusElement = document.getElementById("pokemonGenus");
     const readButton = document.getElementById("readSpeciesButton");
-    const versionLabel = document.getElementById("overviewVersionLabel");
-    const previousButton = document.getElementById("previousOverviewText");
-    const nextButton = document.getElementById("nextOverviewText");
+    if (description) description.textContent = t("loading");
+    if (genusElement) genusElement.textContent = t("loading");
+    if (readButton) readButton.disabled = true;
+
+    let master = null;
+    try {
+        master = await getPokemonTextMaster();
+    } catch (error) {
+        console.warn("Pokémon text master data could not be loaded", error);
+    }
+    if (state.currentSpecies !== species) return;
+
+    const record = master?.[String(species.id)] || null;
+    state.currentSpeciesTextMaster = record;
+    const selectedEntry = appLanguage === "fi" ? record?.entryFi : record?.entryEn;
+    const fallbackEntry = (species.flavor_text_entries || []).find(item => item.language?.name === appLanguage)
+        || (species.flavor_text_entries || []).find(item => item.language?.name === "en");
+    const entryText = selectedEntry || fallbackEntry?.flavor_text || "";
+    const entryLanguage = selectedEntry ? appLanguage : (fallbackEntry?.language?.name || appLanguage);
+    state.overviewEntries = entryText ? [{
+        flavor_text: entryText,
+        language: { name: entryLanguage },
+        version: null
+    }] : [];
+    updateSpeciesOverviewText();
+}
+
+
+function updateSpeciesOverviewText() {
+    const description = document.getElementById("speciesDescription");
+    if (!description) return;
+    const entry = state.overviewEntries[0];
+    const species = state.currentSpecies;
+    const language = appLanguage;
+    const record = state.currentSpeciesTextMaster;
+    const localGenus = language === "fi" ? record?.genusFi : record?.genusEn;
+    const genus = localGenus
+        || species?.genera?.find(item => item.language?.name === language)?.genus
+        || record?.genusEn
+        || species?.genera?.find(item => item.language?.name === "en")?.genus
+        || "";
+    const genusElement = document.getElementById("pokemonGenus");
+    const readButton = document.getElementById("readSpeciesButton");
     const sourceText = entry?.flavor_text?.replace(/[\n\f\r]+/g, " ").replace(/\s+/g, " ").trim() || "";
-    const sourceLanguage = entry?.language?.name || language;
-    const needsTranslation = language === "fi" && Boolean(entry) && sourceLanguage !== "fi";
-    const speechLanguage = needsTranslation ? "fi" : sourceLanguage;
-    if (genusElement) genusElement.textContent = (language === "fi" && !localGenus ? t("translating") : sourceGenus) || t("notAvailable");
-    description.textContent = entry ? (needsTranslation ? t("translating") : sourceText) : t("noOverviewForLanguage");
-    description.dataset.speechLang = speechLanguage;
+    if (genusElement) genusElement.textContent = genus || t("notAvailable");
+    description.textContent = sourceText || t("noOverviewForLanguage");
+    description.dataset.speechLang = entry?.language?.name || language;
     description.dataset.speechName = formatPokemonName(state.currentPokemon?.name || species?.name);
-    description.dataset.speechGenus = sourceGenus;
-    description.dataset.speechHeight = String((state.currentPokemon?.height ?? 0) / 10);
-    description.dataset.speechWeight = String((state.currentPokemon?.weight ?? 0) / 10);
+    description.dataset.speechGenus = genus;
     const speechAvailable = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
     if (readButton) {
-        readButton.disabled = !entry || !speechAvailable || needsTranslation;
+        readButton.disabled = !sourceText || !speechAvailable;
         readButton.title = speechAvailable ? "" : t("speechUnsupported");
     }
-    if (versionLabel) {
-        const version = entry?.version?.name ? displayVersionName(entry.version.name) : "";
-        versionLabel.textContent = version;
-        versionLabel.title = version;
-    }
-    if (previousButton) previousButton.disabled = !entry || state.overviewTextIndex <= 0;
-    if (nextButton) nextButton.disabled = !entry || state.overviewTextIndex >= state.overviewEntries.length - 1;
-
-    const selectedIndex = state.overviewTextIndex;
-    const translateGenus = language === "fi" && !localGenus && Boolean(englishGenus);
-    const [translatedText, translatedGenus] = await Promise.all([
-        needsTranslation ? translateEnglishTextToFinnish(sourceText, { unifyPlantBud: [1, 2, 3].includes(Number(species?.id)) }) : Promise.resolve(null),
-        translateGenus ? translatePokemonGenusToFinnish(englishGenus) : Promise.resolve(null)
-    ]);
-    if (state.currentSpecies !== species || state.overviewTextIndex !== selectedIndex || appLanguage !== language) return;
-
-    if (translatedText) {
-        description.textContent = translatedText;
-    } else if (needsTranslation) {
-        description.textContent = t("translationUnavailable");
-    }
-    if (translatedGenus) {
-        if (genusElement) genusElement.textContent = translatedGenus;
-        description.dataset.speechGenus = translatedGenus;
-    } else if (translateGenus && genusElement) {
-        genusElement.textContent = t("translationUnavailable");
-        description.dataset.speechGenus = "";
-    }
-    if (readButton) readButton.disabled = !speechAvailable || !entry || (needsTranslation && !translatedText);
 }
 
 
@@ -2521,21 +2338,9 @@ function toggleSpeciesSpeech() {
         : "";
     const genus = description.dataset.speechGenus;
     const genusIntroduction = genus
-        ? `${isFinnish ? "Laji" : "Category"}: ${genus}. `
+        ? `${isFinnish ? "Laji" : "Species"}: ${genus}. `
         : "";
-    const numberFormat = new Intl.NumberFormat(isFinnish ? "fi-FI" : "en-US", { maximumFractionDigits: 1 });
-    const height = Number(description.dataset.speechHeight);
-    const weight = Number(description.dataset.speechWeight);
-    const heightText = isFinnish
-        ? `${numberFormat.format(height)} ${height === 1 ? "metri" : "metriä"}`
-        : `${numberFormat.format(height)} ${height === 1 ? "meter" : "meters"}`;
-    const weightText = isFinnish
-        ? `${numberFormat.format(weight)} ${weight === 1 ? "kilogramma" : "kilogrammaa"}`
-        : `${numberFormat.format(weight)} ${weight === 1 ? "kilogram" : "kilograms"}`;
-    const measurements = isFinnish
-        ? `Pituus: ${heightText}. Paino: ${weightText}. `
-        : `Height: ${heightText}. Weight: ${weightText}. `;
-    const spokenText = `${description.dataset.speechName}. ${typeIntroduction}${genusIntroduction}${measurements}${description.textContent}`;
+    const spokenText = `${description.dataset.speechName}. ${typeIntroduction}${genusIntroduction}${description.textContent}`;
     const utterance = new SpeechSynthesisUtterance(spokenText);
     const voiceSettings = getPokedexVoiceSettings();
     utterance.lang = description.dataset.speechLang === "fi" ? "fi-FI" : "en-US";
@@ -3460,14 +3265,6 @@ async function openLocationNamed(locationName, gameId = "all") {
     document.getElementById("breadcrumb").textContent = "";
     void renderLocationList(true);
     await renderLocationDetail(location);
-}
-
-async function openItemsView() {
-    setSidebarSelection("itemsButton");
-    showView("itemsView");
-    document.getElementById("pageTitle").textContent = t("items");
-    document.getElementById("breadcrumb").textContent = "";
-    renderItemList(true);
 }
 
 async function openLocationsView() {
@@ -4577,10 +4374,6 @@ function setupSidebar() {
         }
     );
 
-    document.getElementById("itemsButton").addEventListener("click", () => {
-        void openItemsView();
-    });
-
     document.getElementById("locationsButton").addEventListener("click", () => {
         void openLocationsView();
     });
@@ -5009,11 +4802,6 @@ function setupEvents() {
             if (state.currentView === "settingsView") {
                 document.getElementById("pageTitle").textContent = t("settings");
                 document.getElementById("breadcrumb").textContent = t("settings");
-            }
-            if (state.currentView === "itemsView") {
-                document.getElementById("pageTitle").textContent = t("items");
-                renderItemList(true);
-                if (state.selectedItem) void renderItemDetail(state.selectedItem);
             }
             if (state.currentView === "locationsView") {
                 document.getElementById("pageTitle").textContent = t("locationMenu");

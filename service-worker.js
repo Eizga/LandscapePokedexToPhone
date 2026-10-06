@@ -1,4 +1,4 @@
-const SHELL_CACHE = "pokedex-web-shell-v8";
+const SHELL_CACHE = "pokedex-web-shell-v9";
 const API_CACHE = "pokedex-web-api-v1";
 const IMAGE_CACHE = "pokedex-web-images-v1";
 const MAX_CACHED_SPRITES = 120;
@@ -7,6 +7,7 @@ const SHELL_FILES = [
     "./index.html",
     "./style.css",
     "./script.js",
+    "./data/pokemon-text-master.json",
     "./manifest.webmanifest",
     "./assets/pwa-icon-180.png",
     "./assets/pwa-icon-192.png",

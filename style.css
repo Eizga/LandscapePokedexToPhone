@@ -2932,10 +2932,6 @@ select:focus {
         justify-content: space-between;
     }
 
-    .overview-version-switcher span {
-        max-width: 150px;
-    }
-
     .evolution-tree {
         justify-content: flex-start;
         gap: 4px;
@@ -3023,10 +3019,6 @@ select:focus {
     .detail-hero .species-heading-actions {
         width: 100%;
         justify-content: space-between;
-    }
-
-    .detail-hero .overview-version-switcher span {
-        max-width: 150px;
     }
 
     .detail-hero .evolution-pokemon span {
@@ -3162,45 +3154,6 @@ select:focus {
     justify-content: flex-end;
     gap: 6px;
     min-width: 0;
-}
-
-.overview-version-switcher {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    min-width: 0;
-    color: var(--muted);
-    font-size: 9px;
-}
-
-.overview-entry-controls {
-    display: flex;
-    justify-content: center;
-    margin-top: 8px;
-}
-
-.overview-version-switcher span {
-    max-width: 130px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.overview-version-switcher button {
-    flex: 0 0 auto;
-    width: 22px;
-    height: 22px;
-    padding: 0;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    background: var(--panel);
-    line-height: 1;
-}
-
-.overview-version-switcher button:disabled {
-    opacity: .35;
-    cursor: not-allowed;
 }
 
 .species-speak-button {
@@ -3668,8 +3621,6 @@ select:focus {
     }
 
     .species-heading-actions { gap: 4px; }
-    .overview-version-switcher span { max-width: 92px; }
-    .overview-version-switcher button { width: 19px; height: 19px; }
     .species-speak-button { padding: 4px 6px; font-size: 9px; }
 
     .detail-tabs {
