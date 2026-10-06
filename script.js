@@ -21,7 +21,7 @@ const UI_TEXT = {
         pokedexVoice: "Pokédexin puheääni", voiceDescription: "Matalampi sävelkorkeus kuulostaa syvemmältä. Säätö ulottuu selaimen tukemaan alarajaan.",
         pitch: "Sävelkorkeus", readingSpeed: "Lukunopeus", clearOneGame: "Tyhjennä yhden pelin tiedot", clearOneGameDescription: "Poistaa valitun pelin napattu-merkinnät.",
         selectGame: "Valitse peli", clearGame: "Tyhjennä peli", clearAll: "Tyhjennä kaikki tiedot", clearAllDescription: "Poistaa kaikkien pelien napattu-merkinnät.", clearAllButton: "Tyhjennä kaikki",
-        overview: "Yleiskuvaus", species: "Pokédex-kuvaus", readPokedexEntry: "Lue Pokédex-kuvaus ääneen", listen: "🔊 Kuuntele", stop: "■ Pysäytä", category: "Laji", height: "Pituus", weight: "Paino", baseXp: "Peruskokemus", abilities: "Kyvyt", genderRatio: "Sukupuolijakauma", female: "Naaras", male: "Uros", genderless: "Sukupuoleton", cry: "Kuuntele Pokémonin ääntely",
+        overview: "Yleiskuvaus", species: "Pokédex-kuvaus", readPokedexEntry: "Lue Pokédex-kuvaus ääneen", listen: "🔊 Kuuntele", stop: "■ Pysäytä", category: "Laji", height: "Pituus", weight: "Paino", baseXp: "Peruskokemus", abilities: "Kyvyt", genderRatio: "Sukupuolijakauma", female: "Naaras", male: "Uros", genderless: "Sukupuoleton",
         typeChart: "Tyyppikaavio", defense: "Puolustus", attack: "Hyökkäys", evolutions: "Evoluutiot", moves: "Liikkeet", forms: "Formit", locations: "Sijainnit", gamesTab: "Pelit",
         notAvailable: "Ei saatavilla", noSpeciesDescription: "Tästä Pokémonista ei ole Pokédex-kuvausta saatavilla.", speechUnsupported: "Tämä selain ei tue tekstin puheeksi lukemista.",
         overviewVersion: "Versio", noOverviewForLanguage: "Tälle Pokémonille ei ole kuvausta saatavilla.", translating: "Käännetään kuvausta…", translationUnavailable: "Käännös ei onnistunut. Tarkista verkkoyhteys ja yritä myöhemmin uudelleen.", searchResults: "Hakutulokset", noSearchResults: "Hakua vastaavia Pokémoneja ei löytynyt.", noLocationSearchResults: "Hakua vastaavia paikkoja ei löytynyt.", allGenerations: "Kaikki sukupolvet", moveSort: "Järjestä", moveGeneration: "Sukupolvi", bp: "BP", acc: "Acc", pp: "PP", level: "Taso", moveMethod: "Oppimistapa", allMethods: "Kaikki tavat", levelUp: "Tasonnousu", machine: "TM/HM", egg: "Munaliike", tutor: "Opettaja", otherMethod: "Muu tapa",
@@ -51,7 +51,7 @@ const UI_TEXT = {
         pokedexVoice: "Pokédex voice", voiceDescription: "Lower pitch values sound deeper. Pitch can be lowered to the browser-supported minimum.",
         pitch: "Pitch", readingSpeed: "Reading speed", clearOneGame: "Clear one game's data", clearOneGameDescription: "Removes caught marks for the selected game.",
         selectGame: "Select a game", clearGame: "Clear game", clearAll: "Clear all data", clearAllDescription: "Removes caught marks from all games.", clearAllButton: "Clear all",
-        overview: "Overview", species: "Pokédex entry", readPokedexEntry: "Read Pokédex entry aloud", listen: "🔊 Listen", stop: "■ Stop", category: "Species", height: "Height", weight: "Weight", baseXp: "Base XP", abilities: "Abilities", genderRatio: "Gender ratio", female: "Female", male: "Male", genderless: "Genderless", cry: "Play Pokémon cry",
+        overview: "Overview", species: "Pokédex entry", readPokedexEntry: "Read Pokédex entry aloud", listen: "🔊 Listen", stop: "■ Stop", category: "Species", height: "Height", weight: "Weight", baseXp: "Base XP", abilities: "Abilities", genderRatio: "Gender ratio", female: "Female", male: "Male", genderless: "Genderless",
         typeChart: "Type Chart", defense: "Defense", attack: "Attack", evolutions: "Evolutions", moves: "Moves", forms: "Forms", locations: "Locations", gamesTab: "Games",
         notAvailable: "Not available", noSpeciesDescription: "No species description is available for this Pokémon.", translationUnavailable: "Translation failed. Check your connection and try again later.", speechUnsupported: "Text-to-speech is not supported by this browser.",
         overviewVersion: "Version", noOverviewForLanguage: "No description is available for this Pokémon.", translating: "Translating description…", searchResults: "Search results", noSearchResults: "No Pokémon matched your search.", noLocationSearchResults: "No locations matched your search.", moveSort: "Sort", moveGeneration: "Generation", allGenerations: "All generations", bp: "BP", acc: "Acc", pp: "PP", level: "Level", moveMethod: "Learn method", allMethods: "All methods", levelUp: "Level up", machine: "TM/HM", egg: "Egg move", tutor: "Move tutor", otherMethod: "Other method",
@@ -612,8 +612,6 @@ const state = {
 
     locationRenderRequest: 0,
 
-    cryAudio: null,
-
     movePage: 0,
 
     moveSort: "name",
@@ -1083,8 +1081,6 @@ function getCardTypeStyle(pokemon) {
 function showView(viewId) {
 
     if (viewId !== "pokemonView") stopSpeciesSpeech();
-    if (viewId !== "pokemonView") stopPokemonCry();
-
     document.querySelectorAll(".view")
         .forEach(view => {
 
@@ -1105,37 +1101,6 @@ function showView(viewId) {
 
     state.currentView = viewId;
 
-}
-
-function stopPokemonCry() {
-    if (state.cryAudio) {
-        state.cryAudio.pause();
-        state.cryAudio.currentTime = 0;
-        state.cryAudio = null;
-    }
-}
-
-function playPokemonCry(pokemon) {
-    const button = document.getElementById("playPokemonCryButton");
-    const cryUrl = pokemon?.cries?.latest || pokemon?.cries?.legacy;
-    if (!cryUrl || !button) return;
-    stopPokemonCry();
-    const audio = new Audio(cryUrl);
-    state.cryAudio = audio;
-    button.classList.add("playing");
-    audio.addEventListener("ended", () => {
-        if (state.cryAudio === audio) state.cryAudio = null;
-        button.classList.remove("playing");
-    }, { once: true });
-    audio.addEventListener("error", () => {
-        if (state.cryAudio === audio) state.cryAudio = null;
-        button.classList.remove("playing");
-    }, { once: true });
-    void audio.play().catch(error => {
-        console.warn("Pokémon cry could not be played", error);
-        button.classList.remove("playing");
-        if (state.cryAudio === audio) state.cryAudio = null;
-    });
 }
 
 function renderGenderRatio(species) {
@@ -1182,8 +1147,6 @@ async function openDex(dexId) {
     state.gameRequest += 1;
     state.pokemonRequest += 1;
     stopSpeciesSpeech();
-    stopPokemonCry();
-
     state.currentDex = dexId;
     state.currentGame = null;
     state.pokemonNavigationContext = "dex";
@@ -1925,8 +1888,6 @@ async function openPokemon(
     state.moveRenderRequest += 1;
 
     stopSpeciesSpeech();
-    stopPokemonCry();
-
     const pokemon =
         await getPokemon(
             pokemonId
@@ -1979,6 +1940,7 @@ async function openPokemon(
 
     const moveGenerations = getPokemonMoveGenerations(pokemon);
     const simpleMode = state.simpleMode;
+    const speechButton = `<button id="readSpeciesButton" class="species-speak-button${simpleMode ? " simple-mode-speak-button" : ""}" type="button" aria-label="${t("readPokedexEntry")}" aria-pressed="false" disabled>${t("listen")}</button>`;
 
     detail.innerHTML = `
 
@@ -1996,8 +1958,6 @@ async function openPokemon(
                         }"
                         alt="${formatPokemonName(pokemon.name)}"
                     >
-
-                    ${pokemon.cries?.latest || pokemon.cries?.legacy ? `<button id="playPokemonCryButton" class="pokemon-cry-button" type="button" aria-label="${t("cry")}" title="${t("cry")}">🔊</button>` : ""}
 
                 </div>
 
@@ -2040,13 +2000,13 @@ async function openPokemon(
                     </div>`}
 
                     <div class="detail-tab-content active" data-detail-content="overview">
-                        ${simpleMode ? `<h3 class="simple-overview-title">${t("overview")}</h3>` : ""}
+                        ${simpleMode ? `<div class="simple-overview-heading"><h3>${t("overview")}</h3>${speechButton}</div>` : ""}
                         <div class="pokemon-summary-grid">
                             <section class="pokemon-summary-card">
                                 <div class="species-heading">
                                     <h3>${t("species")}</h3>
                                     <div class="species-heading-actions">
-                                        <button id="readSpeciesButton" class="species-speak-button" type="button" aria-label="${t("readPokedexEntry")}" aria-pressed="false" disabled>${t("listen")}</button>
+                                        ${simpleMode ? "" : speechButton}
                                     </div>
                                 </div>
                                 <p id="speciesDescription">${t("loading")}</p>
@@ -2157,7 +2117,6 @@ async function openPokemon(
     setupDetailTabs();
     state.moveSort = "name";
     document.getElementById("readSpeciesButton")?.addEventListener("click", toggleSpeciesSpeech);
-    document.getElementById("playPokemonCryButton")?.addEventListener("click", () => playPokemonCry(pokemon));
     renderGenderRatio(species);
     document.getElementById("moveSort")?.addEventListener("change", async event => {
         const selectedSort = event.target.value;
