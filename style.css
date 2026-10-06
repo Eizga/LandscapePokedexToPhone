@@ -4082,6 +4082,10 @@ select:focus {
     display: none;
 }
 
+.app.simple-mode-enabled #clearCaughtSetting {
+    display: none;
+}
+
 .simple-evolutions h3 {
     margin: 0 0 8px;
     color: #ff8589;
